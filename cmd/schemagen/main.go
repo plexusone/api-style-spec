@@ -74,7 +74,7 @@ func generateSchema(dir, filename string, typ any, schemaID string) error {
 	}
 
 	path := filepath.Join(dir, filename)
-	if err := os.WriteFile(path, data, 0o644); err != nil {
+	if err := os.WriteFile(path, data, 0o600); err != nil {
 		return fmt.Errorf("writing schema: %w", err)
 	}
 
