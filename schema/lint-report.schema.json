@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api-style-spec.dev/schema/v1/lint-report.schema.json",
+  "$defs": {
+    "ReportMetadata": {
+      "properties": {
+        "specFile": {
+          "type": "string"
+        },
+        "specVersion": {
+          "type": "string"
+        },
+        "profile": {
+          "type": "string"
+        },
+        "profileVersion": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "durationMs": {
+          "type": "integer"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "toolVersion": {
+          "type": "string"
+        },
+        "rulesEvaluated": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Violation": {
+      "properties": {
+        "ruleId": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "line": {
+          "type": "integer"
+        },
+        "column": {
+          "type": "integer"
+        },
+        "endLine": {
+          "type": "integer"
+        },
+        "endColumn": {
+          "type": "integer"
+        },
+        "suggestion": {
+          "type": "string"
+        },
+        "ruleTitle": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ViolationSummary": {
+      "properties": {
+        "errors": {
+          "type": "integer"
+        },
+        "warnings": {
+          "type": "integer"
+        },
+        "infos": {
+          "type": "integer"
+        },
+        "hints": {
+          "type": "integer"
+        },
+        "total": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    }
+  },
+  "properties": {
+    "status": {
+      "type": "string"
+    },
+    "conformanceLevel": {
+      "type": "string"
+    },
+    "summary": {
+      "$ref": "#/$defs/ViolationSummary"
+    },
+    "violations": {
+      "items": {
+        "$ref": "#/$defs/Violation"
+      },
+      "type": "array"
+    },
+    "ignoredViolations": {
+      "items": {
+        "$ref": "#/$defs/Violation"
+      },
+      "type": "array"
+    },
+    "metadata": {
+      "$ref": "#/$defs/ReportMetadata"
+    }
+  },
+  "additionalProperties": false,
+  "type": "object"
+}
