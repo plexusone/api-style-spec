@@ -1,0 +1,342 @@
+{
+  "$schema": "../../schema/api-style-spec.schema.json",
+  "version": "1.0.0",
+  "name": "Google Cloud API Design Guide",
+  "description": "Style rules based on Google Cloud API Design Guide",
+  "metadata": {
+    "author": "Google",
+    "url": "https://cloud.google.com/apis/design",
+    "lastUpdated": "2024-01-01"
+  },
+  "categories": [
+    {"id": "resource-names", "name": "Resource Names", "description": "Resource naming and hierarchy"},
+    {"id": "standard-methods", "name": "Standard Methods", "description": "CRUD operation patterns"},
+    {"id": "custom-methods", "name": "Custom Methods", "description": "Non-CRUD operations"},
+    {"id": "naming", "name": "Naming Conventions", "description": "Field and message naming"},
+    {"id": "errors", "name": "Error Handling", "description": "Error format and codes"},
+    {"id": "documentation", "name": "Documentation", "description": "API documentation requirements"},
+    {"id": "versioning", "name": "Versioning", "description": "API version management"}
+  ],
+  "rules": [
+    {
+      "id": "GCP-RES-001",
+      "title": "Use resource-oriented design",
+      "category": "resource-names",
+      "severity": "error",
+      "rationale": "APIs should be organized around resources, not actions.",
+      "examples": {
+        "good": ["/projects/{project}/instances/{instance}"],
+        "bad": ["/getInstanceDetails", "/createNewInstance"]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if the API follows resource-oriented design. Paths should be nouns representing resources, not verbs representing actions. Look for patterns like /resources/{id} rather than /getResource or /createResource.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-RES-002",
+      "title": "Use collection IDs",
+      "category": "resource-names",
+      "severity": "error",
+      "rationale": "Collection names should be plural and use camelCase.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if collection names (the segments before resource IDs) are plural and use camelCase or lowercase. Examples: /users, /billingAccounts, /projects",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-RES-003",
+      "title": "Resource hierarchy in path",
+      "category": "resource-names",
+      "severity": "warn",
+      "rationale": "Resources should be organized hierarchically in the path.",
+      "examples": {
+        "good": ["/projects/{projectId}/locations/{locationId}/instances/{instanceId}"],
+        "bad": ["/instances/{instanceId}?projectId={projectId}&locationId={locationId}"]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if related resources are organized hierarchically. Child resources should be nested under parent resources in the path, not passed as query parameters.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-STD-001",
+      "title": "Standard List method",
+      "category": "standard-methods",
+      "severity": "warn",
+      "rationale": "Collection endpoints should support GET for listing resources.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[?(@property.match(/s$/))].get"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-STD-002",
+      "title": "Standard Get method",
+      "category": "standard-methods",
+      "severity": "warn",
+      "rationale": "Individual resources should support GET for retrieval.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if paths with resource IDs (e.g., /users/{userId}) support GET method for retrieving individual resources.",
+        "weight": 0.9
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-STD-003",
+      "title": "Standard Create method",
+      "category": "standard-methods",
+      "severity": "info",
+      "rationale": "Collection endpoints should support POST for creating resources.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if collection paths support POST for creating new resources.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-STD-004",
+      "title": "Standard Update method with PATCH",
+      "category": "standard-methods",
+      "severity": "warn",
+      "rationale": "Use PATCH for partial updates, PUT for full replacement.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if PATCH is used for partial updates. Google recommends PATCH with field masks over PUT for updates.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-STD-005",
+      "title": "Standard Delete method",
+      "category": "standard-methods",
+      "severity": "info",
+      "rationale": "Individual resources should support DELETE for removal.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if resource paths support DELETE method for removing resources.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-CUS-001",
+      "title": "Custom methods use colon syntax",
+      "category": "custom-methods",
+      "severity": "warn",
+      "rationale": "Custom methods should use resource:verb pattern.",
+      "examples": {
+        "good": ["/projects/{project}:undelete", "/instances/{instance}:start"],
+        "bad": ["/projects/{project}/undelete", "/startInstance/{instance}"]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if custom (non-CRUD) operations use the colon syntax: /resource:action. For example, /documents/{doc}:translate instead of /translateDocument.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-CUS-002",
+      "title": "Custom methods use POST",
+      "category": "custom-methods",
+      "severity": "warn",
+      "rationale": "Custom methods should use POST HTTP verb.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if custom methods (those with colon syntax or action verbs) use POST. Only use GET for custom methods that are idempotent and have no side effects.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-NAME-001",
+      "title": "Use snake_case for field names",
+      "category": "naming",
+      "severity": "error",
+      "rationale": "JSON field names should use snake_case per Google style.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "casing",
+        "given": {"paths": ["$.components.schemas[*].properties[*]~"]},
+        "options": {"type": "snake"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-NAME-002",
+      "title": "Use consistent time field names",
+      "category": "naming",
+      "severity": "warn",
+      "rationale": "Time fields should use _time suffix (e.g., create_time, update_time).",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if timestamp fields use the _time suffix pattern: create_time, update_time, delete_time, expire_time. Not createdAt or timestamp.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-NAME-003",
+      "title": "Use singular resource names for types",
+      "category": "naming",
+      "severity": "info",
+      "rationale": "Schema/message names should be singular nouns.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if schema names are singular (User, Project, Instance) rather than plural (Users, Projects, Instances).",
+        "weight": 0.6
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-ERR-001",
+      "title": "Use standard Google error format",
+      "category": "errors",
+      "severity": "error",
+      "rationale": "Error responses should follow Google's standard error format.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if error responses use Google's error format: {\"error\": {\"code\": number, \"message\": string, \"status\": string, \"details\": []}}",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-ERR-002",
+      "title": "Use canonical error codes",
+      "category": "errors",
+      "severity": "warn",
+      "rationale": "Use Google's canonical error codes (INVALID_ARGUMENT, NOT_FOUND, etc.).",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if error codes reference canonical codes like INVALID_ARGUMENT, NOT_FOUND, ALREADY_EXISTS, PERMISSION_DENIED, etc.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-DOC-001",
+      "title": "Operations have summaries",
+      "category": "documentation",
+      "severity": "warn",
+      "rationale": "All operations should have summary descriptions.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*][get,post,put,patch,delete].summary"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-DOC-002",
+      "title": "Parameters have descriptions",
+      "category": "documentation",
+      "severity": "warn",
+      "rationale": "All parameters should be documented.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*].parameters[*].description"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-DOC-003",
+      "title": "Schemas have descriptions",
+      "category": "documentation",
+      "severity": "info",
+      "rationale": "Schema types should have descriptions.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.components.schemas[*].description"]}
+      },
+      "recommended": false
+    },
+    {
+      "id": "GCP-VER-001",
+      "title": "Include version in path",
+      "category": "versioning",
+      "severity": "warn",
+      "rationale": "API version should be in the URL path.",
+      "examples": {
+        "good": ["/v1/projects", "/v1beta/instances"],
+        "bad": ["/projects?version=1"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"match": "^/v[0-9]+(alpha|beta)?/"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "GCP-VER-002",
+      "title": "Use v1, v2, etc. format",
+      "category": "versioning",
+      "severity": "info",
+      "rationale": "Major versions should be v1, v2, etc. Pre-release can be v1alpha, v1beta.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if API versions follow Google patterns: v1, v2 for stable; v1alpha, v1beta for pre-release. Not 1.0, 2024-01-01, etc.",
+        "weight": 0.7
+      },
+      "recommended": true
+    }
+  ],
+  "conformanceLevels": {
+    "bronze": {
+      "description": "Basic Google Cloud compliance",
+      "requiredRules": ["GCP-RES-001", "GCP-NAME-001", "GCP-DOC-001"]
+    },
+    "silver": {
+      "description": "Standard Google Cloud compliance",
+      "requiredRules": ["GCP-RES-001", "GCP-RES-002", "GCP-STD-001", "GCP-STD-002", "GCP-NAME-001", "GCP-NAME-002", "GCP-ERR-001", "GCP-DOC-001", "GCP-DOC-002"]
+    },
+    "gold": {
+      "description": "Full Google Cloud compliance",
+      "requiredRules": ["GCP-RES-001", "GCP-RES-002", "GCP-RES-003", "GCP-STD-001", "GCP-STD-002", "GCP-STD-003", "GCP-STD-004", "GCP-CUS-001", "GCP-NAME-001", "GCP-NAME-002", "GCP-ERR-001", "GCP-ERR-002", "GCP-DOC-001", "GCP-DOC-002", "GCP-VER-001"]
+    }
+  }
+}
