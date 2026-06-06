@@ -1,0 +1,455 @@
+{
+  "$schema": "../../schema/api-style-spec.schema.json",
+  "version": "1.0.0",
+  "name": "Zalando RESTful API Guidelines",
+  "description": "Style rules based on Zalando RESTful API Guidelines",
+  "metadata": {
+    "author": "Zalando",
+    "url": "https://opensource.zalando.com/restful-api-guidelines/",
+    "lastUpdated": "2024-01-01"
+  },
+  "categories": [
+    {"id": "meta", "name": "Meta Information", "description": "API metadata and documentation"},
+    {"id": "security", "name": "Security", "description": "Authentication and authorization"},
+    {"id": "compatibility", "name": "Compatibility", "description": "Versioning and compatibility"},
+    {"id": "deprecation", "name": "Deprecation", "description": "Deprecation handling"},
+    {"id": "json", "name": "JSON Guidelines", "description": "JSON structure and naming"},
+    {"id": "http", "name": "HTTP", "description": "HTTP methods and status codes"},
+    {"id": "urls", "name": "URLs", "description": "URL structure and naming"},
+    {"id": "headers", "name": "Headers", "description": "HTTP header usage"},
+    {"id": "hypermedia", "name": "Hypermedia", "description": "HATEOAS and links"},
+    {"id": "pagination", "name": "Pagination", "description": "Collection paging"}
+  ],
+  "rules": [
+    {
+      "id": "ZAL-META-001",
+      "title": "Provide API title",
+      "category": "meta",
+      "severity": "error",
+      "rationale": "API must have a clear, descriptive title.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.info.title"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-META-002",
+      "title": "Provide API description",
+      "category": "meta",
+      "severity": "error",
+      "rationale": "API must have a description explaining its purpose.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.info.description"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-META-003",
+      "title": "Provide contact information",
+      "category": "meta",
+      "severity": "warn",
+      "rationale": "API should include contact information for support.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.info.contact"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-META-004",
+      "title": "Provide x-api-id extension",
+      "category": "meta",
+      "severity": "warn",
+      "rationale": "Zalando APIs should have a unique API identifier.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.info['x-api-id']"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-META-005",
+      "title": "Provide x-audience extension",
+      "category": "meta",
+      "severity": "warn",
+      "rationale": "APIs should declare their intended audience (external-public, external-partner, company-internal, component-internal).",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.info['x-audience']"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-SEC-001",
+      "title": "Define security schemes",
+      "category": "security",
+      "severity": "error",
+      "rationale": "APIs must define their security requirements.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.components.securitySchemes"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-SEC-002",
+      "title": "Use OAuth2",
+      "category": "security",
+      "severity": "warn",
+      "rationale": "Prefer OAuth2 for authentication.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if the API uses OAuth2 security scheme. API key alone is not recommended for production APIs.",
+        "weight": 0.9
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-COMPAT-001",
+      "title": "Do not break backward compatibility",
+      "category": "compatibility",
+      "severity": "error",
+      "rationale": "Changes must be backward compatible unless version is incremented.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "This is an advisory rule. Check if the API design allows for backward-compatible evolution: optional new fields, additive changes only.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-COMPAT-002",
+      "title": "Use semantic versioning",
+      "category": "compatibility",
+      "severity": "warn",
+      "rationale": "API versions should follow semantic versioning.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.info.version"]},
+        "options": {"match": "^[0-9]+\\.[0-9]+\\.[0-9]+"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-DEP-001",
+      "title": "Mark deprecated fields",
+      "category": "deprecation",
+      "severity": "info",
+      "rationale": "Deprecated fields should be marked with deprecated: true.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if any deprecated functionality is properly marked with the 'deprecated' field in OpenAPI.",
+        "weight": 0.6
+      },
+      "recommended": false
+    },
+    {
+      "id": "ZAL-JSON-001",
+      "title": "Use snake_case for property names",
+      "category": "json",
+      "severity": "error",
+      "rationale": "Property names must use snake_case.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "casing",
+        "given": {"paths": ["$.components.schemas[*].properties[*]~"]},
+        "options": {"type": "snake"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-JSON-002",
+      "title": "Use ISO 8601 for dates",
+      "category": "json",
+      "severity": "error",
+      "rationale": "Date and time values must use ISO 8601 format.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if date/time properties use format: 'date-time' or 'date' (ISO 8601). Look for properties named *_at, *_time, *_date.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-JSON-003",
+      "title": "Use standard time zone (UTC)",
+      "category": "json",
+      "severity": "warn",
+      "rationale": "Time values should be in UTC.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if the API documentation indicates that timestamps are in UTC. This should be mentioned in field descriptions or API overview.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-JSON-004",
+      "title": "Use standard duration format",
+      "category": "json",
+      "severity": "info",
+      "rationale": "Durations should use ISO 8601 duration format (PnYnMnDTnHnMnS).",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if duration fields use ISO 8601 duration format (e.g., PT1H30M) rather than numeric seconds/milliseconds.",
+        "weight": 0.5
+      },
+      "recommended": false
+    },
+    {
+      "id": "ZAL-JSON-005",
+      "title": "Use null for empty values",
+      "category": "json",
+      "severity": "warn",
+      "rationale": "Use null for absent values, not empty strings or special values.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if nullable properties are properly marked with nullable: true in OpenAPI 3.0+. Avoid empty strings as placeholders.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-HTTP-001",
+      "title": "Use standard HTTP methods",
+      "category": "http",
+      "severity": "error",
+      "rationale": "Use standard HTTP methods (GET, POST, PUT, PATCH, DELETE) appropriately.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if HTTP methods are used correctly: GET for retrieval, POST for creation, PUT/PATCH for updates, DELETE for removal. No CRUD operations via query parameters.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-HTTP-002",
+      "title": "Use standard status codes",
+      "category": "http",
+      "severity": "error",
+      "rationale": "Use appropriate HTTP status codes for responses.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if responses use appropriate status codes: 200/201 for success, 400 for bad requests, 401/403 for auth errors, 404 for not found, 500 for server errors.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-HTTP-003",
+      "title": "Use 201 for successful POST",
+      "category": "http",
+      "severity": "warn",
+      "rationale": "Successful POST that creates a resource should return 201 Created.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*].post.responses['201']"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-HTTP-004",
+      "title": "Use 204 for successful DELETE",
+      "category": "http",
+      "severity": "warn",
+      "rationale": "Successful DELETE should return 204 No Content.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*].delete.responses['204']"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-URL-001",
+      "title": "Use lowercase in URLs",
+      "category": "urls",
+      "severity": "error",
+      "rationale": "URLs must be lowercase.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"match": "^[a-z0-9/{}_.-]*$"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-URL-002",
+      "title": "Use hyphens in URLs",
+      "category": "urls",
+      "severity": "warn",
+      "rationale": "Use hyphens (kebab-case) for multi-word path segments.",
+      "examples": {
+        "good": ["/shopping-carts", "/order-items"],
+        "bad": ["/shoppingCarts", "/order_items"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"match": "^[a-z0-9/{}-]*$"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-URL-003",
+      "title": "Use plural resource names",
+      "category": "urls",
+      "severity": "warn",
+      "rationale": "Resource collection names should be plural.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if collection resource names are plural: /orders not /order, /customers not /customer.",
+        "weight": 0.9
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-URL-004",
+      "title": "No trailing slashes",
+      "category": "urls",
+      "severity": "warn",
+      "rationale": "URLs should not have trailing slashes.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"notMatch": "/$"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-HEAD-001",
+      "title": "Use standard headers",
+      "category": "headers",
+      "severity": "warn",
+      "rationale": "Use standard HTTP headers where applicable.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if the API uses standard headers appropriately: Content-Type, Accept, Authorization, Location, etc. Custom headers should use X- prefix.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-HEAD-002",
+      "title": "Support Content-Type negotiation",
+      "category": "headers",
+      "severity": "info",
+      "rationale": "APIs should document supported content types.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*][get,post,put,patch].requestBody.content"]}
+      },
+      "recommended": false
+    },
+    {
+      "id": "ZAL-PAGE-001",
+      "title": "Use cursor-based pagination",
+      "category": "pagination",
+      "severity": "warn",
+      "rationale": "Prefer cursor-based pagination over offset-based.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if collection endpoints support pagination. Cursor-based (using 'cursor' or 'after' parameter) is preferred over offset-based (page, offset).",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-PAGE-002",
+      "title": "Support limit parameter",
+      "category": "pagination",
+      "severity": "warn",
+      "rationale": "Collection endpoints should support a 'limit' parameter.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if collection endpoints support a 'limit' or 'page_size' parameter to control response size.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "ZAL-HYPER-001",
+      "title": "Use HATEOAS",
+      "category": "hypermedia",
+      "severity": "info",
+      "rationale": "Consider including hypermedia links for discoverability.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if responses include hypermedia links (_links or links property) for related resources and actions.",
+        "weight": 0.5
+      },
+      "recommended": false
+    },
+    {
+      "id": "ZAL-HYPER-002",
+      "title": "Include self link",
+      "category": "hypermedia",
+      "severity": "info",
+      "rationale": "Resources should include a 'self' link.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if resource responses include a 'self' link pointing to the resource's own URL.",
+        "weight": 0.4
+      },
+      "recommended": false
+    }
+  ],
+  "conformanceLevels": {
+    "bronze": {
+      "description": "Basic Zalando compliance",
+      "requiredRules": ["ZAL-META-001", "ZAL-META-002", "ZAL-SEC-001", "ZAL-JSON-001", "ZAL-URL-001"]
+    },
+    "silver": {
+      "description": "Standard Zalando compliance",
+      "requiredRules": ["ZAL-META-001", "ZAL-META-002", "ZAL-META-003", "ZAL-META-004", "ZAL-SEC-001", "ZAL-COMPAT-002", "ZAL-JSON-001", "ZAL-JSON-002", "ZAL-HTTP-001", "ZAL-HTTP-002", "ZAL-URL-001", "ZAL-URL-002", "ZAL-URL-003"]
+    },
+    "gold": {
+      "description": "Full Zalando compliance",
+      "requiredRules": ["ZAL-META-001", "ZAL-META-002", "ZAL-META-003", "ZAL-META-004", "ZAL-META-005", "ZAL-SEC-001", "ZAL-SEC-002", "ZAL-COMPAT-001", "ZAL-COMPAT-002", "ZAL-JSON-001", "ZAL-JSON-002", "ZAL-JSON-003", "ZAL-JSON-005", "ZAL-HTTP-001", "ZAL-HTTP-002", "ZAL-HTTP-003", "ZAL-HTTP-004", "ZAL-URL-001", "ZAL-URL-002", "ZAL-URL-003", "ZAL-URL-004", "ZAL-PAGE-001", "ZAL-PAGE-002"]
+    }
+  }
+}

@@ -1,0 +1,555 @@
+{
+  "$schema": "https://api-style-spec.dev/schema/v1/api-style-spec.schema.json",
+  "version": "1.0.0",
+  "name": "default",
+  "description": "Default API style rules based on common REST best practices",
+
+  "categories": [
+    {"id": "uri-design", "title": "URI Design", "description": "Rules for URL structure and naming", "order": 1},
+    {"id": "http-methods", "title": "HTTP Methods", "description": "Rules for proper HTTP method usage", "order": 2},
+    {"id": "naming", "title": "Naming Conventions", "description": "Rules for property and parameter naming", "order": 3},
+    {"id": "errors", "title": "Error Handling", "description": "Rules for error response format", "order": 4},
+    {"id": "responses", "title": "Responses", "description": "Rules for response structure", "order": 5},
+    {"id": "documentation", "title": "Documentation", "description": "Rules for API documentation", "order": 6},
+    {"id": "security", "title": "Security", "description": "Rules for API security", "order": 7}
+  ],
+
+  "rules": [
+    {
+      "id": "URI-001",
+      "title": "Use plural resource names",
+      "category": "uri-design",
+      "severity": "error",
+      "rationale": "Plural resource names provide consistency and clearly indicate collections. Use /users instead of /user.",
+      "examples": {
+        "good": ["/users", "/orders", "/products/{productId}/reviews"],
+        "bad": ["/user", "/order", "/product/{productId}/review"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"match": "^/[a-z]+s(/|$|\\{)"}
+      },
+      "judge": {
+        "prompt": "Check if all top-level resource names in paths use plural form (e.g., /users not /user).",
+        "weight": 1.0
+      },
+      "tags": ["rest", "resources"],
+      "recommended": true
+    },
+    {
+      "id": "URI-002",
+      "title": "Use kebab-case for path segments",
+      "category": "uri-design",
+      "severity": "error",
+      "rationale": "Kebab-case (lowercase with hyphens) is the standard for URLs. Avoid camelCase or snake_case in paths.",
+      "examples": {
+        "good": ["/user-profiles", "/order-items", "/api-keys"],
+        "bad": ["/userProfiles", "/order_items", "/ApiKeys"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"match": "^(/[a-z][a-z0-9-]*|/\\{[a-zA-Z][a-zA-Z0-9]*\\})+$"}
+      },
+      "tags": ["rest", "naming"],
+      "recommended": true
+    },
+    {
+      "id": "URI-003",
+      "title": "Avoid verbs in paths",
+      "category": "uri-design",
+      "severity": "warn",
+      "rationale": "REST uses HTTP methods to indicate actions. Avoid verbs like /getUsers or /createOrder in paths.",
+      "examples": {
+        "good": ["/users", "/orders"],
+        "bad": ["/getUsers", "/createOrder", "/deleteProduct"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"notMatch": "/(get|create|update|delete|fetch|add|remove|set|list|find)[A-Z]"}
+      },
+      "tags": ["rest"],
+      "recommended": true
+    },
+    {
+      "id": "URI-004",
+      "title": "Use path parameters for resource identifiers",
+      "category": "uri-design",
+      "severity": "warn",
+      "rationale": "Resource identifiers should be path parameters, not query parameters. Use /users/{id} not /users?id=123.",
+      "examples": {
+        "good": ["/users/{userId}", "/orders/{orderId}/items/{itemId}"],
+        "bad": ["/users?id={userId}", "/getUser?userId={userId}"]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if resource identifiers are properly placed in path parameters rather than query parameters.",
+        "weight": 0.8
+      },
+      "tags": ["rest"],
+      "recommended": true
+    },
+    {
+      "id": "URI-005",
+      "title": "Limit path nesting depth",
+      "category": "uri-design",
+      "severity": "warn",
+      "rationale": "Deeply nested paths are hard to read and maintain. Limit nesting to 3 levels (e.g., /a/{id}/b/{id}/c).",
+      "examples": {
+        "good": ["/users/{userId}/orders", "/orders/{orderId}/items"],
+        "bad": ["/users/{userId}/orders/{orderId}/items/{itemId}/reviews/{reviewId}/comments"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"notMatch": "^(/[^/]+){8,}$"}
+      },
+      "tags": ["rest", "complexity"],
+      "recommended": false
+    },
+
+    {
+      "id": "HTTP-001",
+      "title": "GET requests must not have request body",
+      "category": "http-methods",
+      "severity": "error",
+      "rationale": "GET requests should be safe and idempotent. Request bodies are not semantically defined for GET.",
+      "examples": {
+        "good": ["GET /users with query parameters"],
+        "bad": ["GET /users with JSON body"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "falsy",
+        "given": {"paths": ["$.paths[*].get.requestBody"]}
+      },
+      "tags": ["http", "methods"],
+      "recommended": true
+    },
+    {
+      "id": "HTTP-002",
+      "title": "DELETE requests should not have request body",
+      "category": "http-methods",
+      "severity": "warn",
+      "rationale": "DELETE requests typically don't need a body. The resource to delete is identified by the URL.",
+      "examples": {
+        "good": ["DELETE /users/{id}"],
+        "bad": ["DELETE /users with body containing ID"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "falsy",
+        "given": {"paths": ["$.paths[*].delete.requestBody"]}
+      },
+      "tags": ["http", "methods"],
+      "recommended": true
+    },
+    {
+      "id": "HTTP-003",
+      "title": "POST should return 201 for resource creation",
+      "category": "http-methods",
+      "severity": "warn",
+      "rationale": "When POST creates a new resource, return 201 Created with a Location header, not 200 OK.",
+      "examples": {
+        "good": ["POST /users returns 201 with Location header"],
+        "bad": ["POST /users returns 200"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*].post.responses['201']"]}
+      },
+      "tags": ["http", "methods", "responses"],
+      "recommended": true
+    },
+    {
+      "id": "HTTP-004",
+      "title": "Use PATCH for partial updates",
+      "category": "http-methods",
+      "severity": "info",
+      "rationale": "PATCH is for partial updates, PUT is for full replacement. Use PATCH when updating specific fields.",
+      "examples": {
+        "good": ["PATCH /users/{id} with partial fields"],
+        "bad": ["PUT /users/{id} with only changed fields"]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if the API properly distinguishes between PATCH (partial update) and PUT (full replacement).",
+        "weight": 0.6
+      },
+      "tags": ["http", "methods"],
+      "recommended": false
+    },
+    {
+      "id": "HTTP-005",
+      "title": "Operations must have unique operationId",
+      "category": "http-methods",
+      "severity": "error",
+      "rationale": "Each operation needs a unique operationId for code generation and documentation.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*][get,post,put,patch,delete].operationId"]}
+      },
+      "tags": ["openapi"],
+      "recommended": true
+    },
+
+    {
+      "id": "NAMING-001",
+      "title": "Use camelCase for JSON properties",
+      "category": "naming",
+      "severity": "error",
+      "rationale": "camelCase is the JavaScript/JSON convention. Use firstName, not first_name or FirstName.",
+      "examples": {
+        "good": ["firstName", "lastName", "emailAddress", "createdAt"],
+        "bad": ["first_name", "FirstName", "FIRST_NAME"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "casing",
+        "given": {"paths": ["$.components.schemas[*].properties[*]~"]},
+        "options": {"type": "camel"}
+      },
+      "tags": ["naming", "json"],
+      "recommended": true
+    },
+    {
+      "id": "NAMING-002",
+      "title": "Use camelCase for query parameters",
+      "category": "naming",
+      "severity": "warn",
+      "rationale": "Query parameters should follow the same camelCase convention as JSON properties.",
+      "examples": {
+        "good": ["?sortBy=name", "?pageSize=10", "?includeDeleted=true"],
+        "bad": ["?sort_by=name", "?page-size=10"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "casing",
+        "given": {"paths": ["$.paths[*][*].parameters[?(@.in=='query')].name"]},
+        "options": {"type": "camel"}
+      },
+      "tags": ["naming", "parameters"],
+      "recommended": true
+    },
+    {
+      "id": "NAMING-003",
+      "title": "Boolean properties should use is/has/can prefix",
+      "category": "naming",
+      "severity": "info",
+      "rationale": "Boolean properties are clearer with prefixes like isActive, hasPermission, canEdit.",
+      "examples": {
+        "good": ["isActive", "hasAccess", "canDelete", "isEnabled"],
+        "bad": ["active", "access", "deleted", "enabled"]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if boolean schema properties use appropriate prefixes (is, has, can, should, will).",
+        "weight": 0.5
+      },
+      "tags": ["naming", "boolean"],
+      "recommended": false
+    },
+    {
+      "id": "NAMING-004",
+      "title": "Use consistent date/time property naming",
+      "category": "naming",
+      "severity": "info",
+      "rationale": "Use consistent suffixes for timestamps: createdAt, updatedAt, deletedAt, expiresAt.",
+      "examples": {
+        "good": ["createdAt", "updatedAt", "expiresAt"],
+        "bad": ["created", "creation_date", "updated_timestamp"]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if date/time properties use consistent naming like createdAt, updatedAt with At suffix.",
+        "weight": 0.5
+      },
+      "tags": ["naming", "datetime"],
+      "recommended": false
+    },
+
+    {
+      "id": "ERR-001",
+      "title": "Define error responses for operations",
+      "category": "errors",
+      "severity": "warn",
+      "rationale": "Operations should define expected error responses (4xx, 5xx) for proper client handling.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if operations define appropriate error responses (400, 401, 403, 404, 500).",
+        "weight": 0.8
+      },
+      "tags": ["errors", "responses"],
+      "recommended": true
+    },
+    {
+      "id": "ERR-002",
+      "title": "Use consistent error response schema",
+      "category": "errors",
+      "severity": "warn",
+      "rationale": "Error responses should follow a consistent format, preferably RFC 7807 Problem Details.",
+      "examples": {
+        "good": ["{\"type\": \"...\", \"title\": \"...\", \"status\": 400, \"detail\": \"...\"}"],
+        "bad": ["{\"error\": \"something went wrong\"}", "{\"message\": \"error\"}"]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if error responses follow RFC 7807 Problem Details format with type, title, status, detail fields.",
+        "weight": 1.0
+      },
+      "tags": ["errors", "rfc7807"],
+      "recommended": true
+    },
+    {
+      "id": "ERR-003",
+      "title": "Include 401 response for authenticated endpoints",
+      "category": "errors",
+      "severity": "warn",
+      "rationale": "Endpoints requiring authentication should document the 401 Unauthorized response.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if endpoints with security requirements define a 401 response.",
+        "weight": 0.7
+      },
+      "tags": ["errors", "security"],
+      "recommended": true
+    },
+
+    {
+      "id": "RESP-001",
+      "title": "Responses must have descriptions",
+      "category": "responses",
+      "severity": "error",
+      "rationale": "Each response should have a description explaining what it represents.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*][*].responses[*].description"]}
+      },
+      "tags": ["documentation", "responses"],
+      "recommended": true
+    },
+    {
+      "id": "RESP-002",
+      "title": "Success responses should define content schema",
+      "category": "responses",
+      "severity": "warn",
+      "rationale": "Success responses (2xx) should define the response body schema for code generation.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*][*].responses['200'].content", "$.paths[*][*].responses['201'].content"]}
+      },
+      "tags": ["responses", "schema"],
+      "recommended": true
+    },
+    {
+      "id": "RESP-003",
+      "title": "Use consistent pagination format",
+      "category": "responses",
+      "severity": "info",
+      "rationale": "List endpoints should use consistent pagination with standard fields like items, totalCount, nextCursor.",
+      "examples": {
+        "good": ["{\"items\": [...], \"totalCount\": 100, \"nextCursor\": \"...\"}"],
+        "bad": ["{\"data\": [...], \"total\": 100}", "{\"results\": [...], \"count\": 100}"]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if list/collection responses use consistent pagination format across the API.",
+        "weight": 0.7
+      },
+      "tags": ["responses", "pagination"],
+      "recommended": false
+    },
+
+    {
+      "id": "DOC-001",
+      "title": "API must have info description",
+      "category": "documentation",
+      "severity": "error",
+      "rationale": "The info section should have a description explaining the API's purpose.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.info.description"]}
+      },
+      "tags": ["documentation", "info"],
+      "recommended": true
+    },
+    {
+      "id": "DOC-002",
+      "title": "Operations must have summary or description",
+      "category": "documentation",
+      "severity": "warn",
+      "rationale": "Each operation should have a summary or description explaining what it does.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*][get,post,put,patch,delete].summary"]}
+      },
+      "tags": ["documentation", "operations"],
+      "recommended": true
+    },
+    {
+      "id": "DOC-003",
+      "title": "Parameters must have descriptions",
+      "category": "documentation",
+      "severity": "warn",
+      "rationale": "Parameters should have descriptions explaining their purpose and valid values.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*][*].parameters[*].description"]}
+      },
+      "tags": ["documentation", "parameters"],
+      "recommended": true
+    },
+    {
+      "id": "DOC-004",
+      "title": "Schema properties should have descriptions",
+      "category": "documentation",
+      "severity": "info",
+      "rationale": "Schema properties benefit from descriptions, especially for complex or non-obvious fields.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if schema properties have descriptions, especially for non-obvious fields.",
+        "weight": 0.5
+      },
+      "tags": ["documentation", "schemas"],
+      "recommended": false
+    },
+    {
+      "id": "DOC-005",
+      "title": "Provide examples for schemas",
+      "category": "documentation",
+      "severity": "info",
+      "rationale": "Examples help consumers understand expected data formats and valid values.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if schemas provide examples for key types and properties.",
+        "weight": 0.5
+      },
+      "tags": ["documentation", "examples"],
+      "recommended": false
+    },
+
+    {
+      "id": "SEC-001",
+      "title": "Define security schemes",
+      "category": "security",
+      "severity": "warn",
+      "rationale": "APIs should define security schemes in components.securitySchemes.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.components.securitySchemes"]}
+      },
+      "tags": ["security"],
+      "recommended": true
+    },
+    {
+      "id": "SEC-002",
+      "title": "Apply security to operations",
+      "category": "security",
+      "severity": "warn",
+      "rationale": "Operations should specify security requirements either globally or per-operation.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.security"]}
+      },
+      "judge": {
+        "prompt": "Check if operations have security requirements defined globally or per-operation.",
+        "weight": 0.7
+      },
+      "tags": ["security"],
+      "recommended": true
+    },
+    {
+      "id": "SEC-003",
+      "title": "Avoid API keys in URL",
+      "category": "security",
+      "severity": "error",
+      "rationale": "API keys in URLs are logged and cached. Use headers instead.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "falsy",
+        "given": {"paths": ["$.components.securitySchemes[?(@.type=='apiKey' && @.in=='query')]"]}
+      },
+      "tags": ["security", "apikey"],
+      "recommended": true
+    },
+    {
+      "id": "SEC-004",
+      "title": "Use HTTPS for server URLs",
+      "category": "security",
+      "severity": "error",
+      "rationale": "All API server URLs should use HTTPS for secure communication.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.servers[*].url"]},
+        "options": {"match": "^https://"}
+      },
+      "tags": ["security", "https"],
+      "recommended": true
+    }
+  ],
+
+  "conformanceLevels": {
+    "bronze": {
+      "description": "Minimum viable API - basic structure and methods",
+      "requiredCategories": ["uri-design", "http-methods"],
+      "maxErrors": 0,
+      "maxWarnings": 10
+    },
+    "silver": {
+      "description": "Production-ready API - proper naming and error handling",
+      "requiredCategories": ["naming", "errors"],
+      "maxErrors": 0,
+      "maxWarnings": 5,
+      "extends": "bronze"
+    },
+    "gold": {
+      "description": "Exemplary API - complete documentation and security",
+      "requiredCategories": ["documentation", "security"],
+      "maxErrors": 0,
+      "maxWarnings": 0,
+      "extends": "silver"
+    }
+  },
+
+  "metadata": {
+    "author": "api-style-spec",
+    "license": "MIT",
+    "repository": "https://github.com/plexusone/api-style-spec"
+  }
+}

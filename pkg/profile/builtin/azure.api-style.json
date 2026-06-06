@@ -1,0 +1,378 @@
+{
+  "$schema": "../../schema/api-style-spec.schema.json",
+  "version": "1.0.0",
+  "name": "Azure REST API Guidelines",
+  "description": "Style rules based on Microsoft Azure REST API Guidelines",
+  "metadata": {
+    "author": "Microsoft",
+    "url": "https://github.com/microsoft/api-guidelines/blob/vNext/azure/Guidelines.md",
+    "lastUpdated": "2024-01-01"
+  },
+  "categories": [
+    {"id": "versioning", "name": "API Versioning", "description": "Version management and compatibility"},
+    {"id": "uri-design", "name": "URI Design", "description": "Path and resource naming conventions"},
+    {"id": "http-methods", "name": "HTTP Methods", "description": "Proper use of HTTP verbs"},
+    {"id": "request-response", "name": "Request/Response", "description": "Payload structure and formats"},
+    {"id": "errors", "name": "Error Handling", "description": "Error response format and codes"},
+    {"id": "pagination", "name": "Pagination", "description": "Collection paging patterns"},
+    {"id": "long-running", "name": "Long Running Operations", "description": "Async operation patterns"},
+    {"id": "naming", "name": "Naming Conventions", "description": "Property and field naming"},
+    {"id": "security", "name": "Security", "description": "Authentication and authorization"}
+  ],
+  "rules": [
+    {
+      "id": "AZ-VER-001",
+      "title": "Use api-version query parameter",
+      "category": "versioning",
+      "severity": "error",
+      "rationale": "Azure APIs must use the api-version query parameter for versioning.",
+      "examples": {
+        "good": ["GET /users?api-version=2024-01-01"],
+        "bad": ["GET /v1/users", "GET /users (no version)"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"notMatch": "^/v[0-9]+/"}
+      },
+      "references": [{"title": "Azure API Versioning", "url": "https://github.com/microsoft/api-guidelines/blob/vNext/azure/Guidelines.md#api-versioning"}],
+      "recommended": true
+    },
+    {
+      "id": "AZ-VER-002",
+      "title": "Version format YYYY-MM-DD",
+      "category": "versioning",
+      "severity": "error",
+      "rationale": "Azure API versions must use YYYY-MM-DD format.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if the API version parameters use YYYY-MM-DD format (e.g., 2024-01-15). Look at examples, descriptions, and any version-related fields.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-URI-001",
+      "title": "Use lowercase paths",
+      "category": "uri-design",
+      "severity": "error",
+      "rationale": "Azure API paths must be lowercase for consistency.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"match": "^[a-z0-9/{}_.-]*$"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-URI-002",
+      "title": "Use plural resource names",
+      "category": "uri-design",
+      "severity": "error",
+      "rationale": "Collection resources should use plural names.",
+      "examples": {
+        "good": ["/users", "/subscriptions/{id}/resourceGroups"],
+        "bad": ["/user", "/subscription/{id}/resourceGroup"]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if resource collection paths use plural nouns (users, not user). Individual resources accessed by ID are fine as children of plural collections.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-URI-003",
+      "title": "Use camelCase for path parameters",
+      "category": "uri-design",
+      "severity": "warn",
+      "rationale": "Path parameters should use camelCase.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "casing",
+        "given": {"paths": ["$.paths[*].parameters[?(@.in=='path')].name"]},
+        "options": {"type": "camel"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-URI-004",
+      "title": "Avoid deep nesting",
+      "category": "uri-design",
+      "severity": "warn",
+      "rationale": "Paths should not exceed 5 segments for readability.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if any paths have more than 5 segments (excluding the version). Deep nesting makes APIs harder to use.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-HTTP-001",
+      "title": "GET must not have request body",
+      "category": "http-methods",
+      "severity": "error",
+      "rationale": "GET requests must not have a request body per HTTP specification.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "undefined",
+        "given": {"paths": ["$.paths[*].get.requestBody"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-HTTP-002",
+      "title": "DELETE should return 204",
+      "category": "http-methods",
+      "severity": "warn",
+      "rationale": "Successful DELETE operations should return 204 No Content.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*].delete.responses['204']"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-HTTP-003",
+      "title": "POST should return 201 for creation",
+      "category": "http-methods",
+      "severity": "warn",
+      "rationale": "POST operations that create resources should return 201 Created.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*].post.responses['201']"]}
+      },
+      "recommended": false
+    },
+    {
+      "id": "AZ-REQ-001",
+      "title": "Use camelCase for property names",
+      "category": "request-response",
+      "severity": "error",
+      "rationale": "JSON property names must use camelCase.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "casing",
+        "given": {"paths": ["$.components.schemas[*].properties[*]~"]},
+        "options": {"type": "camel"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-REQ-002",
+      "title": "Use standard date-time format",
+      "category": "request-response",
+      "severity": "error",
+      "rationale": "Date-time values must use ISO 8601 format.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if date and time properties use string type with format 'date-time' (ISO 8601). Look for properties with names like 'createdAt', 'updatedAt', 'timestamp', etc.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-REQ-003",
+      "title": "Use string for IDs",
+      "category": "request-response",
+      "severity": "warn",
+      "rationale": "Resource IDs should be strings to support various ID formats including GUIDs.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if resource ID properties (id, resourceId, etc.) are typed as string rather than integer. Azure typically uses GUIDs.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-ERR-001",
+      "title": "Use standard error format",
+      "category": "errors",
+      "severity": "error",
+      "rationale": "Error responses must follow Azure error format with code, message, and optional target/details.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if error responses (4xx, 5xx) use Azure error format: {\"error\": {\"code\": \"string\", \"message\": \"string\", \"target\": \"string\", \"details\": []}}",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-ERR-002",
+      "title": "Include error code",
+      "category": "errors",
+      "severity": "error",
+      "rationale": "Error responses must include a machine-readable error code.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if error response schemas include a 'code' property for machine-readable error identification.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-PAGE-001",
+      "title": "Use nextLink for pagination",
+      "category": "pagination",
+      "severity": "warn",
+      "rationale": "Collection responses should use nextLink for pagination continuation.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if collection responses include a 'nextLink' property for pagination. Collections should return {\"value\": [...], \"nextLink\": \"url\"}",
+        "weight": 0.9
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-PAGE-002",
+      "title": "Support $top and $skip",
+      "category": "pagination",
+      "severity": "info",
+      "rationale": "Collection endpoints should support $top and $skip query parameters.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if collection (list) endpoints support $top and $skip query parameters for pagination control.",
+        "weight": 0.7
+      },
+      "recommended": false
+    },
+    {
+      "id": "AZ-LRO-001",
+      "title": "Use Location header for LRO",
+      "category": "long-running",
+      "severity": "warn",
+      "rationale": "Long-running operations should return 202 Accepted with Location header.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if operations that may take a long time (create, update complex resources) return 202 Accepted with a Location header for polling.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-LRO-002",
+      "title": "Include Retry-After header",
+      "category": "long-running",
+      "severity": "info",
+      "rationale": "202 responses should include Retry-After header.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if 202 Accepted responses document Retry-After header in the response headers.",
+        "weight": 0.6
+      },
+      "recommended": false
+    },
+    {
+      "id": "AZ-NAME-001",
+      "title": "Use consistent naming patterns",
+      "category": "naming",
+      "severity": "warn",
+      "rationale": "Similar concepts should use consistent naming across the API.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check for consistent naming patterns. For example, if some schemas use 'createdDateTime' and others use 'createdAt', that's inconsistent.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-NAME-002",
+      "title": "Avoid abbreviations",
+      "category": "naming",
+      "severity": "info",
+      "rationale": "Use full words instead of abbreviations for clarity.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if property and schema names avoid unnecessary abbreviations. 'configuration' is better than 'config', 'identifier' better than 'id' (though 'id' is acceptable).",
+        "weight": 0.5
+      },
+      "recommended": false
+    },
+    {
+      "id": "AZ-SEC-001",
+      "title": "Define security scheme",
+      "category": "security",
+      "severity": "error",
+      "rationale": "API must define authentication requirements.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.components.securitySchemes"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-SEC-002",
+      "title": "Apply security globally",
+      "category": "security",
+      "severity": "error",
+      "rationale": "Security should be applied at the API level.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.security"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "AZ-SEC-003",
+      "title": "Use OAuth2 or Azure AD",
+      "category": "security",
+      "severity": "warn",
+      "rationale": "Azure APIs should use OAuth2 with Azure AD.",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if the security scheme uses OAuth2 (preferably with Azure AD flows). API key authentication alone is not recommended.",
+        "weight": 0.9
+      },
+      "recommended": true
+    }
+  ],
+  "conformanceLevels": {
+    "bronze": {
+      "description": "Basic Azure compliance",
+      "requiredRules": ["AZ-VER-001", "AZ-URI-001", "AZ-HTTP-001", "AZ-REQ-001", "AZ-SEC-001"]
+    },
+    "silver": {
+      "description": "Standard Azure compliance",
+      "requiredRules": ["AZ-VER-001", "AZ-VER-002", "AZ-URI-001", "AZ-URI-002", "AZ-HTTP-001", "AZ-HTTP-002", "AZ-REQ-001", "AZ-REQ-002", "AZ-ERR-001", "AZ-SEC-001", "AZ-SEC-002"]
+    },
+    "gold": {
+      "description": "Full Azure compliance",
+      "requiredRules": ["AZ-VER-001", "AZ-VER-002", "AZ-URI-001", "AZ-URI-002", "AZ-URI-003", "AZ-HTTP-001", "AZ-HTTP-002", "AZ-REQ-001", "AZ-REQ-002", "AZ-REQ-003", "AZ-ERR-001", "AZ-ERR-002", "AZ-PAGE-001", "AZ-LRO-001", "AZ-NAME-001", "AZ-SEC-001", "AZ-SEC-002", "AZ-SEC-003"]
+    }
+  }
+}
