@@ -100,6 +100,7 @@ func runLint(_ *cobra.Command, args []string) error {
 
 	// Write output
 	if lintOutput != "" {
+		//nolint:gosec // G703: Path from CLI flag
 		if err := os.WriteFile(lintOutput, []byte(output), 0o600); err != nil {
 			return fmt.Errorf("writing output: %w", err)
 		}

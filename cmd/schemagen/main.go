@@ -26,6 +26,7 @@ func run() error {
 		schemaDir = os.Args[1]
 	}
 
+	//nolint:gosec // G703: Path from CLI arg
 	if err := os.MkdirAll(schemaDir, 0o755); err != nil {
 		return fmt.Errorf("creating schema directory: %w", err)
 	}
@@ -74,6 +75,7 @@ func generateSchema(dir, filename string, typ any, schemaID string) error {
 	}
 
 	path := filepath.Join(dir, filename)
+	//nolint:gosec // G703: Path from CLI arg
 	if err := os.WriteFile(path, data, 0o600); err != nil {
 		return fmt.Errorf("writing schema: %w", err)
 	}
