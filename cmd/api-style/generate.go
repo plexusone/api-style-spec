@@ -115,7 +115,7 @@ func writeOutput(content string) error {
 	}
 
 	if generateOutput != "" {
-		if err := os.WriteFile(generateOutput, []byte(content), 0o644); err != nil {
+		if err := os.WriteFile(generateOutput, []byte(content), 0o600); err != nil {
 			return fmt.Errorf("writing output: %w", err)
 		}
 		fmt.Printf("Generated: %s\n", generateOutput)

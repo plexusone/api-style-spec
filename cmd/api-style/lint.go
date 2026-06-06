@@ -100,7 +100,7 @@ func runLint(_ *cobra.Command, args []string) error {
 
 	// Write output
 	if lintOutput != "" {
-		if err := os.WriteFile(lintOutput, []byte(output), 0o644); err != nil {
+		if err := os.WriteFile(lintOutput, []byte(output), 0o600); err != nil {
 			return fmt.Errorf("writing output: %w", err)
 		}
 	} else {
