@@ -1,0 +1,447 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api-style-spec.dev/schema/v1/api-style-spec.schema.json",
+  "$defs": {
+    "CasingRules": {
+      "properties": {
+        "paths": {
+          "type": "string"
+        },
+        "parameters": {
+          "type": "string"
+        },
+        "properties": {
+          "type": "string"
+        },
+        "headers": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Category": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "order": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ConformanceLevel": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "requiredCategories": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "requiredRules": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "maxErrors": {
+          "type": "integer"
+        },
+        "maxWarnings": {
+          "type": "integer"
+        },
+        "extends": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Enforcement": {
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "function": {
+          "type": "string"
+        },
+        "options": {
+          "$ref": "#/$defs/EnforcementOptions"
+        },
+        "given": {
+          "$ref": "#/$defs/GivenPaths"
+        },
+        "then": {
+          "$ref": "#/$defs/SpectralThen"
+        },
+        "pattern": {
+          "type": "string"
+        },
+        "customFunction": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "EnforcementOptions": {
+      "properties": {
+        "match": {
+          "type": "string"
+        },
+        "notMatch": {
+          "type": "string"
+        },
+        "min": {
+          "type": "integer"
+        },
+        "max": {
+          "type": "integer"
+        },
+        "values": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "type": {
+          "type": "string"
+        },
+        "separator": {
+          "type": "string"
+        },
+        "schema": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Examples": {
+      "properties": {
+        "good": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "bad": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Exception": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "ruleId": {
+          "type": "string"
+        },
+        "appliesTo": {
+          "$ref": "#/$defs/ExceptionScope"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "approvedBy": {
+          "type": "string"
+        },
+        "approvedOn": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresOn": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ticket": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ExceptionScope": {
+      "properties": {
+        "api": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "operation": {
+          "type": "string"
+        },
+        "paths": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ForbiddenTerm": {
+      "properties": {
+        "term": {
+          "type": "string"
+        },
+        "replaceWith": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "GivenPaths": {
+      "properties": {
+        "paths": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "JudgeCriteria": {
+      "properties": {
+        "prompt": {
+          "type": "string"
+        },
+        "weight": {
+          "type": "number"
+        },
+        "requiresContext": {
+          "type": "boolean"
+        },
+        "category": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Lexicon": {
+      "properties": {
+        "approved": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "forbidden": {
+          "items": {
+            "$ref": "#/$defs/ForbiddenTerm"
+          },
+          "type": "array"
+        },
+        "aliases": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "casingRules": {
+          "$ref": "#/$defs/CasingRules"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Reference": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Rule": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "examples": {
+          "$ref": "#/$defs/Examples"
+        },
+        "enforcement": {
+          "$ref": "#/$defs/Enforcement"
+        },
+        "judge": {
+          "$ref": "#/$defs/JudgeCriteria"
+        },
+        "references": {
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "type": "array"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "recommended": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "RuleOverride": {
+      "properties": {
+        "severity": {
+          "type": "string"
+        },
+        "disabled": {
+          "type": "boolean"
+        },
+        "rationale": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "SpecMetadata": {
+      "properties": {
+        "author": {
+          "type": "string"
+        },
+        "license": {
+          "type": "string"
+        },
+        "repository": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string"
+        },
+        "contact": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "SpectralThen": {
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "function": {
+          "type": "string"
+        },
+        "functionOptions": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    }
+  },
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "extends": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "rules": {
+      "items": {
+        "$ref": "#/$defs/Rule"
+      },
+      "type": "array"
+    },
+    "overrides": {
+      "additionalProperties": {
+        "$ref": "#/$defs/RuleOverride"
+      },
+      "type": "object"
+    },
+    "lexicon": {
+      "$ref": "#/$defs/Lexicon"
+    },
+    "conformanceLevels": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ConformanceLevel"
+      },
+      "type": "object"
+    },
+    "exceptions": {
+      "items": {
+        "$ref": "#/$defs/Exception"
+      },
+      "type": "array"
+    },
+    "categories": {
+      "items": {
+        "$ref": "#/$defs/Category"
+      },
+      "type": "array"
+    },
+    "metadata": {
+      "$ref": "#/$defs/SpecMetadata"
+    }
+  },
+  "additionalProperties": false,
+  "type": "object"
+}
