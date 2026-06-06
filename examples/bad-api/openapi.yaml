@@ -1,0 +1,34 @@
+openapi: "3.0.3"
+info:
+  title: Bad API Example
+  version: "1.0.0"
+paths:
+  /user:
+    get:
+      summary: Get a user
+      responses:
+        "200":
+          description: OK
+  /getUserById:
+    get:
+      summary: Get user by ID
+      responses:
+        "200":
+          description: OK
+  /order_items:
+    get:
+      summary: Get order items
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        Email_Address:
+          type: string
