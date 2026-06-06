@@ -1,4 +1,4 @@
-# api-style-spec
+# API Style Spec
 
 Machine-readable API style specification format that generates human documentation, linting rules, LLM evaluation rubrics, and AI agent instructions from a single source of truth.
 
