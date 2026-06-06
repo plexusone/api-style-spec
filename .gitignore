@@ -1,0 +1,68 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/api-style
+/cmd/api-style/api-style
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+coverage.html
+coverage.txt
+
+# Go workspace file
+go.work
+go.work.sum
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Chat/notes
+IDEATION_CHAT*.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+/dist/
+/bin/
+
+# Dependency directories
+vendor/
+
+# Environment files
+.env
+.env.local
+.env.*
+.envrc
+
+# Credentials
+credentials.json
+secrets.json
+*.pem
+*.key
+
+# Generated files (keep in repo but ignore local changes)
+# schema/*.schema.json  # Uncomment if you want to track generated schemas
+
+# Test artifacts
+testdata/*.golden.new
+
+# Web UI
+web/packages/*/node_modules/
+web/packages/*/dist/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
