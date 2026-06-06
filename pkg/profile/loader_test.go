@@ -238,7 +238,7 @@ func TestLoadFile_JSON(t *testing.T) {
 	}`
 
 	profilePath := filepath.Join(tmpDir, "test.json")
-	if err := os.WriteFile(profilePath, []byte(profileContent), 0o644); err != nil {
+	if err := os.WriteFile(profilePath, []byte(profileContent), 0o600); err != nil {
 		t.Fatalf("failed to write profile: %v", err)
 	}
 
@@ -285,7 +285,7 @@ rules:
 `
 
 	profilePath := filepath.Join(tmpDir, "test.yaml")
-	if err := os.WriteFile(profilePath, []byte(profileContent), 0o644); err != nil {
+	if err := os.WriteFile(profilePath, []byte(profileContent), 0o600); err != nil {
 		t.Fatalf("failed to write profile: %v", err)
 	}
 
@@ -326,7 +326,7 @@ rules: []
 `
 
 	profilePath := filepath.Join(tmpDir, "test.yml")
-	if err := os.WriteFile(profilePath, []byte(profileContent), 0o644); err != nil {
+	if err := os.WriteFile(profilePath, []byte(profileContent), 0o600); err != nil {
 		t.Fatalf("failed to write profile: %v", err)
 	}
 
@@ -354,7 +354,7 @@ func TestLoadFile_ValidationError_MissingName(t *testing.T) {
 	}`
 
 	profilePath := filepath.Join(tmpDir, "invalid.json")
-	if err := os.WriteFile(profilePath, []byte(profileContent), 0o644); err != nil {
+	if err := os.WriteFile(profilePath, []byte(profileContent), 0o600); err != nil {
 		t.Fatalf("failed to write profile: %v", err)
 	}
 
@@ -382,7 +382,7 @@ func TestLoadFile_ValidationError_MissingVersion(t *testing.T) {
 	}`
 
 	profilePath := filepath.Join(tmpDir, "invalid.json")
-	if err := os.WriteFile(profilePath, []byte(profileContent), 0o644); err != nil {
+	if err := os.WriteFile(profilePath, []byte(profileContent), 0o600); err != nil {
 		t.Fatalf("failed to write profile: %v", err)
 	}
 
@@ -416,7 +416,7 @@ func TestLoader_SearchPaths(t *testing.T) {
 	}`
 
 	profilePath := filepath.Join(profilesDir, "custom.api-style.json")
-	if err := os.WriteFile(profilePath, []byte(profileContent), 0o644); err != nil {
+	if err := os.WriteFile(profilePath, []byte(profileContent), 0o600); err != nil {
 		t.Fatalf("failed to write profile: %v", err)
 	}
 
@@ -459,7 +459,7 @@ rules:
 `
 
 	profilePath := filepath.Join(tmpDir, "myprofile.api-style.yaml")
-	if err := os.WriteFile(profilePath, []byte(profileContent), 0o644); err != nil {
+	if err := os.WriteFile(profilePath, []byte(profileContent), 0o600); err != nil {
 		t.Fatalf("failed to write profile: %v", err)
 	}
 
