@@ -65,6 +65,9 @@ nav:
       - PRD: specs/inception/PRD.md
       - TRD: specs/inception/TRD.md
       - Roadmap: specs/inception/ROADMAP.md
+  - Releases:
+      - Changelog: releases/changelog.md
+      - v0.1.0: releases/v0.1.0.md
 
 plugins:
   - search
