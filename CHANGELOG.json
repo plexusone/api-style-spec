@@ -1,0 +1,66 @@
+{
+  "irVersion": "1.0",
+  "project": "api-style-spec",
+  "repository": "https://github.com/plexusone/api-style-spec",
+  "versioning": "semver",
+  "commitConvention": "conventional",
+  "maintainers": ["johnwang", "johncwang@gmail.com"],
+  "releases": [
+    {
+      "version": "v0.1.0",
+      "date": "2026-06-06",
+      "highlights": [
+        { "description": "OpenAPI style linting with vacuum integration and configurable style profiles (Azure, Google, custom)" },
+        { "description": "LLM-powered API evaluation using Claude for semantic analysis beyond static rules" },
+        { "description": "MCP server for Claude Desktop and Claude Code integration with resources and prompts" },
+        { "description": "Web UI with Lit components and REST API backend for browser-based linting" }
+      ],
+      "added": [
+        { "description": "Core types package with `LintReport`, `Violation`, `StyleProfile`, and `EvaluationResult` structs", "commit": "7148015" },
+        { "description": "JSON Schema generation from Go types with embedded schemas", "commit": "7148015" },
+        { "description": "Vacuum-based linting engine with severity mapping and JSON path extraction", "commit": "4222198" },
+        { "description": "Style profile loading from YAML/JSON with built-in Azure and Google profiles", "commit": "363656a" },
+        { "description": "Profile inheritance via `extends` field for building on base profiles", "commit": "363656a" },
+        { "description": "LLM evaluation with Claude using structured prompts and JSON output", "commit": "5bdc90d" },
+        { "description": "Evaluation categories: naming, structure, documentation, security, versioning", "commit": "5bdc90d" },
+        { "description": "Analysis orchestrator combining static linting and LLM evaluation", "commit": "fb2d291" },
+        { "description": "Spectral ruleset generator from style profiles", "commit": "0d156fc" },
+        { "description": "Markdown report generator with configurable output options", "commit": "0d156fc" },
+        { "description": "CLI with `lint`, `analyze`, and `evaluate` commands", "commit": "e027306" },
+        { "description": "Multiple output formats: text, JSON, SARIF", "commit": "e027306" },
+        { "description": "Exit codes based on violation severity for CI integration", "commit": "e027306" },
+        { "description": "MCP server with `openapi://` resource URIs for spec access", "commit": "a039bd5" },
+        { "description": "MCP prompts for guided API review workflows", "commit": "a039bd5" },
+        { "description": "MCP tools for linting and evaluation from Claude Desktop", "commit": "a039bd5" },
+        { "description": "Claude Code hooks for pre-commit and post-save linting", "commit": "384d812" },
+        { "description": "Claude Code skills for `/lint` and `/evaluate` slash commands", "commit": "384d812" },
+        { "description": "SARIF 2.1.0 output format for IDE integration (VS Code, JetBrains)", "commit": "b935239" },
+        { "description": "GitHub Code Scanning compatible SARIF output", "commit": "b935239" },
+        { "description": "REST API server with `/api/lint` and `/api/profiles` endpoints", "commit": "f096739" },
+        { "description": "CORS support for development and cross-origin requests", "commit": "f096739" },
+        { "description": "Web UI with Lit components: spec editor, profile selector, results panel", "commit": "767a898" },
+        { "description": "Vite-based frontend build with hot module replacement", "commit": "767a898" },
+        { "description": "Example OpenAPI specs: PetStore and E-Commerce APIs", "commit": "3de679f" },
+        { "description": "Example custom style profiles demonstrating profile customization", "commit": "3de679f" }
+      ],
+      "documentation": [
+        { "description": "MkDocs documentation site with Material theme", "commit": "47b6dc8" },
+        { "description": "Getting started guide with installation and basic usage", "commit": "47b6dc8" },
+        { "description": "Profile customization guide with YAML examples", "commit": "47b6dc8" },
+        { "description": "MCP integration guide for Claude Desktop setup", "commit": "47b6dc8" },
+        { "description": "Feature roadmap with prioritized enhancements" }
+      ],
+      "build": [
+        { "description": "GitHub Actions workflows for CI/CD: build, lint, test", "commit": "c74e181" },
+        { "description": "golangci-lint configuration with security and style checks", "commit": "c743abf" },
+        { "description": "Schema generator tool for JSON Schema from Go types", "commit": "ed7302b" }
+      ],
+      "tests": [
+        { "description": "Unit tests for analyze package (82% coverage)", "commit": "fb2d291" },
+        { "description": "Unit tests for judge package (76% coverage)", "commit": "5bdc90d" },
+        { "description": "Unit tests for lint package (79% coverage)", "commit": "4222198" },
+        { "description": "Unit tests for SARIF package (92% coverage)", "commit": "b935239" }
+      ]
+    }
+  ]
+}
