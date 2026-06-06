@@ -54,32 +54,30 @@ func Spectral(spec *types.APIStyleSpec, opts *SpectralOptions) (string, error) {
 	sb.WriteString("rules:\n")
 
 	for _, rule := range spec.Rules {
-		if err := writeSpectralRule(&sb, rule, opts); err != nil {
-			return "", fmt.Errorf("generating rule %s: %w", rule.ID, err)
-		}
+		writeSpectralRule(&sb, rule, opts)
 	}
 
 	return sb.String(), nil
 }
 
-func writeSpectralRule(sb *strings.Builder, rule types.Rule, opts *SpectralOptions) error {
+func writeSpectralRule(sb *strings.Builder, rule types.Rule, opts *SpectralOptions) {
 	// Skip rules without enforcement
 	if rule.Enforcement == nil {
 		if opts.SkipNonEnforceable {
-			return nil
+			return
 		}
 		// Write as comment
 		fmt.Fprintf(sb, "  # %s: (no enforcement - LLM-only rule)\n", rule.ID)
-		return nil
+		return
 	}
 
 	// Skip non-spectral enforcement types
 	if rule.Enforcement.Type != types.EnforcementSpectral {
 		if opts.SkipNonEnforceable {
-			return nil
+			return
 		}
 		fmt.Fprintf(sb, "  # %s: (enforcement type: %s)\n", rule.ID, rule.Enforcement.Type)
-		return nil
+		return
 	}
 
 	// Rule description as comment
@@ -129,8 +127,6 @@ func writeSpectralRule(sb *strings.Builder, rule types.Rule, opts *SpectralOptio
 	// Then
 	sb.WriteString("    then:\n")
 	writeThen(sb, rule.Enforcement)
-
-	return nil
 }
 
 func writeThen(sb *strings.Builder, enf *types.Enforcement) {
