@@ -1,0 +1,190 @@
+# Custom Company API Style Profile
+#
+# This example shows how to create a custom profile that extends
+# the default profile with company-specific rules.
+
+name: custom-company
+version: "1.0.0"
+description: |
+  Custom API style guidelines for Example Company.
+  Extends the default profile with company-specific requirements.
+
+# Inherit rules from the default profile
+extends:
+  - default
+
+# Define custom categories
+categories:
+  - id: company-standards
+    title: Company Standards
+    description: Company-specific API requirements
+    order: 10
+
+# Custom rules specific to this organization
+rules:
+  # Require API version in URL path
+  - id: COMPANY-001
+    title: API version must be in URL path
+    category: company-standards
+    severity: error
+    rationale: |
+      All APIs must include version in the URL path (e.g., /v1/, /v2/).
+      This ensures clear versioning and allows multiple versions to coexist.
+    examples:
+      good:
+        - /v1/users
+        - /v2/products
+        - /api/v1/orders
+      bad:
+        - /users
+        - /products
+        - /api/orders
+    enforcement:
+      type: spectral
+      function: pattern
+      given:
+        paths:
+          - "$.servers[*].url"
+      options:
+        match: "/v[0-9]+"
+    tags:
+      - versioning
+      - company
+
+  # Require company error format
+  - id: COMPANY-002
+    title: Use company standard error format
+    category: company-standards
+    severity: error
+    rationale: |
+      All error responses must follow RFC 7807 Problem Details format
+      with our required fields: type, title, status, detail, and traceId.
+    examples:
+      good:
+        - |
+          {
+            "type": "https://api.example.com/errors/not-found",
+            "title": "Resource Not Found",
+            "status": 404,
+            "detail": "The requested user was not found",
+            "traceId": "abc123"
+          }
+      bad:
+        - '{"error": "Not found"}'
+        - '{"message": "Error occurred"}'
+    enforcement:
+      type: none
+    judge:
+      prompt: Check if error responses include type, title, status, detail, and traceId fields
+      weight: 1.0
+    tags:
+      - errors
+      - company
+
+  # Require correlation ID header
+  - id: COMPANY-003
+    title: Support X-Correlation-ID header
+    category: company-standards
+    severity: warn
+    rationale: |
+      All API operations should accept and return X-Correlation-ID header
+      for request tracing across microservices.
+    enforcement:
+      type: none
+    judge:
+      prompt: Check if operations document X-Correlation-ID header support
+      weight: 0.8
+    tags:
+      - tracing
+      - company
+
+  # Require health check endpoint
+  - id: COMPANY-004
+    title: Include health check endpoint
+    category: company-standards
+    severity: warn
+    rationale: |
+      All APIs must include a /health or /healthz endpoint for
+      Kubernetes liveness and readiness probes.
+    examples:
+      good:
+        - GET /health
+        - GET /healthz
+        - GET /api/v1/health
+      bad:
+        - No health endpoint defined
+    enforcement:
+      type: none
+    judge:
+      prompt: Check if the API defines a health check endpoint (/health or /healthz)
+      weight: 0.7
+    tags:
+      - operations
+      - company
+
+  # Require rate limiting headers documentation
+  - id: COMPANY-005
+    title: Document rate limiting headers
+    category: company-standards
+    severity: info
+    rationale: |
+      APIs should document rate limiting headers (X-RateLimit-Limit,
+      X-RateLimit-Remaining, X-RateLimit-Reset) in responses.
+    enforcement:
+      type: none
+    judge:
+      prompt: Check if rate limiting headers are documented in API responses
+      weight: 0.5
+    tags:
+      - rate-limiting
+      - company
+
+# Override some rules from the default profile
+overrides:
+  # Make camelCase for JSON properties a warning instead of error
+  # (we're transitioning some legacy APIs)
+  NAMING-001:
+    severity: warn
+    rationale: Legacy APIs may use different conventions during migration
+
+  # Disable the boolean prefix rule
+  # (our existing APIs don't follow this convention)
+  NAMING-003:
+    disabled: true
+    rationale: Not enforced for backwards compatibility
+
+# Conformance levels for this company
+conformanceLevels:
+  bronze:
+    description: Minimum viable API - basic structure
+    requiredCategories:
+      - uri-design
+      - http-methods
+    maxErrors: 0
+    maxWarnings: 15
+
+  silver:
+    description: Production-ready - includes company standards
+    requiredCategories:
+      - naming
+      - errors
+      - company-standards
+    maxErrors: 0
+    maxWarnings: 5
+    extends: bronze
+
+  gold:
+    description: Exemplary API - full documentation and security
+    requiredCategories:
+      - documentation
+      - security
+    maxErrors: 0
+    maxWarnings: 0
+    extends: silver
+
+# Metadata
+metadata:
+  author: API Platform Team
+  contact: api-platform@example.com
+  repository: https://github.com/example/api-guidelines
+  lastUpdated: "2024-01-15"
