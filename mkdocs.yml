@@ -1,0 +1,73 @@
+site_name: api-style-spec
+site_description: Machine-readable API style specification format
+site_url: https://api-style-spec.dev
+repo_url: https://github.com/plexusone/api-style-spec
+repo_name: plexusone/api-style-spec
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Guide:
+      - Getting Started: guide/getting-started.md
+      - Using Profiles: guide/profiles.md
+      - Custom Rules: guide/custom-rules.md
+      - MCP Server: guide/mcp-server.md
+  - Reference:
+      - CLI Commands: reference/cli.md
+      - Specification Format: reference/schema.md
+      - AI Assistant Hooks: reference/hooks.md
+  - Profiles:
+      - Default: profiles/default.md
+      - Azure: profiles/azure.md
+      - Google: profiles/google.md
+      - Zalando: profiles/zalando.md
+  - Design:
+      - Constitution: specs/CONSTITUTION.md
+      - MRD: specs/inception/MRD.md
+      - PRD: specs/inception/PRD.md
+      - TRD: specs/inception/TRD.md
+      - Roadmap: specs/inception/ROADMAP.md
+
+plugins:
+  - search
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/plexusone/api-style-spec
