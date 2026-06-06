@@ -17,12 +17,12 @@ api-style-spec (source of truth)
 
 ## Features
 
-- **Unified Specification** - Define rules once, generate all artifacts
-- **Deterministic Linting** - Fast, CI-friendly checks via [vacuum](https://github.com/daveshanley/vacuum)
-- **LLM Evaluation** - Semantic analysis for rules that can't be linted
-- **Industry Profiles** - Pre-built profiles based on Microsoft, Google, Zalando guidelines
-- **Conformance Levels** - Graduated compliance (bronze/silver/gold)
-- **Multi-Platform** - CLI, Web UI, MCP server, AI agents
+- 📋 **Unified Specification** - Define rules once, generate all artifacts
+- ✅ **Deterministic Linting** - Fast, CI-friendly checks via [vacuum](https://github.com/daveshanley/vacuum)
+- 🧠 **LLM Evaluation** - Semantic analysis for rules that can't be linted
+- 🏢 **Industry Profiles** - Pre-built profiles based on Microsoft, Google, Zalando guidelines
+- 🏆 **Conformance Levels** - Graduated compliance (bronze/silver/gold)
+- 🌐 **Multi-Platform** - CLI, Web UI, MCP server, AI agents
 
 ## Installation
 
