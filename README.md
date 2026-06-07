@@ -67,12 +67,45 @@ api-style lint openapi.yaml
 # Lint with a specific profile
 api-style lint openapi.yaml --profile azure
 
+# Lint multiple files with glob patterns
+api-style lint api/*.yaml --recursive
+
+# Watch mode for continuous linting
+api-style lint openapi.yaml --watch
+
 # Combined lint + LLM evaluation
 api-style analyze openapi.yaml --profile azure --level silver
 
 # Generate human-readable style guide
 api-style generate guide --spec my-style.json --output docs/
 ```
+
+## Configuration
+
+Create `.api-style.yaml` in your project root:
+
+```yaml
+# .api-style.yaml
+profile: azure
+level: silver
+
+include:
+  - "openapi.yaml"
+  - "**/api.yaml"
+
+exclude:
+  - "**/generated/**"
+
+exceptions:
+  - rule: URI-001
+    paths: ["/legacy/**"]
+    reason: "Legacy API cannot be changed"
+
+severity-overrides:
+  URI-002: warn
+```
+
+See [.api-style.yaml.example](.api-style.yaml.example) for a complete example.
 
 ## Specification Format
 
@@ -108,12 +141,13 @@ api-style generate guide --spec my-style.json --output docs/
 
 | Command | Description |
 |---------|-------------|
-| `api-style lint` | Deterministic linting |
+| `api-style lint` | Deterministic linting (supports glob patterns, `--watch`, `--recursive`) |
 | `api-style evaluate` | LLM-based evaluation |
 | `api-style analyze` | Combined lint + evaluate |
 | `api-style generate guide` | Generate Markdown documentation |
 | `api-style generate spectral` | Generate Spectral ruleset |
-| `api-style generate agent` | Generate AI agent files |
+| `api-style hooks` | Generate AI assistant hooks |
+| `api-style hooks init` | Install git pre-commit hook |
 | `api-style diff` | Breaking change detection |
 | `api-style serve mcp` | Start MCP server |
 | `api-style serve web` | Start Web UI |

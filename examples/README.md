@@ -65,6 +65,60 @@ api-style lint examples/specs/ecommerce.yaml --profile azure
 api-style lint examples/specs/petstore.yaml --profile google
 ```
 
+### Multi-File Linting
+
+```bash
+# Lint all YAML files in specs directory
+api-style lint examples/specs/*.yaml
+
+# Recursive search
+api-style lint examples/ --recursive
+
+# Multiple specific files
+api-style lint examples/specs/petstore.yaml examples/specs/ecommerce.yaml
+```
+
+### Watch Mode
+
+```bash
+# Watch a file for changes
+api-style lint examples/specs/petstore.yaml --watch
+
+# Watch with specific profile
+api-style lint examples/specs/ecommerce.yaml --profile azure --watch
+```
+
+### Using Configuration Files
+
+```bash
+# Create config in examples directory
+cat > examples/.api-style.yaml << 'EOF'
+profile: azure
+level: silver
+include:
+  - "specs/*.yaml"
+exclude:
+  - "**/bad-api/**"
+EOF
+
+# Run lint (config auto-detected)
+cd examples && api-style lint specs/petstore.yaml
+```
+
+### Git Pre-Commit Hook
+
+```bash
+# Install pre-commit hook (in a git repository)
+api-style hooks init
+
+# With specific profile
+api-style hooks init --profile azure --level silver
+
+# Test by staging an OpenAPI file
+git add examples/specs/petstore.yaml
+git commit -m "Test pre-commit"
+```
+
 ### Using Custom Profiles
 
 ```bash
@@ -123,7 +177,7 @@ mcp-api-style explain-rule URI-001
 
 ### Petstore with Default Profile
 
-The Petstore example is designed to pass most rules. Expected:
+The Petstore example demonstrates common API patterns. Expected:
 
 - **Status**: PASS or minor warnings
 - **Errors**: 0
@@ -136,6 +190,38 @@ The E-Commerce example follows best practices. Expected:
 - **Status**: PASS
 - **Errors**: 0
 - **Warnings**: 0-2
+
+### Bad API Example
+
+The `bad-api/openapi.yaml` contains intentional violations to demonstrate linting:
+
+```bash
+api-style lint examples/bad-api/openapi.yaml
+```
+
+Expected output:
+
+```
+Status: FAIL
+Errors: 8, Warnings: 1
+
+Errors:
+  - [NAMING-001] Use camelCase for JSON properties
+  - [URI-002] Use kebab-case for path segments
+  - [URI-001] Use plural resource names
+
+Warnings:
+  - [URI-003] Avoid verbs in paths
+```
+
+Violations include:
+
+| Violation | Example | Fix |
+|-----------|---------|-----|
+| Singular resource | `/user` | `/users` |
+| Verb in path | `/getUserById` | `/users/{id}` |
+| Snake_case path | `/order_items` | `/order-items` |
+| Snake_case property | `first_name` | `firstName` |
 
 ### Common Violations to Explore
 
