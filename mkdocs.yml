@@ -52,6 +52,7 @@ nav:
       - MCP Server: guide/mcp-server.md
   - Reference:
       - CLI Commands: reference/cli.md
+      - Configuration File: reference/config.md
       - Specification Format: reference/schema.md
       - AI Assistant Hooks: reference/hooks.md
   - Profiles:

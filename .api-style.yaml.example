@@ -1,0 +1,49 @@
+# Example api-style-spec configuration file
+# Copy to .api-style.yaml in your project root
+
+# Style profile to use for linting
+# Built-in: default, azure, google, zalando
+profile: default
+
+# Target conformance level (optional)
+# Options: bronze, silver, gold
+level: silver
+
+# File patterns to include in linting
+# Supports glob patterns with ** for recursive matching
+include:
+  - "openapi.yaml"
+  - "openapi.yml"
+  - "openapi.json"
+  - "**/openapi.yaml"
+  - "**/api.yaml"
+  - "specs/**/*.yaml"
+
+# File patterns to exclude from linting
+exclude:
+  - "**/node_modules/**"
+  - "**/vendor/**"
+  - "**/.git/**"
+  - "**/generated/**"
+  - "**/mock/**"
+
+# Rule exceptions for specific cases
+# Use sparingly and document reasons
+exceptions:
+  - rule: URI-001
+    paths:
+      - "/legacy/**"
+    reason: "Legacy API endpoints cannot be renamed without breaking clients"
+
+  - rule: operation-description
+    paths:
+      - "/internal/**"
+    reason: "Internal APIs have relaxed documentation requirements"
+
+# Override rule severities
+# Map rule ID to severity: error, warn, info, hint
+severity-overrides:
+  # Downgrade URI-002 from error to warning
+  URI-002: warn
+  # Make documentation rules informational only
+  info-description: info
