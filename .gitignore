@@ -37,6 +37,9 @@ Thumbs.db
 /dist/
 /bin/
 
+# MkDocs
+/site/
+
 # Dependency directories
 vendor/
 
