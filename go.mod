@@ -4,6 +4,7 @@ go 1.26.3
 
 require (
 	github.com/daveshanley/vacuum v0.29.2
+	github.com/fsnotify/fsnotify v1.10.1
 	github.com/grokify/mogo v0.74.6
 	github.com/invopop/jsonschema v0.14.0
 	github.com/modelcontextprotocol/go-sdk v1.6.1
