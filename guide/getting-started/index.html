@@ -16,7 +16,7 @@
         <link rel="prev" href="../..">
       
       
-        <link rel="next" href="../profiles/">
+        <link rel="next" href="../automated-api-governance/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -503,6 +503,42 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#configuration-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration File
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multi-file-linting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multi-File Linting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#watch-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Watch Mode
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#git-pre-commit-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      Git Pre-Commit Hook
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       Next Steps
@@ -515,6 +551,29 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../automated-api-governance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Automated API Governance
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -654,6 +713,29 @@
   
   <span class="md-ellipsis">
     CLI Commands
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration File
     
   </span>
   
@@ -1273,6 +1355,42 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#configuration-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration File
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multi-file-linting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multi-File Linting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#watch-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Watch Mode
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#git-pre-commit-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      Git Pre-Commit Hook
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       Next Steps
@@ -1432,8 +1550,55 @@
 <li>LLM evaluation (semantic analysis of design quality)</li>
 <li>GO/NO-GO decision for production readiness</li>
 </ol>
+<h2 id="configuration-file">Configuration File<a class="headerlink" href="#configuration-file" title="Permanent link">&para;</a></h2>
+<p>Create <code>.api-style.yaml</code> in your project root to configure default options:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># .api-style.yaml</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nt">profile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">silver</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="nt">include</span><span class="p">:</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;openapi.yaml&quot;</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;**/api.yaml&quot;</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="nt">exclude</span><span class="p">:</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;**/generated/**&quot;</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="nt">exceptions</span><span class="p">:</span>
+<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">rule</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">URI-001</span>
+<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="w">    </span><span class="nt">paths</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;/legacy/**&quot;</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="w">    </span><span class="nt">reason</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Legacy</span><span class="nv"> </span><span class="s">API</span><span class="nv"> </span><span class="s">cannot</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">changed&quot;</span>
+</code></pre></div>
+<p>CLI flags override config file settings. See the <a href="../../reference/config/">Configuration Reference</a> for all options.</p>
+<h2 id="multi-file-linting">Multi-File Linting<a class="headerlink" href="#multi-file-linting" title="Permanent link">&para;</a></h2>
+<p>Lint multiple files at once:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># Glob patterns</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>api-style<span class="w"> </span>lint<span class="w"> </span>api/*.yaml
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1"># Recursive directory search</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>api-style<span class="w"> </span>lint<span class="w"> </span>.<span class="w"> </span>--recursive
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="c1"># Multiple arguments</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>api-style<span class="w"> </span>lint<span class="w"> </span>openapi.yaml<span class="w"> </span>swagger.yaml
+</code></pre></div>
+<h2 id="watch-mode">Watch Mode<a class="headerlink" href="#watch-mode" title="Permanent link">&para;</a></h2>
+<p>Continuously lint as you edit:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>api-style<span class="w"> </span>lint<span class="w"> </span>openapi.yaml<span class="w"> </span>--watch
+</code></pre></div>
+<p>The watcher:</p>
+<ul>
+<li>Runs initial lint on startup</li>
+<li>Re-lints when files change</li>
+<li>Shows timestamps for each run</li>
+<li>Exits cleanly with Ctrl+C</li>
+</ul>
+<h2 id="git-pre-commit-hook">Git Pre-Commit Hook<a class="headerlink" href="#git-pre-commit-hook" title="Permanent link">&para;</a></h2>
+<p>Block commits with API style violations:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>api-style<span class="w"> </span>hooks<span class="w"> </span>init
+</code></pre></div>
+<p>This installs a pre-commit hook that lints staged OpenAPI files. See <a href="../../reference/hooks/">Hooks Reference</a> for details.</p>
 <h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <ul>
+<li><a href="../automated-api-governance/">Automated API Governance</a> - Set up AI-first API design with 100% automated enforcement</li>
 <li><a href="../profiles/">Using Profiles</a> - Understand built-in style profiles</li>
 <li><a href="../custom-rules/">Custom Rules</a> - Create your own rules</li>
 <li><a href="../../reference/cli/">CLI Reference</a> - Complete command documentation</li>

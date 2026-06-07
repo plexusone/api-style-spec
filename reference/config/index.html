@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://api-style-spec.dev/guide/mcp-server/">
+        <link rel="canonical" href="https://api-style-spec.dev/reference/config/">
       
       
-        <link rel="prev" href="../custom-rules/">
+        <link rel="prev" href="../cli/">
       
       
-        <link rel="next" href="../../reference/cli/">
+        <link rel="next" href="../schema/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>MCP Server - api-style-spec</title>
+        <title>Configuration File - api-style-spec</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#mcp-server" class="md-skip">
+        <a href="#configuration-file" class="md-skip">
           Skip to content
         </a>
       
@@ -119,7 +119,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              MCP Server
+              Configuration File
             
           </span>
         </div>
@@ -285,8 +285,6 @@
       
   
   
-    
-  
   
   
     
@@ -299,11 +297,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -319,7 +319,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Guide
@@ -333,7 +333,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting-started/" class="md-nav__link">
+      <a href="../../guide/getting-started/" class="md-nav__link">
         
   
   
@@ -356,7 +356,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../automated-api-governance/" class="md-nav__link">
+      <a href="../../guide/automated-api-governance/" class="md-nav__link">
         
   
   
@@ -379,7 +379,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../profiles/" class="md-nav__link">
+      <a href="../../guide/profiles/" class="md-nav__link">
         
   
   
@@ -402,12 +402,110 @@
   
   
     <li class="md-nav__item">
-      <a href="../custom-rules/" class="md-nav__link">
+      <a href="../../guide/custom-rules/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     Custom Rules
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/mcp-server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    MCP Server
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CLI Commands
     
   </span>
   
@@ -439,7 +537,7 @@
   
   
   <span class="md-ellipsis">
-    MCP Server
+    Configuration File
     
   </span>
   
@@ -452,7 +550,7 @@
   
   
   <span class="md-ellipsis">
-    MCP Server
+    Configuration File
     
   </span>
   
@@ -484,37 +582,82 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#starting-the-server" class="md-nav__link">
+  <a href="#file-locations" class="md-nav__link">
     <span class="md-ellipsis">
-      Starting the Server
+      File Locations
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
+  <a href="#complete-example" class="md-nav__link">
     <span class="md-ellipsis">
-      Configuration
+      Complete Example
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Configuration">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#options-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Options Reference
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Options Reference">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#claude-desktop" class="md-nav__link">
+  <a href="#profile" class="md-nav__link">
     <span class="md-ellipsis">
-      Claude Desktop
+      profile
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#claude-code" class="md-nav__link">
+  <a href="#level" class="md-nav__link">
     <span class="md-ellipsis">
-      Claude Code
+      level
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#include" class="md-nav__link">
+    <span class="md-ellipsis">
+      include
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exclude" class="md-nav__link">
+    <span class="md-ellipsis">
+      exclude
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      exceptions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#severity-overrides" class="md-nav__link">
+    <span class="md-ellipsis">
+      severity-overrides
     </span>
   </a>
   
@@ -526,171 +669,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#available-tools" class="md-nav__link">
+  <a href="#cli-flag-precedence" class="md-nav__link">
     <span class="md-ellipsis">
-      Available Tools
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Available Tools">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#lint" class="md-nav__link">
-    <span class="md-ellipsis">
-      lint
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#evaluate" class="md-nav__link">
-    <span class="md-ellipsis">
-      evaluate
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#analyze" class="md-nav__link">
-    <span class="md-ellipsis">
-      analyze
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#list_profiles" class="md-nav__link">
-    <span class="md-ellipsis">
-      list_profiles
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#list_rules" class="md-nav__link">
-    <span class="md-ellipsis">
-      list_rules
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#explain_rule" class="md-nav__link">
-    <span class="md-ellipsis">
-      explain_rule
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resources" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resources
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Resources">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#apistyleprofiles" class="md-nav__link">
-    <span class="md-ellipsis">
-      apistyle://profiles
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#apistyleprofilesname" class="md-nav__link">
-    <span class="md-ellipsis">
-      apistyle://profiles/{name}
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#prompts" class="md-nav__link">
-    <span class="md-ellipsis">
-      Prompts
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Prompts">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#review_api" class="md-nav__link">
-    <span class="md-ellipsis">
-      review_api
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#fix_violations" class="md-nav__link">
-    <span class="md-ellipsis">
-      fix_violations
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#explain_profile" class="md-nav__link">
-    <span class="md-ellipsis">
-      explain_profile
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cli-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      CLI Usage
+      CLI Flag Precedence
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-workflow" class="md-nav__link">
+  <a href="#json-format" class="md-nav__link">
     <span class="md-ellipsis">
-      Example Workflow
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Next Steps
+      JSON Format
     </span>
   </a>
   
@@ -705,58 +695,6 @@
 
               
             
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    Reference
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            Reference
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
               
                 
   
@@ -764,53 +702,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/cli/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    CLI Commands
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/config/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Configuration File
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/schema/" class="md-nav__link">
+      <a href="../schema/" class="md-nav__link">
         
   
   
@@ -833,7 +725,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/hooks/" class="md-nav__link">
+      <a href="../hooks/" class="md-nav__link">
         
   
   
@@ -1301,37 +1193,82 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#starting-the-server" class="md-nav__link">
+  <a href="#file-locations" class="md-nav__link">
     <span class="md-ellipsis">
-      Starting the Server
+      File Locations
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
+  <a href="#complete-example" class="md-nav__link">
     <span class="md-ellipsis">
-      Configuration
+      Complete Example
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Configuration">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#options-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Options Reference
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Options Reference">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#claude-desktop" class="md-nav__link">
+  <a href="#profile" class="md-nav__link">
     <span class="md-ellipsis">
-      Claude Desktop
+      profile
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#claude-code" class="md-nav__link">
+  <a href="#level" class="md-nav__link">
     <span class="md-ellipsis">
-      Claude Code
+      level
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#include" class="md-nav__link">
+    <span class="md-ellipsis">
+      include
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exclude" class="md-nav__link">
+    <span class="md-ellipsis">
+      exclude
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      exceptions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#severity-overrides" class="md-nav__link">
+    <span class="md-ellipsis">
+      severity-overrides
     </span>
   </a>
   
@@ -1343,171 +1280,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#available-tools" class="md-nav__link">
+  <a href="#cli-flag-precedence" class="md-nav__link">
     <span class="md-ellipsis">
-      Available Tools
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Available Tools">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#lint" class="md-nav__link">
-    <span class="md-ellipsis">
-      lint
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#evaluate" class="md-nav__link">
-    <span class="md-ellipsis">
-      evaluate
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#analyze" class="md-nav__link">
-    <span class="md-ellipsis">
-      analyze
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#list_profiles" class="md-nav__link">
-    <span class="md-ellipsis">
-      list_profiles
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#list_rules" class="md-nav__link">
-    <span class="md-ellipsis">
-      list_rules
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#explain_rule" class="md-nav__link">
-    <span class="md-ellipsis">
-      explain_rule
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resources" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resources
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Resources">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#apistyleprofiles" class="md-nav__link">
-    <span class="md-ellipsis">
-      apistyle://profiles
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#apistyleprofilesname" class="md-nav__link">
-    <span class="md-ellipsis">
-      apistyle://profiles/{name}
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#prompts" class="md-nav__link">
-    <span class="md-ellipsis">
-      Prompts
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Prompts">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#review_api" class="md-nav__link">
-    <span class="md-ellipsis">
-      review_api
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#fix_violations" class="md-nav__link">
-    <span class="md-ellipsis">
-      fix_violations
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#explain_profile" class="md-nav__link">
-    <span class="md-ellipsis">
-      explain_profile
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cli-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      CLI Usage
+      CLI Flag Precedence
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-workflow" class="md-nav__link">
+  <a href="#json-format" class="md-nav__link">
     <span class="md-ellipsis">
-      Example Workflow
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Next Steps
+      JSON Format
     </span>
   </a>
   
@@ -1532,249 +1316,235 @@
   
 
 
-<h1 id="mcp-server">MCP Server<a class="headerlink" href="#mcp-server" title="Permanent link">&para;</a></h1>
-<p>api-style-spec provides an MCP (Model Context Protocol) server for integration with AI assistants like Claude.</p>
+<h1 id="configuration-file">Configuration File<a class="headerlink" href="#configuration-file" title="Permanent link">&para;</a></h1>
+<p>Configure api-style-spec defaults via <code>.api-style.yaml</code> in your project root.</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The MCP server exposes API style linting and evaluation as tools that AI assistants can use during API development and review.</p>
-<h2 id="starting-the-server">Starting the Server<a class="headerlink" href="#starting-the-server" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Start MCP server (stdio transport)</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>mcp-api-style
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Or explicitly</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>mcp-api-style<span class="w"> </span>serve
-</code></pre></div>
-<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
-<h3 id="claude-desktop">Claude Desktop<a class="headerlink" href="#claude-desktop" title="Permanent link">&para;</a></h3>
-<p>Add to your Claude Desktop configuration (<code>~/Library/Application Support/Claude/claude_desktop_config.json</code>):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">&quot;api-style&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mcp-api-style&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">        </span><span class="nt">&quot;ANTHROPIC_API_KEY&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sk-ant-...&quot;</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="p">}</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">}</span>
-</code></pre></div>
-<h3 id="claude-code">Claude Code<a class="headerlink" href="#claude-code" title="Permanent link">&para;</a></h3>
-<p>Add to your project's <code>.claude/settings.json</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">&quot;api-style&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mcp-api-style&quot;</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">}</span>
-</code></pre></div>
-<h2 id="available-tools">Available Tools<a class="headerlink" href="#available-tools" title="Permanent link">&para;</a></h2>
-<h3 id="lint">lint<a class="headerlink" href="#lint" title="Permanent link">&para;</a></h3>
-<p>Lint an OpenAPI specification against style rules.</p>
-<p><strong>Parameters:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Required</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>openapi_spec</code></td>
-<td>string</td>
-<td>Yes</td>
-<td>OpenAPI spec content (YAML or JSON)</td>
-</tr>
-<tr>
-<td><code>profile</code></td>
-<td>string</td>
-<td>No</td>
-<td>Style profile (default: <code>default</code>)</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Example:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Use the lint tool to check this OpenAPI spec against Azure guidelines:
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>[paste spec here]
-</code></pre></div>
-<h3 id="evaluate">evaluate<a class="headerlink" href="#evaluate" title="Permanent link">&para;</a></h3>
-<p>LLM-based semantic evaluation of an API spec.</p>
-<p><strong>Parameters:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Required</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>openapi_spec</code></td>
-<td>string</td>
-<td>Yes</td>
-<td>OpenAPI spec content</td>
-</tr>
-<tr>
-<td><code>profile</code></td>
-<td>string</td>
-<td>No</td>
-<td>Style profile</td>
-</tr>
-<tr>
-<td><code>categories</code></td>
-<td>array</td>
-<td>No</td>
-<td>Categories to evaluate</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Requires:</strong> <code>ANTHROPIC_API_KEY</code> environment variable</p>
-<h3 id="analyze">analyze<a class="headerlink" href="#analyze" title="Permanent link">&para;</a></h3>
-<p>Combined lint + evaluate with GO/NO-GO decision.</p>
-<p><strong>Parameters:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Required</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>openapi_spec</code></td>
-<td>string</td>
-<td>Yes</td>
-<td>OpenAPI spec content</td>
-</tr>
-<tr>
-<td><code>profile</code></td>
-<td>string</td>
-<td>No</td>
-<td>Style profile</td>
-</tr>
-<tr>
-<td><code>lint_only</code></td>
-<td>boolean</td>
-<td>No</td>
-<td>Skip LLM evaluation</td>
-</tr>
-</tbody>
-</table>
-<h3 id="list_profiles">list_profiles<a class="headerlink" href="#list_profiles" title="Permanent link">&para;</a></h3>
-<p>List available style profiles.</p>
-<h3 id="list_rules">list_rules<a class="headerlink" href="#list_rules" title="Permanent link">&para;</a></h3>
-<p>List rules from a profile.</p>
-<p><strong>Parameters:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Required</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>profile</code></td>
-<td>string</td>
-<td>No</td>
-<td>Style profile</td>
-</tr>
-<tr>
-<td><code>category</code></td>
-<td>string</td>
-<td>No</td>
-<td>Filter by category</td>
-</tr>
-<tr>
-<td><code>severity</code></td>
-<td>string</td>
-<td>No</td>
-<td>Filter by severity</td>
-</tr>
-</tbody>
-</table>
-<h3 id="explain_rule">explain_rule<a class="headerlink" href="#explain_rule" title="Permanent link">&para;</a></h3>
-<p>Get detailed explanation of a rule.</p>
-<p><strong>Parameters:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Required</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>rule_id</code></td>
-<td>string</td>
-<td>Yes</td>
-<td>Rule ID (e.g., <code>URI-001</code>)</td>
-</tr>
-<tr>
-<td><code>profile</code></td>
-<td>string</td>
-<td>No</td>
-<td>Style profile</td>
-</tr>
-</tbody>
-</table>
-<h2 id="resources">Resources<a class="headerlink" href="#resources" title="Permanent link">&para;</a></h2>
-<p>The MCP server also provides resources for reading profile data:</p>
-<h3 id="apistyleprofiles">apistyle://profiles<a class="headerlink" href="#apistyleprofiles" title="Permanent link">&para;</a></h3>
-<p>List all available profiles with metadata.</p>
-<h3 id="apistyleprofilesname">apistyle://profiles/{name}<a class="headerlink" href="#apistyleprofilesname" title="Permanent link">&para;</a></h3>
-<p>Get the full definition of a specific profile.</p>
-<h2 id="prompts">Prompts<a class="headerlink" href="#prompts" title="Permanent link">&para;</a></h2>
-<p>Pre-built prompt templates for common tasks:</p>
-<h3 id="review_api">review_api<a class="headerlink" href="#review_api" title="Permanent link">&para;</a></h3>
-<p>Comprehensive API review workflow:</p>
-<ol>
-<li>Runs lint tool</li>
-<li>Analyzes results</li>
-<li>Provides recommendations</li>
-<li>Gives GO/NO-GO assessment</li>
-</ol>
-<h3 id="fix_violations">fix_violations<a class="headerlink" href="#fix_violations" title="Permanent link">&para;</a></h3>
-<p>Suggests fixes for specific violations with before/after examples.</p>
-<h3 id="explain_profile">explain_profile<a class="headerlink" href="#explain_profile" title="Permanent link">&para;</a></h3>
-<p>Explains a profile's philosophy and key rules.</p>
-<h2 id="cli-usage">CLI Usage<a class="headerlink" href="#cli-usage" title="Permanent link">&para;</a></h2>
-<p>The MCP server binary also works as a standalone CLI:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Lint a spec</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>mcp-api-style<span class="w"> </span>lint<span class="w"> </span>--file<span class="w"> </span>openapi.yaml<span class="w"> </span>--profile<span class="w"> </span>azure
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># List profiles</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>mcp-api-style<span class="w"> </span>list-profiles
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># Explain a rule</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>mcp-api-style<span class="w"> </span>explain-rule<span class="w"> </span>URI-001
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1"># Analyze with GO/NO-GO decision</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>mcp-api-style<span class="w"> </span>analyze<span class="w"> </span>--file<span class="w"> </span>openapi.yaml<span class="w"> </span>--profile<span class="w"> </span>azure
-</code></pre></div>
-<h2 id="example-workflow">Example Workflow<a class="headerlink" href="#example-workflow" title="Permanent link">&para;</a></h2>
-<p>When working with Claude on API design:</p>
-<ol>
-<li><strong>Draft API</strong>: Ask Claude to help design an API</li>
-<li><strong>Lint Check</strong>: "Use the lint tool to check this spec against Google guidelines"</li>
-<li><strong>Fix Issues</strong>: "Use explain_rule to understand URI-001 and suggest a fix"</li>
-<li><strong>Final Review</strong>: "Run analyze to get a GO/NO-GO decision"</li>
-</ol>
-<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<p>The configuration file lets you:</p>
 <ul>
-<li><a href="../../reference/hooks/">AI Assistant Hooks</a> - Auto-lint on file save</li>
-<li><a href="../../reference/cli/">CLI Reference</a> - Complete command documentation</li>
+<li>Set default profile and conformance level</li>
+<li>Define file include/exclude patterns</li>
+<li>Configure rule exceptions</li>
+<li>Override rule severities</li>
 </ul>
+<h2 id="file-locations">File Locations<a class="headerlink" href="#file-locations" title="Permanent link">&para;</a></h2>
+<p>api-style-spec searches for config files in this order:</p>
+<ol>
+<li>Path specified via <code>--config</code> flag</li>
+<li><code>.api-style.yaml</code> in current directory</li>
+<li><code>.api-style.yml</code> in current directory</li>
+<li><code>api-style.yaml</code> in current directory</li>
+</ol>
+<h2 id="complete-example">Complete Example<a class="headerlink" href="#complete-example" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># .api-style.yaml</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Style profile to use (default, azure, google, zalando)</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nt">profile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Target conformance level (bronze, silver, gold)</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">silver</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># File patterns to include</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="nt">include</span><span class="p">:</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;openapi.yaml&quot;</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;openapi.yml&quot;</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;openapi.json&quot;</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;**/openapi.yaml&quot;</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;**/api.yaml&quot;</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;specs/**/*.yaml&quot;</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="c1"># File patterns to exclude</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="nt">exclude</span><span class="p">:</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;**/node_modules/**&quot;</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;**/vendor/**&quot;</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;**/.git/**&quot;</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;**/generated/**&quot;</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="c1"># Rule exceptions</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="nt">exceptions</span><span class="p">:</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">rule</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">URI-001</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/legacy/**&quot;</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w">    </span><span class="nt">reason</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Legacy</span><span class="nv"> </span><span class="s">API</span><span class="nv"> </span><span class="s">cannot</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">renamed&quot;</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">rule</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">operation-description</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/internal/**&quot;</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="w">    </span><span class="nt">reason</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Internal</span><span class="nv"> </span><span class="s">APIs</span><span class="nv"> </span><span class="s">have</span><span class="nv"> </span><span class="s">relaxed</span><span class="nv"> </span><span class="s">requirements&quot;</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="c1"># Override rule severities</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="nt">severity-overrides</span><span class="p">:</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="w">  </span><span class="nt">URI-002</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="w">  </span><span class="nt">info-description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">info</span>
+</code></pre></div>
+<h2 id="options-reference">Options Reference<a class="headerlink" href="#options-reference" title="Permanent link">&para;</a></h2>
+<h3 id="profile">profile<a class="headerlink" href="#profile" title="Permanent link">&para;</a></h3>
+<p>Style profile to use for linting.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>default</code></td>
+<td>Common REST API best practices</td>
+</tr>
+<tr>
+<td><code>azure</code></td>
+<td>Microsoft/Azure API guidelines</td>
+</tr>
+<tr>
+<td><code>google</code></td>
+<td>Google API Design Guide</td>
+</tr>
+<tr>
+<td><code>zalando</code></td>
+<td>Zalando RESTful Guidelines</td>
+</tr>
+</tbody>
+</table>
+<h3 id="level">level<a class="headerlink" href="#level" title="Permanent link">&para;</a></h3>
+<p>Target conformance level.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bronze</code></td>
+<td>Basic compliance</td>
+</tr>
+<tr>
+<td><code>silver</code></td>
+<td>Standard compliance</td>
+</tr>
+<tr>
+<td><code>gold</code></td>
+<td>Full compliance</td>
+</tr>
+</tbody>
+</table>
+<h3 id="include">include<a class="headerlink" href="#include" title="Permanent link">&para;</a></h3>
+<p>File patterns to include in linting. Supports:</p>
+<ul>
+<li>Exact filenames: <code>openapi.yaml</code></li>
+<li>Glob patterns: <code>*.yaml</code></li>
+<li>Recursive patterns: <code>**/openapi.yaml</code></li>
+<li>Directory patterns: <code>specs/**/*.yaml</code></li>
+</ul>
+<h3 id="exclude">exclude<a class="headerlink" href="#exclude" title="Permanent link">&para;</a></h3>
+<p>File patterns to exclude from linting. Same pattern syntax as <code>include</code>.</p>
+<p>Common exclusions:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">exclude</span><span class="p">:</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;**/node_modules/**&quot;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;**/vendor/**&quot;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;**/.git/**&quot;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;**/generated/**&quot;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;**/mock/**&quot;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;**/test/**&quot;</span>
+</code></pre></div>
+<h3 id="exceptions">exceptions<a class="headerlink" href="#exceptions" title="Permanent link">&para;</a></h3>
+<p>Rule exceptions for specific paths.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">exceptions</span><span class="p">:</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">rule</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;rule-id&gt;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&lt;glob-pattern&gt;&quot;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">reason</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;explanation&gt;&quot;</span>
+</code></pre></div>
+<p>Each exception has:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule</code></td>
+<td>Yes</td>
+<td>Rule ID to suppress (e.g., <code>URI-001</code>)</td>
+</tr>
+<tr>
+<td><code>paths</code></td>
+<td>Yes</td>
+<td>Glob patterns where exception applies</td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td>Yes</td>
+<td>Explanation for the exception</td>
+</tr>
+</tbody>
+</table>
+<h3 id="severity-overrides">severity-overrides<a class="headerlink" href="#severity-overrides" title="Permanent link">&para;</a></h3>
+<p>Override default rule severities.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">severity-overrides</span><span class="p">:</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">&lt;rule-id&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;severity&gt;</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Severity</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error</code></td>
+<td>Blocking violation</td>
+</tr>
+<tr>
+<td><code>warn</code></td>
+<td>Non-blocking warning</td>
+</tr>
+<tr>
+<td><code>info</code></td>
+<td>Informational</td>
+</tr>
+<tr>
+<td><code>hint</code></td>
+<td>Suggestion</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cli-flag-precedence">CLI Flag Precedence<a class="headerlink" href="#cli-flag-precedence" title="Permanent link">&para;</a></h2>
+<p>CLI flags override config file settings:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Config says profile: azure, but CLI overrides to google</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>api-style<span class="w"> </span>lint<span class="w"> </span>openapi.yaml<span class="w"> </span>--profile<span class="w"> </span>google
+</code></pre></div>
+<p>Precedence order:</p>
+<ol>
+<li>CLI flags (highest)</li>
+<li>Config file</li>
+<li>Built-in defaults (lowest)</li>
+</ol>
+<h2 id="json-format">JSON Format<a class="headerlink" href="#json-format" title="Permanent link">&para;</a></h2>
+<p>Configuration can also be JSON:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">&quot;profile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;azure&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">&quot;level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;silver&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="nt">&quot;include&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;openapi.yaml&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;**/api.yaml&quot;</span><span class="p">],</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="nt">&quot;exclude&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;**/generated/**&quot;</span><span class="p">],</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span><span class="nt">&quot;exceptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">      </span><span class="nt">&quot;rule&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;URI-001&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">      </span><span class="nt">&quot;paths&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/legacy/**&quot;</span><span class="p">],</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">      </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Legacy API&quot;</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">  </span><span class="p">],</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">  </span><span class="nt">&quot;severityOverrides&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">    </span><span class="nt">&quot;URI-002&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;warn&quot;</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="p">}</span>
+</code></pre></div>
+<p>Note: JSON uses <code>severityOverrides</code> (camelCase) while YAML uses <code>severity-overrides</code> (kebab-case).</p>
 
 
 

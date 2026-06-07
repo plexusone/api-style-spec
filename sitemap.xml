@@ -5,6 +5,10 @@
          <lastmod>2026-06-07</lastmod>
     </url>
     <url>
+         <loc>https://api-style-spec.dev/guide/automated-api-governance/</loc>
+         <lastmod>2026-06-07</lastmod>
+    </url>
+    <url>
          <loc>https://api-style-spec.dev/guide/custom-rules/</loc>
          <lastmod>2026-06-07</lastmod>
     </url>
@@ -38,6 +42,10 @@
     </url>
     <url>
          <loc>https://api-style-spec.dev/reference/cli/</loc>
+         <lastmod>2026-06-07</lastmod>
+    </url>
+    <url>
+         <loc>https://api-style-spec.dev/reference/config/</loc>
          <lastmod>2026-06-07</lastmod>
     </url>
     <url>
