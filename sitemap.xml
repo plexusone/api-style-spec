@@ -2,82 +2,82 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://api-style-spec.dev/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/guide/custom-rules/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/guide/getting-started/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/guide/mcp-server/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/guide/profiles/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/profiles/azure/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/profiles/default/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/profiles/google/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/profiles/zalando/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/reference/cli/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/reference/hooks/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/reference/schema/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/releases/changelog/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/releases/v0.1.0/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/specs/CONSTITUTION/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/specs/ROADMAP/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/specs/inception/MRD/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/specs/inception/PRD/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/specs/inception/ROADMAP/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
     <url>
          <loc>https://api-style-spec.dev/specs/inception/TRD/</loc>
-         <lastmod>2026-06-06</lastmod>
+         <lastmod>2026-06-07</lastmod>
     </url>
 </urlset>
