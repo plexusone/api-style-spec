@@ -18,6 +18,8 @@ var (
 	hooksAutoLint    bool
 	hooksInjectCtx   bool
 	hooksListFormats bool
+	hooksForce       bool
+	hooksLevel       string
 )
 
 var hooksCmd = &cobra.Command{
@@ -44,7 +46,10 @@ Examples:
   api-style hooks --format claude --profile azure
 
   # Write to a specific output file
-  api-style hooks --format claude --output .claude/settings.json`,
+  api-style hooks --format claude --output .claude/settings.json
+
+  # Install git pre-commit hook
+  api-style hooks init`,
 	RunE: runHooks,
 }
 
@@ -60,6 +65,29 @@ var hooksListCmd = &cobra.Command{
 	Short: "List supported hooks formats and events",
 	Long:  "List all supported hooks formats and the events they support.",
 	RunE:  runHooksList,
+}
+
+var hooksInitCmd = &cobra.Command{
+	Use:   "init",
+	Short: "Initialize git pre-commit hook",
+	Long: `Initialize a git pre-commit hook that lints OpenAPI specifications.
+
+The hook will automatically lint staged OpenAPI/Swagger files before each commit.
+If any linting errors are found, the commit will be blocked.
+
+Examples:
+  # Install pre-commit hook with default settings
+  api-style hooks init
+
+  # Install with a specific profile
+  api-style hooks init --profile azure
+
+  # Install with a specific conformance level
+  api-style hooks init --level silver
+
+  # Overwrite existing hook
+  api-style hooks init --force`,
+	RunE: runHooksInit,
 }
 
 func init() {
@@ -78,8 +106,14 @@ func init() {
 	hooksGenerateCmd.Flags().BoolVar(&hooksAutoLint, "auto-lint", true, "enable auto-linting")
 	hooksGenerateCmd.Flags().BoolVar(&hooksInjectCtx, "inject-context", false, "inject style context")
 
+	// Init subcommand flags
+	hooksInitCmd.Flags().StringVarP(&hooksProfile, "profile", "p", "default", "style profile to use for linting")
+	hooksInitCmd.Flags().StringVarP(&hooksLevel, "level", "l", "", "conformance level to enforce")
+	hooksInitCmd.Flags().BoolVar(&hooksForce, "force", false, "overwrite existing pre-commit hook")
+
 	hooksCmd.AddCommand(hooksGenerateCmd)
 	hooksCmd.AddCommand(hooksListCmd)
+	hooksCmd.AddCommand(hooksInitCmd)
 }
 
 func runHooks(cmd *cobra.Command, _ []string) error {
@@ -144,6 +178,30 @@ func runHooksList(_ *cobra.Command, _ []string) error {
 
 	fmt.Println("Use --format <name> to generate configuration for a specific format.")
 	fmt.Println("Use --format all to generate for all supported formats.")
+
+	return nil
+}
+
+func runHooksInit(_ *cobra.Command, _ []string) error {
+	opts := &hooks.InstallOptions{
+		PreCommitOptions: &hooks.PreCommitOptions{
+			Profile: hooksProfile,
+			Level:   hooksLevel,
+		},
+		Force: hooksForce,
+	}
+
+	if err := hooks.InstallPreCommit(opts); err != nil {
+		return fmt.Errorf("installing pre-commit hook: %w", err)
+	}
+
+	gitDir, _ := hooks.FindGitDir()
+	hookPath := filepath.Join(gitDir, "hooks", "pre-commit")
+
+	fmt.Printf("Installed pre-commit hook: %s\n", hookPath)
+	fmt.Println()
+	fmt.Println("The hook will automatically lint staged OpenAPI/Swagger files before commit.")
+	fmt.Println("To skip the hook for a single commit, use: git commit --no-verify")
 
 	return nil
 }
