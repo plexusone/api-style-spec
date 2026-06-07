@@ -7,6 +7,48 @@
   "maintainers": ["johnwang", "johncwang@gmail.com"],
   "releases": [
     {
+      "version": "v0.2.0",
+      "date": "2026-06-07",
+      "highlights": [
+        { "description": "Configuration file support (`.api-style.yaml`) for project-level governance settings" },
+        { "description": "Multi-file linting with glob patterns and recursive directory search" },
+        { "description": "Watch mode for continuous linting during development" },
+        { "description": "Git pre-commit hook generator for blocking commits with violations" }
+      ],
+      "added": [
+        { "description": "Configuration file support with profile, level, include/exclude patterns, exceptions, and severity overrides", "commit": "b548e01" },
+        { "description": "Config file auto-discovery (`.api-style.yaml`, `.api-style.yml`, `api-style.yaml`)", "commit": "b548e01" },
+        { "description": "Multi-file resolution with glob patterns (`api/*.yaml`)", "commit": "d186981" },
+        { "description": "Recursive directory search (`--recursive` flag)", "commit": "d186981" },
+        { "description": "Include/exclude pattern filtering with `**` double-star glob support", "commit": "d186981" },
+        { "description": "`MultiLintReport` type for aggregating results from multiple files", "commit": "d186981" },
+        { "description": "Git pre-commit hook generator (`api-style hooks init`)", "commit": "b25c337" },
+        { "description": "Pre-commit hook with configurable profile and conformance level", "commit": "b25c337" },
+        { "description": "File watcher using fsnotify with debouncing", "commit": "1b58b0a" },
+        { "description": "Watch mode (`--watch` flag) for continuous re-linting", "commit": "9118701" },
+        { "description": "`--config` flag for explicit config file path", "commit": "9118701" },
+        { "description": "`--recursive` flag for directory traversal", "commit": "9118701" },
+        { "description": "`hooks init` subcommand with `--force`, `--level` flags", "commit": "254d538" }
+      ],
+      "changed": [
+        { "description": "`api-style lint` accepts multiple file arguments", "commit": "9118701" },
+        { "description": "CLI flags override config file settings", "commit": "9118701" }
+      ],
+      "documentation": [
+        { "description": "Configuration file reference (`docs/reference/config.md`)", "commit": "6d5f069" },
+        { "description": "Example config file (`.api-style.yaml.example`)", "commit": "6d5f069" },
+        { "description": "CLI reference updates for new flags and commands", "commit": "d3703dc" },
+        { "description": "Getting started guide with config, multi-file, watch, pre-commit sections", "commit": "d3703dc" },
+        { "description": "Hooks reference with git pre-commit section", "commit": "d3703dc" },
+        { "description": "Automated API Governance guide for AI-first API design workflow", "commit": "e4bcaf0" },
+        { "description": "README and examples updates for v0.2.0 features", "commit": "2d3370e" }
+      ],
+      "build": [
+        { "description": "Add `github.com/fsnotify/fsnotify v1.10.1` dependency", "commit": "2334a2e" },
+        { "description": "Update indirect dependencies (regexp2/v2 to v2.2.1)", "commit": "baf0bee" }
+      ]
+    },
+    {
       "version": "v0.1.0",
       "date": "2026-06-06",
       "highlights": [
