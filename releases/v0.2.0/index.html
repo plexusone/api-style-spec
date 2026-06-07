@@ -10,11 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://api-style-spec.dev/releases/v0.1.0/">
+        <link rel="canonical" href="https://api-style-spec.dev/releases/v0.2.0/">
       
       
-        <link rel="prev" href="../v0.2.0/">
+        <link rel="prev" href="../changelog/">
       
+      
+        <link rel="next" href="../v0.1.0/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +24,7 @@
     
     
       
-        <title>v0.1.0 - api-style-spec</title>
+        <title>v0.2.0 - api-style-spec</title>
       
     
     
@@ -76,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#v010" class="md-skip">
+        <a href="#v020" class="md-skip">
           Skip to content
         </a>
       
@@ -117,7 +119,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              v0.1.0
+              v0.2.0
             
           </span>
         </div>
@@ -973,29 +975,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../v0.2.0/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    v0.2.0
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -1013,7 +992,7 @@
   
   
   <span class="md-ellipsis">
-    v0.1.0
+    v0.2.0
     
   </span>
   
@@ -1026,7 +1005,7 @@
   
   
   <span class="md-ellipsis">
-    v0.1.0
+    v0.2.0
     
   </span>
   
@@ -1067,6 +1046,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#upgrade-from-v010" class="md-nav__link">
+    <span class="md-ellipsis">
+      Upgrade from v0.1.0
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#features" class="md-nav__link">
     <span class="md-ellipsis">
       Features
@@ -1077,90 +1065,69 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#core-types-schema" class="md-nav__link">
+  <a href="#configuration-file-support" class="md-nav__link">
     <span class="md-ellipsis">
-      Core Types &amp; Schema
+      Configuration File Support
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linting-engine" class="md-nav__link">
+  <a href="#multi-file-linting" class="md-nav__link">
     <span class="md-ellipsis">
-      Linting Engine
+      Multi-File Linting
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#llm-evaluation" class="md-nav__link">
+  <a href="#watch-mode" class="md-nav__link">
     <span class="md-ellipsis">
-      LLM Evaluation
+      Watch Mode
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#generators" class="md-nav__link">
+  <a href="#git-pre-commit-hook" class="md-nav__link">
     <span class="md-ellipsis">
-      Generators
+      Git Pre-Commit Hook
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-cli-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      New CLI Flags
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="New CLI Flags">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lint-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      lint command
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#cli" class="md-nav__link">
+  <a href="#hooks-init-command" class="md-nav__link">
     <span class="md-ellipsis">
-      CLI
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mcp-server" class="md-nav__link">
-    <span class="md-ellipsis">
-      MCP Server
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#claude-code-integration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Claude Code Integration
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ide-integration" class="md-nav__link">
-    <span class="md-ellipsis">
-      IDE Integration
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#web-ui" class="md-nav__link">
-    <span class="md-ellipsis">
-      Web UI
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples
+      hooks init command
     </span>
   </a>
   
@@ -1181,9 +1148,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#test-coverage" class="md-nav__link">
+  <a href="#dependencies" class="md-nav__link">
     <span class="md-ellipsis">
-      Test Coverage
+      Dependencies
     </span>
   </a>
   
@@ -1202,6 +1169,29 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../v0.1.0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    v0.1.0
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -1259,6 +1249,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#upgrade-from-v010" class="md-nav__link">
+    <span class="md-ellipsis">
+      Upgrade from v0.1.0
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#features" class="md-nav__link">
     <span class="md-ellipsis">
       Features
@@ -1269,90 +1268,69 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#core-types-schema" class="md-nav__link">
+  <a href="#configuration-file-support" class="md-nav__link">
     <span class="md-ellipsis">
-      Core Types &amp; Schema
+      Configuration File Support
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#linting-engine" class="md-nav__link">
+  <a href="#multi-file-linting" class="md-nav__link">
     <span class="md-ellipsis">
-      Linting Engine
+      Multi-File Linting
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#llm-evaluation" class="md-nav__link">
+  <a href="#watch-mode" class="md-nav__link">
     <span class="md-ellipsis">
-      LLM Evaluation
+      Watch Mode
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#generators" class="md-nav__link">
+  <a href="#git-pre-commit-hook" class="md-nav__link">
     <span class="md-ellipsis">
-      Generators
+      Git Pre-Commit Hook
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-cli-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      New CLI Flags
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="New CLI Flags">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lint-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      lint command
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#cli" class="md-nav__link">
+  <a href="#hooks-init-command" class="md-nav__link">
     <span class="md-ellipsis">
-      CLI
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mcp-server" class="md-nav__link">
-    <span class="md-ellipsis">
-      MCP Server
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#claude-code-integration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Claude Code Integration
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ide-integration" class="md-nav__link">
-    <span class="md-ellipsis">
-      IDE Integration
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#web-ui" class="md-nav__link">
-    <span class="md-ellipsis">
-      Web UI
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples
+      hooks init command
     </span>
   </a>
   
@@ -1373,9 +1351,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#test-coverage" class="md-nav__link">
+  <a href="#dependencies" class="md-nav__link">
     <span class="md-ellipsis">
-      Test Coverage
+      Dependencies
     </span>
   </a>
   
@@ -1409,115 +1387,168 @@
   
 
 
-<h1 id="v010">v0.1.0<a class="headerlink" href="#v010" title="Permanent link">&para;</a></h1>
-<p><strong>Released:</strong> 2026-06-06</p>
-<p>Initial release of API Style Spec, a machine-readable API style specification format that generates human documentation, linting rules, LLM evaluation rubrics, and AI agent instructions from a single source of truth.</p>
+<h1 id="v020">v0.2.0<a class="headerlink" href="#v020" title="Permanent link">&para;</a></h1>
+<p><strong>Released:</strong> 2026-06-07</p>
+<p>This release adds project-level configuration, multi-file linting, watch mode, and git pre-commit hooks—enabling fully automated API governance workflows.</p>
 <h2 id="highlights">Highlights<a class="headerlink" href="#highlights" title="Permanent link">&para;</a></h2>
 <ul>
-<li>OpenAPI style linting with vacuum integration and configurable style profiles (Azure, Google, custom)</li>
-<li>LLM-powered API evaluation using Claude for semantic analysis beyond static rules</li>
-<li>MCP server for Claude Desktop and Claude Code integration with resources and prompts</li>
-<li>Web UI with Lit components and REST API backend for browser-based linting</li>
+<li>Configuration file support (<code>.api-style.yaml</code>) for project-level governance settings</li>
+<li>Multi-file linting with glob patterns and recursive directory search</li>
+<li>Watch mode for continuous linting during development</li>
+<li>Git pre-commit hook generator for blocking commits with violations</li>
 </ul>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>go<span class="w"> </span>install<span class="w"> </span>github.com/plexusone/api-style-spec/cmd/api-style@v0.1.0
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>go<span class="w"> </span>install<span class="w"> </span>github.com/plexusone/api-style-spec/cmd/api-style@v0.2.0
 </code></pre></div>
+<h2 id="upgrade-from-v010">Upgrade from v0.1.0<a class="headerlink" href="#upgrade-from-v010" title="Permanent link">&para;</a></h2>
+<p>No breaking changes. All v0.1.0 commands continue to work.</p>
+<p>New optional features:</p>
+<ol>
+<li>Add <code>.api-style.yaml</code> to your project root for default settings</li>
+<li>Use <code>--recursive</code> to lint directories</li>
+<li>Use <code>--watch</code> for continuous linting</li>
+<li>Run <code>api-style hooks init</code> to install pre-commit hooks</li>
+</ol>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
-<h3 id="core-types-schema">Core Types &amp; Schema<a class="headerlink" href="#core-types-schema" title="Permanent link">&para;</a></h3>
+<h3 id="configuration-file-support">Configuration File Support<a class="headerlink" href="#configuration-file-support" title="Permanent link">&para;</a></h3>
+<p>Define project-level settings in <code>.api-style.yaml</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">profile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">silver</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="nt">include</span><span class="p">:</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;api/**/*.yaml&quot;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="nt">exclude</span><span class="p">:</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;**/generated/**&quot;</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="nt">exceptions</span><span class="p">:</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">rule</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">URI-001</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="nt">paths</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;/legacy/**&quot;</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="nt">reason</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Legacy</span><span class="nv"> </span><span class="s">API</span><span class="nv"> </span><span class="s">cannot</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">changed&quot;</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="nt">severity-overrides</span><span class="p">:</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="nt">URI-002</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span>
+</code></pre></div>
 <ul>
-<li>Core types package with <code>LintReport</code>, <code>Violation</code>, <code>StyleProfile</code>, and <code>EvaluationResult</code> structs</li>
-<li>JSON Schema generation from Go types with embedded schemas</li>
+<li>Auto-discovery of config files (<code>.api-style.yaml</code>, <code>.api-style.yml</code>, <code>api-style.yaml</code>)</li>
+<li>CLI flags override config file settings</li>
+<li>Use <code>--config</code> for explicit config file path</li>
 </ul>
-<h3 id="linting-engine">Linting Engine<a class="headerlink" href="#linting-engine" title="Permanent link">&para;</a></h3>
+<h3 id="multi-file-linting">Multi-File Linting<a class="headerlink" href="#multi-file-linting" title="Permanent link">&para;</a></h3>
+<p>Lint multiple files at once:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Glob patterns</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>api-style<span class="w"> </span>lint<span class="w"> </span>api/*.yaml
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Recursive directory search</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>api-style<span class="w"> </span>lint<span class="w"> </span>.<span class="w"> </span>--recursive
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># Multiple arguments</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>api-style<span class="w"> </span>lint<span class="w"> </span>users.yaml<span class="w"> </span>orders.yaml<span class="w"> </span>products.yaml
+</code></pre></div>
 <ul>
-<li>Vacuum-based linting engine with severity mapping and JSON path extraction</li>
-<li>Style profile loading from YAML/JSON with built-in Azure and Google profiles</li>
-<li>Profile inheritance via <code>extends</code> field for building on base profiles</li>
+<li>Include/exclude pattern filtering</li>
+<li><code>**</code> double-star glob support for recursive matching</li>
+<li>Aggregated <code>MultiLintReport</code> with per-file results</li>
 </ul>
-<h3 id="llm-evaluation">LLM Evaluation<a class="headerlink" href="#llm-evaluation" title="Permanent link">&para;</a></h3>
+<h3 id="watch-mode">Watch Mode<a class="headerlink" href="#watch-mode" title="Permanent link">&para;</a></h3>
+<p>Continuous linting during development:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>api-style<span class="w"> </span>lint<span class="w"> </span>openapi.yaml<span class="w"> </span>--watch
+</code></pre></div>
 <ul>
-<li>LLM evaluation with Claude using structured prompts and JSON output</li>
-<li>Evaluation categories: naming, structure, documentation, security, versioning</li>
-<li>Analysis orchestrator combining static linting and LLM evaluation</li>
+<li>Re-lints on file changes</li>
+<li>Debouncing to coalesce rapid changes</li>
+<li>Graceful shutdown with Ctrl+C</li>
+<li>Timestamps for each run</li>
 </ul>
-<h3 id="generators">Generators<a class="headerlink" href="#generators" title="Permanent link">&para;</a></h3>
+<h3 id="git-pre-commit-hook">Git Pre-Commit Hook<a class="headerlink" href="#git-pre-commit-hook" title="Permanent link">&para;</a></h3>
+<p>Block commits with API style violations:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>api-style<span class="w"> </span>hooks<span class="w"> </span>init
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>api-style<span class="w"> </span>hooks<span class="w"> </span>init<span class="w"> </span>--profile<span class="w"> </span>azure<span class="w"> </span>--level<span class="w"> </span>silver
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>api-style<span class="w"> </span>hooks<span class="w"> </span>init<span class="w"> </span>--force<span class="w">  </span><span class="c1"># Overwrite existing hook</span>
+</code></pre></div>
 <ul>
-<li>Spectral ruleset generator from style profiles</li>
-<li>Markdown report generator with configurable output options</li>
+<li>Lints staged OpenAPI/Swagger files</li>
+<li>Blocks commits on errors</li>
+<li>Bypass with <code>git commit --no-verify</code></li>
 </ul>
-<h3 id="cli">CLI<a class="headerlink" href="#cli" title="Permanent link">&para;</a></h3>
-<ul>
-<li>CLI with <code>lint</code>, <code>analyze</code>, and <code>evaluate</code> commands</li>
-<li>Multiple output formats: text, JSON, SARIF</li>
-<li>Exit codes based on violation severity for CI integration</li>
-</ul>
-<h3 id="mcp-server">MCP Server<a class="headerlink" href="#mcp-server" title="Permanent link">&para;</a></h3>
-<ul>
-<li>MCP server with <code>openapi://</code> resource URIs for spec access</li>
-<li>MCP prompts for guided API review workflows</li>
-<li>MCP tools for linting and evaluation from Claude Desktop</li>
-</ul>
-<h3 id="claude-code-integration">Claude Code Integration<a class="headerlink" href="#claude-code-integration" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Claude Code hooks for pre-commit and post-save linting</li>
-<li>Claude Code skills for <code>/lint</code> and <code>/evaluate</code> slash commands</li>
-</ul>
-<h3 id="ide-integration">IDE Integration<a class="headerlink" href="#ide-integration" title="Permanent link">&para;</a></h3>
-<ul>
-<li>SARIF 2.1.0 output format for IDE integration (VS Code, JetBrains)</li>
-<li>GitHub Code Scanning compatible SARIF output</li>
-</ul>
-<h3 id="web-ui">Web UI<a class="headerlink" href="#web-ui" title="Permanent link">&para;</a></h3>
-<ul>
-<li>REST API server with <code>/api/lint</code> and <code>/api/profiles</code> endpoints</li>
-<li>CORS support for development and cross-origin requests</li>
-<li>Web UI with Lit components: spec editor, profile selector, results panel</li>
-<li>Vite-based frontend build with hot module replacement</li>
-</ul>
-<h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Example OpenAPI specs: PetStore and E-Commerce APIs</li>
-<li>Example custom style profiles demonstrating profile customization</li>
-</ul>
-<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
-<ul>
-<li>MkDocs documentation site with Material theme</li>
-<li>Getting started guide with installation and basic usage</li>
-<li>Profile customization guide with YAML examples</li>
-<li>MCP integration guide for Claude Desktop setup</li>
-<li>Feature roadmap with prioritized enhancements</li>
-</ul>
-<h2 id="test-coverage">Test Coverage<a class="headerlink" href="#test-coverage" title="Permanent link">&para;</a></h2>
+<h2 id="new-cli-flags">New CLI Flags<a class="headerlink" href="#new-cli-flags" title="Permanent link">&para;</a></h2>
+<h3 id="lint-command">lint command<a class="headerlink" href="#lint-command" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>Package</th>
-<th>Coverage</th>
+<th>Flag</th>
+<th>Short</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>analyze</td>
-<td>82%</td>
+<td><code>--config</code></td>
+<td><code>-c</code></td>
+<td>Explicit config file path</td>
 </tr>
 <tr>
-<td>judge</td>
-<td>76%</td>
+<td><code>--recursive</code></td>
+<td><code>-r</code></td>
+<td>Search directories recursively</td>
 </tr>
 <tr>
-<td>lint</td>
-<td>79%</td>
-</tr>
-<tr>
-<td>sarif</td>
-<td>92%</td>
+<td><code>--watch</code></td>
+<td><code>-w</code></td>
+<td>Watch files and re-lint on changes</td>
 </tr>
 </tbody>
 </table>
+<h3 id="hooks-init-command">hooks init command<a class="headerlink" href="#hooks-init-command" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Short</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--profile</code></td>
+<td><code>-p</code></td>
+<td>Style profile for linting</td>
+</tr>
+<tr>
+<td><code>--level</code></td>
+<td><code>-l</code></td>
+<td>Conformance level to enforce</td>
+</tr>
+<tr>
+<td><code>--force</code></td>
+<td></td>
+<td>Overwrite existing hook</td>
+</tr>
+</tbody>
+</table>
+<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
+<p>New documentation added:</p>
+<ul>
+<li><strong>Configuration File Reference</strong> - Complete <code>.api-style.yaml</code> options</li>
+<li><strong>Automated API Governance Guide</strong> - AI-first API design workflow</li>
+<li><strong>Pre-Commit Hook Reference</strong> - Git hook setup and usage</li>
+</ul>
+<p>Updated documentation:</p>
+<ul>
+<li>CLI Reference with new flags and commands</li>
+<li>Getting Started guide with config, multi-file, watch sections</li>
+<li>Examples README with new usage patterns</li>
+</ul>
+<h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Added <code>github.com/fsnotify/fsnotify v1.10.1</code> for file watching</li>
+</ul>
 <h2 id="links">Links<a class="headerlink" href="#links" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="https://github.com/plexusone/api-style-spec">GitHub Repository</a></li>
 <li><a href="https://plexusone.github.io/api-style-spec">Documentation</a></li>
+<li><a href="../../guide/automated-api-governance/">Automated API Governance Guide</a></li>
+<li><a href="../../reference/config/">Configuration Reference</a></li>
 <li><a href="../changelog/">Changelog</a></li>
 </ul>
 
