@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/grokify/mogo/path/filepathutil"
 	"github.com/plexusone/api-style-spec/pkg/types"
 )
 
@@ -537,12 +538,12 @@ func normalizeURI(path, baseURI string) string {
 	}
 
 	// Convert to absolute path if relative
-	if !filepath.IsAbs(path) && baseURI != "" {
+	if !filepathutil.IsAbsAny(path) && baseURI != "" {
 		return baseURI + "/" + path
 	}
 
 	// Convert to file URI
-	if filepath.IsAbs(path) {
+	if filepathutil.IsAbsAny(path) {
 		return "file://" + path
 	}
 
