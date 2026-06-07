@@ -1,10 +1,13 @@
 # AI Assistant Hooks
 
-Configure automatic API linting when working with AI coding assistants.
+Configure automatic API linting when working with AI coding assistants and git pre-commit hooks.
 
 ## Overview
 
-Hooks enable automatic API style checking when you save OpenAPI specification files. They integrate with AI assistants like Claude Code, Cursor, and Windsurf.
+Hooks enable automatic API style checking in two contexts:
+
+1. **AI Assistants** - Auto-lint when you save OpenAPI files in Claude Code, Cursor, or Windsurf
+2. **Git Pre-Commit** - Block commits that contain API style violations
 
 ## Supported Assistants
 
@@ -25,6 +28,9 @@ api-style hooks --format all
 
 # See supported formats
 api-style hooks list
+
+# Install git pre-commit hook
+api-style hooks init
 ```
 
 ## Hook Types
@@ -218,6 +224,51 @@ Ensure the profile name is valid:
 
 ```bash
 mcp-api-style list-profiles
+```
+
+## Git Pre-Commit Hook
+
+Install a git pre-commit hook that lints staged OpenAPI files before each commit:
+
+```bash
+api-style hooks init
+```
+
+### How It Works
+
+1. When you run `git commit`, the hook triggers
+2. It finds staged files matching OpenAPI patterns (`openapi.yaml`, `swagger.json`, etc.)
+3. Each file is linted using `api-style lint`
+4. If errors are found, the commit is blocked
+5. Warnings are displayed but don't block commits
+
+### Options
+
+```bash
+# Use Azure profile
+api-style hooks init --profile azure
+
+# Enforce silver conformance level
+api-style hooks init --level silver
+
+# Overwrite existing hook
+api-style hooks init --force
+```
+
+### Bypassing the Hook
+
+For emergency commits, bypass the hook with:
+
+```bash
+git commit --no-verify
+```
+
+### Uninstalling
+
+Remove the hook manually:
+
+```bash
+rm .git/hooks/pre-commit
 ```
 
 ## Next Steps
