@@ -47,6 +47,7 @@ nav:
   - Home: index.md
   - Guide:
       - Getting Started: guide/getting-started.md
+      - Automated API Governance: guide/automated-api-governance.md
       - Using Profiles: guide/profiles.md
       - Custom Rules: guide/custom-rules.md
       - MCP Server: guide/mcp-server.md

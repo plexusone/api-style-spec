@@ -164,6 +164,7 @@ See [.api-style.yaml.example](.api-style.yaml.example) for a complete example.
 ## Documentation
 
 - [Getting Started](docs/guide/getting-started.md)
+- [Automated API Governance](docs/guide/automated-api-governance.md) - AI-first API design workflow
 - [Creating Custom Profiles](docs/guide/profiles.md)
 - [Writing Custom Rules](docs/guide/custom-rules.md)
 - [MRD](docs/specs/inception/MRD.md) | [PRD](docs/specs/inception/PRD.md) | [TRD](docs/specs/inception/TRD.md) | [Roadmap](docs/specs/inception/ROADMAP.md)
