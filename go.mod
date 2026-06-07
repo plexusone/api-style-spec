@@ -4,6 +4,7 @@ go 1.26.3
 
 require (
 	github.com/daveshanley/vacuum v0.29.2
+	github.com/grokify/mogo v0.74.6-0.20260607041840-764ff58aaa42
 	github.com/invopop/jsonschema v0.14.0
 	github.com/modelcontextprotocol/go-sdk v1.6.1
 	github.com/plexusone/assistantkit v0.12.0
@@ -43,7 +44,6 @@ require (
 	github.com/google/jsonschema-go v0.4.3 // indirect
 	github.com/google/pprof v0.0.0-20260604005048-7023385849c0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/grokify/mogo v0.74.5 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/inconshreveable/log15/v3 v3.2.1 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
