@@ -156,3 +156,82 @@ func (r *LintReport) AddViolation(v Violation) {
 func (r *LintReport) HasBlockingViolations() bool {
 	return r.Summary.Errors > 0
 }
+
+// MultiLintReport contains results from linting multiple files.
+type MultiLintReport struct {
+	// Status is the overall pass/fail result across all files.
+	Status Status `json:"status"`
+
+	// Summary provides aggregate violation counts across all files.
+	Summary *ViolationSummary `json:"summary"`
+
+	// FileReports contains individual reports for each file.
+	FileReports []FileLintReport `json:"fileReports"`
+
+	// Metadata includes timing, versions, and other context.
+	Metadata *ReportMetadata `json:"metadata,omitempty"`
+}
+
+// FileLintReport wraps a LintReport with file path information.
+type FileLintReport struct {
+	// File is the path to the linted specification.
+	File string `json:"file"`
+
+	// Report contains the lint results for this file.
+	*LintReport
+}
+
+// NewMultiLintReport creates a new MultiLintReport with initialized fields.
+func NewMultiLintReport() *MultiLintReport {
+	return &MultiLintReport{
+		Status:      StatusPass,
+		Summary:     &ViolationSummary{},
+		FileReports: []FileLintReport{},
+		Metadata: &ReportMetadata{
+			Timestamp: time.Now(),
+		},
+	}
+}
+
+// AddFileReport adds a file report and updates the aggregate summary.
+func (r *MultiLintReport) AddFileReport(file string, report *LintReport) {
+	r.FileReports = append(r.FileReports, FileLintReport{
+		File:       file,
+		LintReport: report,
+	})
+
+	// Aggregate summary
+	if report.Summary != nil {
+		r.Summary.Errors += report.Summary.Errors
+		r.Summary.Warnings += report.Summary.Warnings
+		r.Summary.Infos += report.Summary.Infos
+		r.Summary.Hints += report.Summary.Hints
+		r.Summary.Total += report.Summary.Total
+	}
+
+	// Update status if any file failed
+	if report.Status == StatusFail {
+		r.Status = StatusFail
+	}
+}
+
+// HasBlockingViolations returns true if any file has error-level violations.
+func (r *MultiLintReport) HasBlockingViolations() bool {
+	return r.Summary.Errors > 0
+}
+
+// FileCount returns the number of files that were linted.
+func (r *MultiLintReport) FileCount() int {
+	return len(r.FileReports)
+}
+
+// FailedFileCount returns the number of files that failed linting.
+func (r *MultiLintReport) FailedFileCount() int {
+	count := 0
+	for _, fr := range r.FileReports {
+		if fr.Status == StatusFail {
+			count++
+		}
+	}
+	return count
+}
