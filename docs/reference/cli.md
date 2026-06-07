@@ -16,14 +16,14 @@ Complete reference for the `api-style` command-line interface.
 Lint an OpenAPI specification against style rules.
 
 ```bash
-api-style lint <openapi-spec> [flags]
+api-style lint <openapi-spec> [<openapi-spec>...] [flags]
 ```
 
 **Arguments:**
 
 | Argument | Description |
 |----------|-------------|
-| `openapi-spec` | Path to the OpenAPI specification file |
+| `openapi-spec` | Path(s) to OpenAPI specification file(s). Supports glob patterns. |
 
 **Flags:**
 
@@ -31,8 +31,11 @@ api-style lint <openapi-spec> [flags]
 |------|-------|---------|-------------|
 | `--format` | `-f` | `text` | Output format: `text`, `json`, `sarif` |
 | `--output` | `-o` | stdout | Output file path |
-| `--profile` | `-p` | `default` | Style profile to use |
+| `--profile` | `-p` | from config | Style profile to use |
 | `--level` | `-l` | | Conformance level: `bronze`, `silver`, `gold` |
+| `--config` | `-c` | `.api-style.yaml` | Config file path |
+| `--recursive` | `-r` | `false` | Search directories recursively |
+| `--watch` | `-w` | `false` | Watch files for changes and re-lint |
 
 **Examples:**
 
@@ -51,6 +54,18 @@ api-style lint openapi.yaml --format sarif --output report.sarif
 
 # Check silver conformance
 api-style lint openapi.yaml --profile default --level silver
+
+# Lint multiple files with glob pattern
+api-style lint api/*.yaml
+
+# Lint directory recursively
+api-style lint . --recursive
+
+# Watch mode for continuous linting
+api-style lint openapi.yaml --watch
+
+# Use explicit config file
+api-style lint openapi.yaml --config .api-style.yaml
 ```
 
 **Exit Codes:**
@@ -160,13 +175,18 @@ api-style generate spectral [flags]
 
 ### hooks
 
-Generate AI assistant hooks configuration.
+Generate AI assistant hooks configuration and git pre-commit hooks.
 
 ```bash
 api-style hooks [flags]
 api-style hooks generate [flags]
 api-style hooks list
+api-style hooks init [flags]
 ```
+
+#### hooks generate
+
+Generate AI assistant hooks for Claude Code, Cursor, or Windsurf.
 
 **Flags:**
 
@@ -202,6 +222,41 @@ api-style hooks --format claude --output .claude/settings.json
 | `claude` | `.claude/settings.json` |
 | `cursor` | `.cursor/hooks.json` |
 | `windsurf` | `.windsurf/hooks.json` |
+
+#### hooks init
+
+Install a git pre-commit hook that lints staged OpenAPI files before each commit.
+
+**Flags:**
+
+| Flag | Short | Default | Description |
+|------|-------|---------|-------------|
+| `--profile` | `-p` | `default` | Style profile for linting |
+| `--level` | `-l` | | Conformance level to enforce |
+| `--force` | | `false` | Overwrite existing pre-commit hook |
+
+**Examples:**
+
+```bash
+# Install pre-commit hook with defaults
+api-style hooks init
+
+# Install with Azure profile
+api-style hooks init --profile azure
+
+# Install with silver conformance level
+api-style hooks init --level silver
+
+# Overwrite existing hook
+api-style hooks init --force
+```
+
+The hook:
+
+- Runs on `git commit`
+- Lints staged OpenAPI/Swagger files (`.yaml`, `.yml`, `.json`)
+- Blocks commit if errors are found
+- Can be bypassed with `git commit --no-verify`
 
 ---
 

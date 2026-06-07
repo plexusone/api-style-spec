@@ -160,6 +160,70 @@ This combines:
 2. LLM evaluation (semantic analysis of design quality)
 3. GO/NO-GO decision for production readiness
 
+## Configuration File
+
+Create `.api-style.yaml` in your project root to configure default options:
+
+```yaml
+# .api-style.yaml
+profile: azure
+level: silver
+
+include:
+  - "openapi.yaml"
+  - "**/api.yaml"
+
+exclude:
+  - "**/generated/**"
+
+exceptions:
+  - rule: URI-001
+    paths: ["/legacy/**"]
+    reason: "Legacy API cannot be changed"
+```
+
+CLI flags override config file settings. See the [Configuration Reference](../reference/config.md) for all options.
+
+## Multi-File Linting
+
+Lint multiple files at once:
+
+```bash
+# Glob patterns
+api-style lint api/*.yaml
+
+# Recursive directory search
+api-style lint . --recursive
+
+# Multiple arguments
+api-style lint openapi.yaml swagger.yaml
+```
+
+## Watch Mode
+
+Continuously lint as you edit:
+
+```bash
+api-style lint openapi.yaml --watch
+```
+
+The watcher:
+
+- Runs initial lint on startup
+- Re-lints when files change
+- Shows timestamps for each run
+- Exits cleanly with Ctrl+C
+
+## Git Pre-Commit Hook
+
+Block commits with API style violations:
+
+```bash
+api-style hooks init
+```
+
+This installs a pre-commit hook that lints staged OpenAPI files. See [Hooks Reference](../reference/hooks.md) for details.
+
 ## Next Steps
 
 - [Using Profiles](profiles.md) - Understand built-in style profiles
