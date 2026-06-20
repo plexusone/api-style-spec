@@ -20,6 +20,24 @@ type Rule struct {
 	// Rationale explains why this rule exists and its benefits.
 	Rationale string `json:"rationale,omitempty"`
 
+	// Description provides extended prose explanation (Markdown).
+	Description string `json:"description,omitempty"`
+
+	// Background provides historical or industry context.
+	Background string `json:"background,omitempty"`
+
+	// SectionRef links to a document section ID.
+	SectionRef string `json:"sectionRef,omitempty"`
+
+	// Priority determines ordering within category (lower = higher priority).
+	Priority int `json:"priority,omitempty"`
+
+	// Version indicates when this rule was added or last changed.
+	Version string `json:"version,omitempty"`
+
+	// Deprecated provides deprecation information if the rule is deprecated.
+	Deprecated *DeprecationInfo `json:"deprecated,omitempty"`
+
 	// Examples provides good and bad usage patterns.
 	Examples *Examples `json:"examples,omitempty"`
 
@@ -37,6 +55,21 @@ type Rule struct {
 
 	// Recommended indicates if this rule is part of the recommended set.
 	Recommended bool `json:"recommended,omitempty"`
+
+	// Applicability defines when this rule applies.
+	Applicability *RuleApplicability `json:"applicability,omitempty"`
+
+	// Conditions are if/then/unless logic for rule application.
+	Conditions []Condition `json:"conditions,omitempty"`
+
+	// Relations define dependencies on other rules.
+	Relations []RuleRelation `json:"relations,omitempty"`
+
+	// DecisionTables provide structured decision guidance.
+	DecisionTables []DecisionTable `json:"decisionTables,omitempty"`
+
+	// Migration provides guidance for fixing violations.
+	Migration *MigrationGuidance `json:"migration,omitempty"`
 }
 
 // Examples provides good and bad usage patterns for a rule.
@@ -45,6 +78,8 @@ type Examples struct {
 	Good []string `json:"good,omitempty"`
 	// Bad shows incorrect usage patterns.
 	Bad []string `json:"bad,omitempty"`
+	// Detailed provides rich examples with annotations and context.
+	Detailed []DetailedExample `json:"detailed,omitempty"`
 }
 
 // EnforcementType defines how a rule is enforced.
@@ -147,6 +182,39 @@ type JudgeCriteria struct {
 
 	// Category overrides the rule's category for evaluation grouping.
 	Category string `json:"category,omitempty"`
+
+	// PassCriteria lists requirements for a "pass" score.
+	PassCriteria []string `json:"passCriteria,omitempty"`
+
+	// PartialCriteria lists requirements for a "partial" score.
+	PartialCriteria []string `json:"partialCriteria,omitempty"`
+
+	// FailCriteria lists requirements for a "fail" score.
+	FailCriteria []string `json:"failCriteria,omitempty"`
+
+	// Examples provides few-shot examples for LLM evaluation.
+	Examples *JudgeExamples `json:"examples,omitempty"`
+
+	// ScaleType defines the scoring scale type.
+	ScaleType string `json:"scaleType,omitempty"` // "categorical", "binary", "checklist"
+}
+
+// JudgeExamples provides few-shot examples aligned with structured-evaluation.
+type JudgeExamples struct {
+	// Pass is an example that demonstrates passing.
+	Pass *JudgeExample `json:"pass,omitempty"`
+	// Partial is an example that demonstrates partial compliance.
+	Partial *JudgeExample `json:"partial,omitempty"`
+	// Fail is an example that demonstrates failure.
+	Fail *JudgeExample `json:"fail,omitempty"`
+}
+
+// JudgeExample is a single few-shot example for LLM evaluation.
+type JudgeExample struct {
+	// Excerpt is the example API content or snippet.
+	Excerpt string `json:"excerpt"`
+	// Reasoning explains why this example gets this score (chain-of-thought).
+	Reasoning string `json:"reasoning"`
 }
 
 // Reference links to external documentation.
