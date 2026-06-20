@@ -15,6 +15,9 @@ type APIStyleSpec struct {
 	// Description provides context about this style specification.
 	Description string `json:"description,omitempty"`
 
+	// Introduction provides detailed introductory content (Markdown).
+	Introduction string `json:"introduction,omitempty"`
+
 	// Extends lists parent profiles to inherit rules from.
 	Extends []string `json:"extends,omitempty"`
 
@@ -35,6 +38,18 @@ type APIStyleSpec struct {
 
 	// Categories defines available rule categories with metadata.
 	Categories []Category `json:"categories,omitempty"`
+
+	// Patterns defines reusable API design patterns.
+	Patterns []Pattern `json:"patterns,omitempty"`
+
+	// Sections defines document structure for navigation.
+	Sections []Section `json:"sections,omitempty"`
+
+	// Glossary defines terminology used in the specification.
+	Glossary []GlossaryTerm `json:"glossary,omitempty"`
+
+	// Principles defines high-level design principles.
+	Principles []Principle `json:"principles,omitempty"`
 
 	// Metadata contains additional specification information.
 	Metadata *SpecMetadata `json:"metadata,omitempty"`
@@ -78,4 +93,55 @@ type SpecMetadata struct {
 	Contact string `json:"contact,omitempty"`
 	// LastUpdated is when the specification was last modified.
 	LastUpdated string `json:"lastUpdated,omitempty"`
+}
+
+// RulesForCategory returns all rules with the given category ID.
+func (s *APIStyleSpec) RulesForCategory(categoryID string) []Rule {
+	var rules []Rule
+	for _, r := range s.Rules {
+		if r.Category == categoryID {
+			rules = append(rules, r)
+		}
+	}
+	return rules
+}
+
+// GetCategory returns a category by ID, or nil if not found.
+func (s *APIStyleSpec) GetCategory(categoryID string) *Category {
+	for i := range s.Categories {
+		if s.Categories[i].ID == categoryID {
+			return &s.Categories[i]
+		}
+	}
+	return nil
+}
+
+// GetPattern returns a pattern by ID, or nil if not found.
+func (s *APIStyleSpec) GetPattern(patternID string) *Pattern {
+	for i := range s.Patterns {
+		if s.Patterns[i].ID == patternID {
+			return &s.Patterns[i]
+		}
+	}
+	return nil
+}
+
+// GetSection returns a section by ID, or nil if not found.
+func (s *APIStyleSpec) GetSection(sectionID string) *Section {
+	for i := range s.Sections {
+		if s.Sections[i].ID == sectionID {
+			return &s.Sections[i]
+		}
+	}
+	return nil
+}
+
+// GetRule returns a rule by ID, or nil if not found.
+func (s *APIStyleSpec) GetRule(ruleID string) *Rule {
+	for i := range s.Rules {
+		if s.Rules[i].ID == ruleID {
+			return &s.Rules[i]
+		}
+	}
+	return nil
 }
