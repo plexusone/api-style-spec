@@ -228,5 +228,6 @@ This installs a pre-commit hook that lints staged OpenAPI files. See [Hooks Refe
 
 - [Automated API Governance](automated-api-governance.md) - Set up AI-first API design with 100% automated enforcement
 - [Using Profiles](profiles.md) - Understand built-in style profiles
+- [Documentation Generation](documentation-generation.md) - Generate Markdown and MkDocs documentation
 - [Custom Rules](custom-rules.md) - Create your own rules
 - [CLI Reference](../reference/cli.md) - Complete command documentation

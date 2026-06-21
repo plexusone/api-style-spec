@@ -8,7 +8,9 @@ API style guides from Microsoft, Google, and Zalando have become industry standa
 
 ```
 api-style-spec (source of truth)
-    ├── Human Style Guide (Markdown)
+    ├── Human Style Guide
+    │   ├── Single-page Markdown
+    │   └── MkDocs Multi-page Site
     ├── Deterministic Linters (Spectral/vacuum)
     ├── LLM Review Rubrics
     ├── AI Agent Instructions (Claude Code, Cursor)
@@ -78,5 +80,6 @@ api-style analyze openapi.yaml --profile azure
 
 - [Getting Started](guide/getting-started.md) - Installation and first steps
 - [Using Profiles](guide/profiles.md) - Work with built-in style profiles
+- [Documentation Generation](guide/documentation-generation.md) - Generate Markdown and MkDocs sites
 - [CLI Reference](reference/cli.md) - Complete command documentation
 - [MCP Server](guide/mcp-server.md) - Use with AI assistants
