@@ -38,6 +38,42 @@
       "additionalProperties": false,
       "type": "object"
     },
+    "CodeAnnotation": {
+      "properties": {
+        "line": {
+          "type": "integer"
+        },
+        "endLine": {
+          "type": "integer"
+        },
+        "text": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Condition": {
+      "properties": {
+        "when": {
+          "type": "string"
+        },
+        "expression": {
+          "type": "string"
+        },
+        "then": {
+          "type": "string"
+        },
+        "unless": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
     "ConformanceLevel": {
       "properties": {
         "description": {
@@ -62,6 +98,117 @@
           "type": "integer"
         },
         "extends": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "DecisionRow": {
+      "properties": {
+        "values": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "highlight": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "DecisionTable": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "headers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "rows": {
+          "items": {
+            "$ref": "#/$defs/DecisionRow"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "DeprecationInfo": {
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "replacedBy": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "removalVersion": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "DetailedExample": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "annotations": {
+          "items": {
+            "$ref": "#/$defs/CodeAnnotation"
+          },
+          "type": "array"
+        },
+        "before": {
+          "type": "string"
+        },
+        "after": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Diagram": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "alt": {
           "type": "string"
         }
       },
@@ -139,6 +286,12 @@
         "bad": {
           "items": {
             "type": "string"
+          },
+          "type": "array"
+        },
+        "detailed": {
+          "items": {
+            "$ref": "#/$defs/DetailedExample"
           },
           "type": "array"
         }
@@ -226,6 +379,24 @@
       "additionalProperties": false,
       "type": "object"
     },
+    "GlossaryTerm": {
+      "properties": {
+        "term": {
+          "type": "string"
+        },
+        "definition": {
+          "type": "string"
+        },
+        "aliases": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
     "JudgeCriteria": {
       "properties": {
         "prompt": {
@@ -239,6 +410,57 @@
         },
         "category": {
           "type": "string"
+        },
+        "passCriteria": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "partialCriteria": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "failCriteria": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "examples": {
+          "$ref": "#/$defs/JudgeExamples"
+        },
+        "scaleType": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "JudgeExample": {
+      "properties": {
+        "excerpt": {
+          "type": "string"
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "JudgeExamples": {
+      "properties": {
+        "pass": {
+          "$ref": "#/$defs/JudgeExample"
+        },
+        "partial": {
+          "$ref": "#/$defs/JudgeExample"
+        },
+        "fail": {
+          "$ref": "#/$defs/JudgeExample"
         }
       },
       "additionalProperties": false,
@@ -266,6 +488,129 @@
         },
         "casingRules": {
           "$ref": "#/$defs/CasingRules"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "MigrationGuidance": {
+      "properties": {
+        "summary": {
+          "type": "string"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/MigrationStep"
+          },
+          "type": "array"
+        },
+        "autoFixAvailable": {
+          "type": "boolean"
+        },
+        "effort": {
+          "type": "string"
+        },
+        "breakingChange": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "MigrationStep": {
+      "properties": {
+        "order": {
+          "type": "integer"
+        },
+        "description": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Pattern": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "problem": {
+          "type": "string"
+        },
+        "solution": {
+          "type": "string"
+        },
+        "when": {
+          "type": "string"
+        },
+        "examples": {
+          "items": {
+            "$ref": "#/$defs/DetailedExample"
+          },
+          "type": "array"
+        },
+        "relatedRules": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "relatedPatterns": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "references": {
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "type": "array"
+        },
+        "diagrams": {
+          "items": {
+            "$ref": "#/$defs/Diagram"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Principle": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "relatedRules": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -303,6 +648,24 @@
         "rationale": {
           "type": "string"
         },
+        "description": {
+          "type": "string"
+        },
+        "background": {
+          "type": "string"
+        },
+        "sectionRef": {
+          "type": "string"
+        },
+        "priority": {
+          "type": "integer"
+        },
+        "version": {
+          "type": "string"
+        },
+        "deprecated": {
+          "$ref": "#/$defs/DeprecationInfo"
+        },
         "examples": {
           "$ref": "#/$defs/Examples"
         },
@@ -326,6 +689,72 @@
         },
         "recommended": {
           "type": "boolean"
+        },
+        "applicability": {
+          "$ref": "#/$defs/RuleApplicability"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "type": "array"
+        },
+        "relations": {
+          "items": {
+            "$ref": "#/$defs/RuleRelation"
+          },
+          "type": "array"
+        },
+        "decisionTables": {
+          "items": {
+            "$ref": "#/$defs/DecisionTable"
+          },
+          "type": "array"
+        },
+        "migration": {
+          "$ref": "#/$defs/MigrationGuidance"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "RuleApplicability": {
+      "properties": {
+        "apiTypes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "openAPIVersions": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "httpMethods": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "contexts": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "includePatterns": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "excludePatterns": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -346,6 +775,60 @@
       "additionalProperties": false,
       "type": "object"
     },
+    "RuleRelation": {
+      "properties": {
+        "ruleId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Section": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "order": {
+          "type": "integer"
+        },
+        "parentId": {
+          "type": "string"
+        },
+        "rules": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "patterns": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "introduction": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
     "SpecMetadata": {
       "properties": {
         "author": {
@@ -360,7 +843,13 @@
         "website": {
           "type": "string"
         },
+        "url": {
+          "type": "string"
+        },
         "contact": {
+          "type": "string"
+        },
+        "lastUpdated": {
           "type": "string"
         }
       },
@@ -399,6 +888,9 @@
     "description": {
       "type": "string"
     },
+    "introduction": {
+      "type": "string"
+    },
     "extends": {
       "items": {
         "type": "string"
@@ -435,6 +927,30 @@
     "categories": {
       "items": {
         "$ref": "#/$defs/Category"
+      },
+      "type": "array"
+    },
+    "patterns": {
+      "items": {
+        "$ref": "#/$defs/Pattern"
+      },
+      "type": "array"
+    },
+    "sections": {
+      "items": {
+        "$ref": "#/$defs/Section"
+      },
+      "type": "array"
+    },
+    "glossary": {
+      "items": {
+        "$ref": "#/$defs/GlossaryTerm"
+      },
+      "type": "array"
+    },
+    "principles": {
+      "items": {
+        "$ref": "#/$defs/Principle"
       },
       "type": "array"
     },
