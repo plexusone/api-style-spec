@@ -9,7 +9,8 @@ require (
 	github.com/invopop/jsonschema v0.14.0
 	github.com/modelcontextprotocol/go-sdk v1.6.1
 	github.com/plexusone/assistantkit v0.12.0
-	github.com/plexusone/omniskill v0.8.0
+	github.com/plexusone/omniskill v0.9.0
+	github.com/plexusone/structured-evaluation v0.8.0
 	github.com/spf13/cobra v1.10.2
 	golang.org/x/text v0.38.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -78,7 +79,7 @@ require (
 	go.yaml.in/yaml/v4 v4.0.0-rc.5 // indirect
 	golang.ngrok.com/muxado/v2 v2.0.1 // indirect
 	golang.ngrok.com/ngrok v1.13.0 // indirect
-	golang.org/x/exp v0.0.0-20260603202125-055de637280b // indirect
+	golang.org/x/exp v0.0.0-20260611194520-c48552f49976 // indirect
 	golang.org/x/net v0.56.0 // indirect
 	golang.org/x/oauth2 v0.36.0 // indirect
 	golang.org/x/sync v0.21.0 // indirect
