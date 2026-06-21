@@ -1,0 +1,331 @@
+{
+  "id": "Microsoft REST API Guidelines",
+  "name": "Microsoft REST API Guidelines Evaluation Rubric",
+  "version": "1.0.0",
+  "description": "Comprehensive style rules based on Microsoft Azure REST API Guidelines and Microsoft REST API Guidelines. This profile includes ~120 rules covering versioning, URI design, HTTP semantics, error handling, pagination, long-running operations, naming conventions, security, and more.",
+  "evaluationType": "analytic",
+  "passCriteria": {
+    "minCategoriesPassing": "all_required",
+    "maxFindingsSeverity": {
+      "critical": 0,
+      "high": 0,
+      "medium": -1
+    }
+  },
+  "categories": [
+    {
+      "id": "versioning",
+      "name": "API Versioning",
+      "description": "Version management, compatibility, and evolution strategies",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "api-version query parameter is documented or used in examples",
+              "No URI path versioning (e.g., /v1/, /v2/) is present",
+              "Version format follows Microsoft conventions (YYYY-MM-DD or YYYY-MM-DD-preview)",
+              "All api-version values use YYYY-MM-DD format",
+              "Preview versions correctly use -preview suffix"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": [
+              "api-version is present but format may not follow conventions",
+              "Some endpoints missing api-version documentation",
+              "Most versions use correct format but some inconsistencies exist"
+            ]
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "URI path versioning is used",
+              "No versioning mechanism is defined",
+              "api-version is not documented or required",
+              "Semantic versioning (1.0, 2.0) is used",
+              "Non-standard date formats are used"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Verify that the API uses api-version query parameter for versioning rather than URI path versioning. Check that api-version is documented as a required parameter.",
+      "examples": {
+        "pass": {
+          "excerpt": "api-version: 2024-01-15",
+          "reasoning": "Uses correct YYYY-MM-DD format for a GA release."
+        },
+        "fail": {
+          "excerpt": "api-version: v2.1",
+          "reasoning": "Uses semantic versioning instead of date-based versioning."
+        }
+      }
+    },
+    {
+      "id": "uri-design",
+      "name": "URI Design",
+      "description": "Path structure, resource naming, and URL conventions",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "All collection paths use plural nouns",
+              "Singleton resources (if any) are clearly documented"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": [
+              "Most paths use plural nouns but some exceptions exist"
+            ]
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "Collection paths consistently use singular nouns"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if resource collection paths use plural nouns (users, not user; documents, not document). Individual resources accessed by ID are fine as children of plural collections."
+    },
+    {
+      "id": "http-methods",
+      "name": "HTTP Methods",
+      "description": "Proper use of GET, POST, PUT, PATCH, DELETE, and other HTTP verbs",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if PUT operations are documented as full replacement. If PUT is used for partial updates, that's incorrect - PATCH should be used instead."
+    },
+    {
+      "id": "request-response",
+      "name": "Request/Response",
+      "description": "Payload structure, formats, and content negotiation",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if date and time properties use string type with format 'date-time' (ISO 8601). Look for properties with names like 'createdAt', 'updatedAt', 'timestamp'."
+    },
+    {
+      "id": "errors",
+      "name": "Error Handling",
+      "description": "Error response format, codes, and troubleshooting",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "Error responses include error.code (machine-readable)",
+              "Error responses include error.message (human-readable)",
+              "Error format is consistent across all error responses"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": [
+              "Error format is mostly correct but some fields are missing",
+              "Error format varies slightly between endpoints"
+            ]
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "No structured error format is defined",
+              "Error responses use non-standard format",
+              "Error responses are plain text or unstructured"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if error responses (4xx, 5xx) use the standard Microsoft error format with error.code and error.message fields."
+    },
+    {
+      "id": "pagination",
+      "name": "Pagination",
+      "description": "Collection paging patterns and query options",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "Collection responses use 'value' array for items",
+              "nextLink property is present when more results exist",
+              "nextLink is a complete URL"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": [
+              "Pagination exists but uses different property names",
+              "nextLink format differs slightly from standard"
+            ]
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "No pagination mechanism is defined",
+              "Client-driven page number pagination only"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if collection responses include a 'nextLink' property for pagination. Collections should return {\"value\": [...], \"nextLink\": \"url\"}."
+    },
+    {
+      "id": "filtering",
+      "name": "Filtering and Sorting",
+      "description": "Query parameters for filtering, sorting, and selecting data",
+      "weight": 1,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if collection endpoints support $filter query parameter for server-side filtering."
+    },
+    {
+      "id": "long-running",
+      "name": "Long Running Operations",
+      "description": "Async operation patterns and status polling",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "Long-running operations return 202 Accepted",
+              "Location header is included for status polling",
+              "Status endpoint returns operation progress"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": [
+              "202 is used but Location header format differs",
+              "LRO pattern is partially implemented"
+            ]
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "Long operations block until complete",
+              "No async mechanism is defined"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if operations that may take a long time return 202 Accepted with a Location header for polling."
+    },
+    {
+      "id": "naming",
+      "name": "Naming Conventions",
+      "description": "Property, field, and schema naming standards",
+      "weight": 1,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check for consistent naming patterns. For example, if some schemas use 'createdDateTime' and others use 'createdAt', that's inconsistent."
+    },
+    {
+      "id": "security",
+      "name": "Security",
+      "description": "Authentication, authorization, and data protection",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if the security scheme uses OAuth2 (preferably with Azure AD flows). API key authentication alone is not recommended."
+    },
+    {
+      "id": "headers",
+      "name": "HTTP Headers",
+      "description": "Standard and custom header usage",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if responses include a request-id or x-ms-request-id header for request tracing."
+    },
+    {
+      "id": "schema-design",
+      "name": "Schema Design",
+      "description": "JSON Schema structure and data types",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if schema properties include descriptions explaining their purpose."
+    },
+    {
+      "id": "collections",
+      "name": "Collections",
+      "description": "List operations and collection management",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if collection responses use 'value' as the property name for the items array."
+    },
+    {
+      "id": "conditional",
+      "name": "Conditional Requests",
+      "description": "ETags, If-Match, and optimistic concurrency",
+      "weight": 1,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if GET responses include ETag headers for resources that can be updated."
+    },
+    {
+      "id": "compatibility",
+      "name": "Compatibility",
+      "description": "Breaking changes and evolution guidelines",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if the API design avoids patterns that typically lead to breaking changes."
+    }
+  ],
+  "metadata": {
+    "author": "Microsoft"
+  }
+}

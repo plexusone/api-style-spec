@@ -1,0 +1,253 @@
+# Spectral Ruleset
+# Generated from: PlexusOne REST API Guidelines
+# Version: 1.0.0
+#
+# This file was auto-generated from an api-style-spec profile.
+# Do not edit manually - modify the source profile instead.
+
+extends:
+  - spectral:oas
+
+rules:
+
+  # PO-001: Provide OpenAPI 3.1 specification
+  # OpenAPI enables tooling, documentation generation, client SDK generation, and...
+  po-001:
+    description: "Provide OpenAPI 3.1 specification"
+    message: "Provide OpenAPI 3.1 specification"
+    severity: error
+    given: "$.openapi"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^3\\.1\\."
+
+  # PO-002: Use camelCase for property names
+  # camelCase is native to JavaScript/JSON and aligns with OpenAPI conventions. I...
+  po-002:
+    description: "Use camelCase for property names"
+    message: "Use camelCase for property names"
+    severity: error
+    given: "$.components.schemas[*].properties[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[a-z][a-zA-Z0-9]*$"
+
+  # PO-003: Use kebab-case for URL paths
+  # Kebab-case is the standard for URLs. It's readable and avoids issues with cas...
+  po-003:
+    description: "Use kebab-case for URL paths"
+    message: "Use kebab-case for URL paths"
+    severity: error
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^/[a-z0-9-/{}]+$"
+
+  # PO-005: Version APIs with URI prefix
+  # URI versioning is simple, explicit, and cacheable. Including version in the U...
+  po-005:
+    description: "Version APIs with URI prefix"
+    message: "Version APIs with URI prefix"
+    severity: error
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^/v[0-9]+/"
+
+  # PO-006: Use RFC 7807 Problem Details for errors
+  # RFC 7807 is an IETF standard for error responses. It provides a consistent st...
+  po-006:
+    description: "Use RFC 7807 Problem Details for errors"
+    message: "Use RFC 7807 Problem Details for errors"
+    severity: error
+    given: "$.paths[*][*].responses[?(@property >= '400')].content['application/problem+json']"
+    then:
+      function: truthy
+
+  # PO-010: Return 201 Created with Location header for POST
+  # 201 explicitly indicates creation. The Location header enables clients to fet...
+  po-010:
+    description: "Return 201 Created with Location header for POST"
+    message: "Return 201 Created with Location header for POST"
+    severity: error
+    given: "$.paths[*].post.responses['201']"
+    then:
+      function: truthy
+
+  # PO-011: Use 204 No Content for successful DELETE
+  # The resource no longer exists, so there's nothing to return. 204 clearly indi...
+  po-011:
+    description: "Use 204 No Content for successful DELETE"
+    message: "Use 204 No Content for successful DELETE"
+    severity: warn
+    given: "$.paths[*].delete.responses['204']"
+    then:
+      function: truthy
+
+  # PO-012: Use 400 Bad Request for validation errors
+  # 400 is the generic client error. It tells the client the request was wrong an...
+  po-012:
+    description: "Use 400 Bad Request for validation errors"
+    message: "Use 400 Bad Request for validation errors"
+    severity: error
+    given: "$.paths[*][*].responses['400']"
+    then:
+      function: truthy
+
+  # PO-013: Use 401 Unauthorized for missing/invalid authentication
+  # 401 specifically indicates an authentication problem. The client should authe...
+  po-013:
+    description: "Use 401 Unauthorized for missing/invalid authentication"
+    message: "401 specifically indicates an authentication problem. The client should authenticate and retry."
+    severity: error
+    given: "$.paths[*][*].responses['401']"
+    then:
+      function: truthy
+
+  # PO-014: Use 403 Forbidden for authorization failures
+  # 403 distinguishes authorization from authentication. The user is known but no...
+  po-014:
+    description: "Use 403 Forbidden for authorization failures"
+    message: "403 distinguishes authorization from authentication. The user is known but not permitted."
+    severity: error
+    given: "$.paths[*][*].responses['403']"
+    then:
+      function: truthy
+
+  # PO-015: Use 404 Not Found for missing resources
+  # 404 is clear and well-understood. Don't use 200 with an empty body or error m...
+  po-015:
+    description: "Use 404 Not Found for missing resources"
+    message: "404 is clear and well-understood. Don't use 200 with an empty body or error message."
+    severity: error
+    given: "$.paths[*][*].responses['404']"
+    then:
+      function: truthy
+
+  # PO-016: Use 409 Conflict for state conflicts
+  # 409 indicates a conflict that the client might resolve. Useful for optimistic...
+  po-016:
+    description: "Use 409 Conflict for state conflicts"
+    message: "Use 409 Conflict for state conflicts"
+    severity: warn
+    given: "$.paths[*][*].responses['409']"
+    then:
+      function: truthy
+
+  # PO-017: Use 422 Unprocessable Entity for semantic errors
+  # 422 distinguishes semantic errors from syntax errors (400). The request was u...
+  po-017:
+    description: "Use 422 Unprocessable Entity for semantic errors"
+    message: "Use 422 Unprocessable Entity for semantic errors"
+    severity: warn
+    given: "$.paths[*][*].responses['422']"
+    then:
+      function: truthy
+
+  # PO-018: Use 429 Too Many Requests for rate limiting
+  # 429 tells clients they're being throttled. Retry-After helps them back off ap...
+  po-018:
+    description: "Use 429 Too Many Requests for rate limiting"
+    message: "429 tells clients they're being throttled. Retry-After helps them back off appropriately."
+    severity: error
+    given: "$.paths[*][*].responses['429']"
+    then:
+      function: truthy
+
+  # PO-020: Use ISO 8601 for dates and times
+  # ISO 8601 is unambiguous and sortable. Always use UTC (Z suffix) for timestamp...
+  po-020:
+    description: "Use ISO 8601 for dates and times"
+    message: "Use ISO 8601 for dates and times"
+    severity: error
+    given: "$.components.schemas[*].properties[?(@.format == 'date-time')]"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^date-time$"
+
+  # PO-021: Use string for IDs
+  # String IDs are more flexible than integers. They support UUIDs, prefixed IDs,...
+  po-021:
+    description: "Use string for IDs"
+    message: "Use string for IDs"
+    severity: error
+    given: "$.components.schemas[*].properties[?(@property == 'id' || @property =~ /.*_id$/)]"
+    then:
+      function: enumeration
+      functionOptions:
+        values:
+          - "string"
+
+  # PO-022: Use Bearer token authentication
+  # Bearer tokens are the standard for API authentication. They work with OAuth 2...
+  po-022:
+    description: "Use Bearer token authentication"
+    message: "Bearer tokens are the standard for API authentication. They work with OAuth 2.0, JWT, and API keys."
+    severity: error
+    given: "$.components.securitySchemes[*]"
+    then:
+      function: enumeration
+      functionOptions:
+        values:
+          - "http"
+          - "oauth2"
+          - "openIdConnect"
+
+  # PO-023: Document security requirements per endpoint
+  # Explicit security documentation prevents accidental exposure and enables secu...
+  po-023:
+    description: "Document security requirements per endpoint"
+    message: "Explicit security documentation prevents accidental exposure and enables security testing."
+    severity: error
+    given: "$.paths[*][*]"
+    then:
+      function: truthy
+
+  # PO-028: Document all endpoints with summary and description
+  # Good documentation reduces support burden and improves developer experience. ...
+  po-028:
+    description: "Document all endpoints with summary and description"
+    message: "Document all endpoints with summary and description"
+    severity: error
+    given: "$.paths[*][*]"
+    then:
+      function: truthy
+
+  # PO-029: Provide examples for all schemas
+  # Examples help developers understand expected data formats. They're used in do...
+  po-029:
+    description: "Provide examples for all schemas"
+    message: "Provide examples for all schemas"
+    severity: warn
+    given: "$.components.schemas[*]"
+    then:
+      function: truthy
+
+  # PO-036: Use HTTPS only
+  # HTTPS protects data in transit. There's no reason to use HTTP for production ...
+  po-036:
+    description: "Use HTTPS only"
+    message: "HTTPS protects data in transit. There's no reason to use HTTP for production APIs."
+    severity: error
+    given: "$.servers[*].url"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^https://"
+
+  # PO-040: Use descriptive operation IDs
+  # Consistent operation IDs enable better SDK generation and documentation.
+  po-040:
+    description: "Use descriptive operation IDs"
+    message: "Consistent operation IDs enable better SDK generation and documentation."
+    severity: warn
+    given: "$.paths[*][*].operationId"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[a-z]+[A-Z][a-zA-Z]+$"

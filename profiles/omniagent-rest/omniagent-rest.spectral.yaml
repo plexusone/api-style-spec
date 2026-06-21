@@ -1,0 +1,156 @@
+# Spectral Ruleset
+# Generated from: OmniAgent REST API Guidelines
+# Version: 1.0.0
+#
+# This ruleset validates OmniAgent's OpenAPI spec with naming conventions
+# enforced per schema source:
+#   - openai: Inherited from OpenAI API (snake_case)
+#   - echartify: Inherited from echartify/chartir library (camelCase)
+#   - omniagent: OmniAgent bespoke APIs (snake_case)
+
+extends:
+  - spectral:oas
+
+rules:
+
+  # Disable overly strict or inapplicable rules from spectral:oas
+  camel-case-properties: off          # We have custom rules per naming source
+  oas3-valid-media-example: off       # Examples are optional
+  oas3-valid-schema-example: off      # Examples are optional
+  oas3-missing-example: off           # Examples are optional, not required
+  description-duplication: off        # Same field in multiple schemas should have same description
+  operation-description: off          # Summary is sufficient, description is redundant
+  oas3-unused-component: off          # Some components used at runtime (streaming), not in paths
+  nullable-enum-contains-null: off    # ogen-generated enums, can't modify
+
+  # OA-001: Provide OpenAPI 3.1 specification
+  oa-001:
+    description: "Provide OpenAPI 3.1 specification"
+    message: "OpenAPI version must be 3.1.x for JSON Schema compatibility"
+    severity: error
+    given: "$.openapi"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^3\\.1\\."
+
+  # ==========================================================================
+  # OA-002: Naming Convention Rules
+  # ==========================================================================
+  # Schemas are tagged with x-naming-source and x-naming-convention extensions:
+  #   - openai: Inherited from OpenAI API (snake_case)
+  #   - echartify: Inherited from echartify/chartir library (camelCase)
+  #   - omniagent: OmniAgent bespoke APIs (snake_case)
+  #
+  # Note: Vacuum doesn't support JSONPath filters like [?(@.x-naming-source)],
+  # so we use a combined rule that allows both conventions. The extensions
+  # serve as documentation and can be validated by other tools.
+  # ==========================================================================
+
+  # OA-002: Property names must follow their schema's naming convention
+  # Allows snake_case (OpenAI, OmniAgent) or camelCase (Echartify)
+  oa-002:
+    description: "Property names must use snake_case or camelCase consistently"
+    message: "Property '{{property}}' must use snake_case or camelCase"
+    severity: error
+    given: "$.components.schemas[*].properties[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        # Match: snake_case OR camelCase OR $schema
+        match: "^([$a-z][a-z0-9_]*|[a-z][a-zA-Z0-9]*)$"
+
+  # OA-002b: All schemas should have x-naming-source extension
+  oa-002-source:
+    description: "Schemas should declare naming source"
+    message: "Schema is missing x-naming-source extension (openai|echartify|omniagent)"
+    severity: warn
+    given: "$.components.schemas[*]"
+    then:
+      field: x-naming-source
+      function: truthy
+
+  # OA-003: Use kebab-case for URL paths
+  oa-003:
+    description: "Use kebab-case or lowercase for URL paths"
+    message: "URL paths must use kebab-case (lowercase with hyphens)"
+    severity: error
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^/[a-z0-9-/{}]+$"
+
+  # OA-007: Disabled - Many POST endpoints (chat/completions, trigger, search)
+  # don't create persistent resources and correctly return 200.
+  oa-007: off
+
+  # OA-008: Use 204 No Content for successful DELETE
+  oa-008:
+    description: "DELETE operations should return 204 No Content"
+    message: "DELETE operations should document 204 No Content response"
+    severity: warn
+    given: "$.paths[*].delete.responses"
+    then:
+      field: "204"
+      function: truthy
+
+  # OA-011: Use Bearer token authentication
+  oa-011:
+    description: "Use Bearer token authentication"
+    message: "Security schemes should use http (Bearer), oauth2, or openIdConnect"
+    severity: error
+    given: "$.components.securitySchemes[*].type"
+    then:
+      function: enumeration
+      functionOptions:
+        values:
+          - "http"
+          - "oauth2"
+          - "openIdConnect"
+
+  # OA-012: Document all endpoints with summary
+  oa-012:
+    description: "Document all endpoints with summary"
+    message: "Operation is missing a summary"
+    severity: error
+    given:
+      - "$.paths[*].get"
+      - "$.paths[*].post"
+      - "$.paths[*].put"
+      - "$.paths[*].patch"
+      - "$.paths[*].delete"
+    then:
+      field: summary
+      function: truthy
+
+  # OA-013: Define servers in specification
+  oa-013:
+    description: "Define servers in specification"
+    message: "Specification must define at least one server"
+    severity: error
+    given: "$"
+    then:
+      field: servers
+      function: truthy
+
+  # OA-014: Use descriptive operation IDs
+  oa-014:
+    description: "Use descriptive operation IDs"
+    message: "Operation ID should follow verbResource pattern (e.g., getModel, listAgents)"
+    severity: warn
+    given: "$.paths[*][*].operationId"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[a-z]+[A-Z][a-zA-Z]+$"
+
+  # OA-015: Provide schema descriptions
+  oa-015:
+    description: "Provide schema descriptions"
+    message: "Schema '{{property}}' is missing a description"
+    severity: warn
+    given: "$.components.schemas[*]"
+    then:
+      field: description
+      function: truthy

@@ -1,0 +1,195 @@
+# Spectral Ruleset
+# Generated from: Microsoft REST API Guidelines
+# Version: 1.0.0
+#
+# This file was auto-generated from an api-style-spec profile.
+# Do not edit manually - modify the source profile instead.
+
+extends:
+  - spectral:oas
+
+rules:
+
+  # MS-VER-001: Use api-version query parameter
+  # Microsoft APIs use the api-version query parameter for versioning. This allow...
+  ms-ver-001:
+    description: "Use api-version query parameter"
+    message: "Use api-version query parameter"
+    severity: error
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: "^/v[0-9]+/"
+
+  # MS-URI-001: Use lowercase paths
+  # Lowercase paths ensure consistency and avoid case-sensitivity issues across d...
+  ms-uri-001:
+    description: "Use lowercase paths"
+    message: "Use lowercase paths"
+    severity: error
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[a-z0-9/{}_.-]*$"
+
+  # MS-URI-003: Use kebab-case for multi-word paths
+  # Kebab-case (hyphen-separated) is the standard for URI path segments and impro...
+  ms-uri-003:
+    description: "Use kebab-case for multi-word paths"
+    message: "Kebab-case (hyphen-separated) is the standard for URI path segments and improves readability."
+    severity: error
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[a-z0-9/{}-]*$"
+
+  # MS-URI-005: Use camelCase for path parameters
+  # Path parameter names should use camelCase for consistency with JSON property ...
+  ms-uri-005:
+    description: "Use camelCase for path parameters"
+    message: "Path parameter names should use camelCase for consistency with JSON property naming."
+    severity: warn
+    given: "$.paths[*].parameters[?(@.in=='path')].name"
+    then:
+      function: casing
+      functionOptions:
+        type: camel
+
+  # MS-URI-007: Avoid file extensions in URIs
+  # Content negotiation should be done via Accept headers, not file extensions.
+  ms-uri-007:
+    description: "Avoid file extensions in URIs"
+    message: "Content negotiation should be done via Accept headers, not file extensions."
+    severity: warn
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: "\\.(json|xml|html)$"
+
+  # MS-HTTP-001: GET must not have request body
+  # GET requests must not have a request body per HTTP specification. Request par...
+  ms-http-001:
+    description: "GET must not have request body"
+    message: "GET must not have request body"
+    severity: error
+    given: "$.paths[*].get.requestBody"
+    then:
+      function: undefined
+
+  # MS-HTTP-002: DELETE should return 204 No Content
+  # Successful DELETE operations typically have no content to return, so 204 No C...
+  ms-http-002:
+    description: "DELETE should return 204 No Content"
+    message: "Successful DELETE operations typically have no content to return, so 204 No Content is appropriate."
+    severity: warn
+    given: "$.paths[*].delete.responses['204']"
+    then:
+      function: truthy
+
+  # MS-HTTP-003: POST should return 201 Created
+  # POST operations that create resources should return 201 Created with a Locati...
+  ms-http-003:
+    description: "POST should return 201 Created"
+    message: "POST operations that create resources should return 201 Created with a Location header."
+    severity: warn
+    given: "$.paths[*].post.responses['201']"
+    then:
+      function: truthy
+
+  # MS-HTTP-008: Use 200 for successful GET
+  # Successful GET requests should return 200 OK with the requested resource.
+  ms-http-008:
+    description: "Use 200 for successful GET"
+    message: "Successful GET requests should return 200 OK with the requested resource."
+    severity: error
+    given: "$.paths[*].get.responses['200']"
+    then:
+      function: truthy
+
+  # MS-REQ-001: Use camelCase for JSON properties
+  # JSON property names must use camelCase for consistency with JavaScript conven...
+  ms-req-001:
+    description: "Use camelCase for JSON properties"
+    message: "Use camelCase for JSON properties"
+    severity: error
+    given: "$.components.schemas[*].properties[*]~"
+    then:
+      function: casing
+      functionOptions:
+        type: camel
+
+  # MS-REQ-004: Use application/json content type
+  # JSON is the standard format for Microsoft REST APIs.
+  ms-req-004:
+    description: "Use application/json content type"
+    message: "JSON is the standard format for Microsoft REST APIs."
+    severity: error
+    given: "$.paths[*][*].requestBody.content['application/json']"
+    then:
+      function: truthy
+
+  # MS-SEC-001: Define security scheme
+  # APIs must document their authentication requirements for security and usability.
+  ms-sec-001:
+    description: "Define security scheme"
+    message: "APIs must document their authentication requirements for security and usability."
+    severity: error
+    given: "$.components.securitySchemes"
+    then:
+      function: truthy
+
+  # MS-SEC-002: Apply security globally
+  # Security should be applied at the API level to ensure all endpoints are prote...
+  ms-sec-002:
+    description: "Apply security globally"
+    message: "Security should be applied at the API level to ensure all endpoints are protected by default."
+    severity: error
+    given: "$.security"
+    then:
+      function: truthy
+
+  # MS-SEC-004: Use HTTPS only
+  # All API traffic must be encrypted using HTTPS to protect sensitive data.
+  ms-sec-004:
+    description: "Use HTTPS only"
+    message: "All API traffic must be encrypted using HTTPS to protect sensitive data."
+    severity: error
+    given: "$.servers[*].url"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^https://"
+
+  # MS-SCHEMA-001: Define all schemas
+  # All request and response bodies should have defined schemas for documentation...
+  ms-schema-001:
+    description: "Define all schemas"
+    message: "All request and response bodies should have defined schemas for documentation and validation."
+    severity: error
+    given: "$.components.schemas"
+    then:
+      function: truthy
+
+  # MS-DOC-001: Include operation descriptions
+  # Operation descriptions help developers understand API behavior.
+  ms-doc-001:
+    description: "Include operation descriptions"
+    message: "Operation descriptions help developers understand API behavior."
+    severity: warn
+    given: "$.paths[*][*].description"
+    then:
+      function: truthy
+
+  # MS-DOC-002: Include operation summary
+  # Operation summaries provide quick understanding of endpoint purpose.
+  ms-doc-002:
+    description: "Include operation summary"
+    message: "Operation summaries provide quick understanding of endpoint purpose."
+    severity: warn
+    given: "$.paths[*][*].summary"
+    then:
+      function: truthy

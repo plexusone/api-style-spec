@@ -1,0 +1,1390 @@
+{
+  "$schema": "../schema/api-style-spec.schema.json",
+  "version": "1.0.0",
+  "name": "PayPal REST API Guidelines",
+  "description": "Comprehensive style rules based on PayPal RESTful API Guidelines. These guidelines define standards for designing REST APIs following PayPal's internal best practices. Key differentiators include snake_case property naming, HATEOAS-driven API design, and structured error handling with error catalogs.",
+  "introduction": "The PayPal RESTful API Guidelines provide a comprehensive set of best practices for designing REST APIs. They emphasize:\n- HATEOAS (Hypermedia As The Engine Of Application State)\n- Consistent naming conventions (snake_case for fields, hyphen-case for URIs)\n- Structured error handling with error catalogs\n- Strong versioning and deprecation policies\n- JSON Schema draft-04 for type definitions",
+  "metadata": {
+    "author": "PayPal",
+    "url": "https://github.com/paypal/api-standards",
+    "repository": "https://github.com/paypal/api-standards",
+    "license": "CC0-1.0",
+    "lastUpdated": "2024-12-01"
+  },
+  "principles": [
+    {
+      "id": "loose-coupling",
+      "title": "Loose Coupling",
+      "description": "Services and consumers must be loosely coupled from each other. Changes to implementation should not break service consumers.",
+      "relatedRules": ["PP-COMPAT-001", "PP-COMPAT-002"]
+    },
+    {
+      "id": "encapsulation",
+      "title": "Encapsulation",
+      "description": "A domain service can access data directly only from its own data sources. Direct database access is forbidden for consumers.",
+      "relatedRules": ["PP-DESIGN-001"]
+    },
+    {
+      "id": "stability",
+      "title": "Stability",
+      "description": "Service contracts must be stable. Only backward-compatible changes may be made to service contracts.",
+      "relatedRules": ["PP-COMPAT-001", "PP-DEPREC-001"]
+    },
+    {
+      "id": "reusable",
+      "title": "Reusable",
+      "description": "Services should be developed to be reusable across multiple contexts and consumers.",
+      "relatedRules": ["PP-DESIGN-002"]
+    },
+    {
+      "id": "contract-based",
+      "title": "Contract-Based",
+      "description": "Functionality and technical attributes exposed through service contracts are explicit and unambiguous.",
+      "relatedRules": ["PP-SPEC-001", "PP-SPEC-002"]
+    },
+    {
+      "id": "consistency",
+      "title": "Consistency",
+      "description": "Services must follow a common set of guidelines, standards, and conventions.",
+      "relatedRules": ["PP-NAMING-001", "PP-HTTP-001"]
+    },
+    {
+      "id": "ease-of-use",
+      "title": "Ease of Use",
+      "description": "Services should be easy for developers to use without reference to documentation. Follow the principle of least astonishment.",
+      "relatedRules": ["PP-DESIGN-003"]
+    },
+    {
+      "id": "externalizable",
+      "title": "Externalizable",
+      "description": "Services should be designed for external use. Consider data sensitivity and API context.",
+      "relatedRules": ["PP-SECURITY-001"]
+    }
+  ],
+  "categories": [
+    {"id": "general", "title": "General Guidelines", "description": "API specification and fundamental requirements", "order": 1},
+    {"id": "http", "title": "HTTP Fundamentals", "description": "HTTP methods, headers, and status codes", "order": 2},
+    {"id": "hypermedia", "title": "Hypermedia", "description": "HATEOAS links and navigation", "order": 3},
+    {"id": "naming", "title": "Naming Conventions", "description": "URI, field, and resource naming", "order": 4},
+    {"id": "uri", "title": "URI Design", "description": "Resource paths and query parameters", "order": 5},
+    {"id": "json-schema", "title": "JSON Schema", "description": "JSON Schema usage and best practices", "order": 6},
+    {"id": "json-types", "title": "JSON Types", "description": "Primitive types and common types", "order": 7},
+    {"id": "errors", "title": "Error Handling", "description": "Error schema and error catalog", "order": 8},
+    {"id": "versioning", "title": "API Versioning", "description": "Lifecycle and versioning policy", "order": 9},
+    {"id": "deprecation", "title": "Deprecation", "description": "Deprecation annotations and runtime", "order": 10},
+    {"id": "compatibility", "title": "Compatibility", "description": "Backward compatibility rules", "order": 11},
+    {"id": "security", "title": "Security", "description": "Security and data protection", "order": 12}
+  ],
+  "sections": [
+    {
+      "id": "introduction",
+      "title": "Introduction",
+      "description": "Overview of PayPal REST API Guidelines",
+      "order": 1,
+      "introduction": "These guidelines define standards for designing RESTful APIs at PayPal. They follow RFC 2119 semantics for MUST, SHOULD, and MAY."
+    },
+    {
+      "id": "http-fundamentals",
+      "title": "HTTP Fundamentals",
+      "description": "HTTP methods, headers, and status codes",
+      "order": 2,
+      "rules": ["PP-HTTP-001", "PP-HTTP-002", "PP-HTTP-003", "PP-HTTP-004", "PP-HTTP-005"]
+    },
+    {
+      "id": "hypermedia-section",
+      "title": "Hypermedia / HATEOAS",
+      "description": "Link Description Objects and navigation",
+      "order": 3,
+      "rules": ["PP-HATEOAS-001", "PP-HATEOAS-002", "PP-HATEOAS-003", "PP-HATEOAS-004"]
+    },
+    {
+      "id": "naming-section",
+      "title": "Naming Conventions",
+      "description": "URI, field, and resource naming",
+      "order": 4,
+      "rules": ["PP-NAMING-001", "PP-NAMING-002", "PP-NAMING-003", "PP-NAMING-004", "PP-NAMING-005"]
+    },
+    {
+      "id": "error-section",
+      "title": "Error Handling",
+      "description": "Error schema and catalog",
+      "order": 5,
+      "rules": ["PP-ERROR-001", "PP-ERROR-002", "PP-ERROR-003"]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "hateoas-links",
+      "name": "HATEOAS Link Navigation",
+      "category": "hypermedia",
+      "summary": "Use HATEOAS links for state transitions",
+      "problem": "Clients hardcoding URIs creates tight coupling and makes API evolution difficult.",
+      "solution": "Return links in responses that guide clients through available state transitions. Clients should follow links rather than construct URIs.",
+      "when": "For all resources that support multiple operations or state transitions",
+      "examples": [
+        {
+          "title": "HATEOAS Response",
+          "type": "good",
+          "language": "json",
+          "code": "{\n  \"id\": \"ALT-JFWXHGUV7VI\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"links\": [\n    {\"href\": \"https://api.foo.com/v1/customer/users/ALT-JFWXHGUV7VI\", \"rel\": \"self\"},\n    {\"href\": \"https://api.foo.com/v1/customer/users/ALT-JFWXHGUV7VI\", \"rel\": \"edit\", \"method\": \"PATCH\"},\n    {\"href\": \"https://api.foo.com/v1/customer/users/ALT-JFWXHGUV7VI\", \"rel\": \"delete\", \"method\": \"DELETE\"}\n  ]\n}"
+        }
+      ],
+      "relatedRules": ["PP-HATEOAS-001", "PP-HATEOAS-002", "PP-HATEOAS-003"]
+    },
+    {
+      "id": "error-catalog",
+      "name": "Error Catalog Pattern",
+      "category": "errors",
+      "summary": "Use error catalogs for consistent error handling",
+      "problem": "Hardcoded error messages in code are difficult to localize and maintain.",
+      "solution": "Externalize error specifications in an error catalog. The catalog contains error names, messages, issues, and suggested actions.",
+      "when": "For all APIs that need consistent, localizable error handling",
+      "examples": [
+        {
+          "title": "Error Catalog Entry",
+          "type": "good",
+          "language": "json",
+          "code": "{\n  \"namespace\": \"payments\",\n  \"language\": \"en-US\",\n  \"errors\": [{\n    \"error_spec\": {\n      \"name\": \"VALIDATION_ERROR\",\n      \"message\": \"Invalid request - see details\",\n      \"log_level\": \"ERROR\",\n      \"http_status_codes\": [400],\n      \"issues\": [{\"id\": \"InvalidCreditCardType\", \"issue\": \"Value is invalid\"}]\n    }\n  }]\n}"
+        }
+      ],
+      "relatedRules": ["PP-ERROR-002", "PP-ERROR-003"]
+    },
+    {
+      "id": "snake-case-fields",
+      "name": "Snake Case Field Names",
+      "category": "naming",
+      "summary": "Use snake_case for JSON field names",
+      "problem": "Inconsistent field naming creates confusion across APIs.",
+      "solution": "Use lowercase words separated by underscores for all JSON field names.",
+      "when": "Always when defining JSON property names",
+      "examples": [
+        {
+          "title": "Snake Case Fields",
+          "type": "good",
+          "language": "json",
+          "code": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"billing_address\": {\n    \"street_address\": \"123 Main St\"\n  }\n}"
+        },
+        {
+          "title": "Camel Case (Incorrect)",
+          "type": "bad",
+          "language": "json",
+          "code": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\"\n}"
+        }
+      ],
+      "relatedRules": ["PP-NAMING-003"]
+    }
+  ],
+  "glossary": [
+    {"term": "HATEOAS", "definition": "Hypermedia As The Engine Of Application State - REST architectural constraint where clients navigate APIs via hyperlinks."},
+    {"term": "LDO", "definition": "Link Description Object - JSON object describing a hyperlink with href, rel, method, and title properties."},
+    {"term": "snake_case", "definition": "Naming convention using lowercase letters with underscores between words (e.g., first_name)."},
+    {"term": "hyphen-case", "definition": "Naming convention for URIs using lowercase letters with hyphens between words (e.g., credit-cards)."},
+    {"term": "Error Catalog", "definition": "Centralized collection of error specifications for a namespace, supporting localization and consistency."},
+    {"term": "Namespace", "definition": "A collection of related capabilities for a domain, forming the top-level segment of an API path."},
+    {"term": "Capability", "definition": "A business-oriented abstraction representing a set of related resources."},
+    {"term": "Resource Identifier", "definition": "A unique identifier for a resource, typically a UUID or HMAC-based hash."}
+  ],
+  "rules": [
+    {
+      "id": "PP-SPEC-001",
+      "title": "Use OpenAPI for API contract description",
+      "category": "general",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "OpenAPI provides a vendor-neutral API description format that enables tooling, documentation, and client generation.",
+      "description": "Use OpenAPI (formerly Swagger) to define API specifications. The OpenAPI Schema Object is based on JSON Schema draft-04 with extensions for documentation.",
+      "examples": {
+        "good": ["OpenAPI 2.0 or 3.x specification in YAML/JSON"],
+        "bad": ["No specification", "Proprietary documentation format"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.openapi", "$.swagger"]}
+      },
+      "references": [{"title": "OpenAPI Specification", "url": "https://swagger.io/specification/"}],
+      "tags": ["specification", "required"],
+      "recommended": true
+    },
+    {
+      "id": "PP-SPEC-002",
+      "title": "Use JSON Schema draft-04",
+      "category": "json-schema",
+      "severity": "warn",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "JSON Schema draft-04 is the most widely supported version with mature tooling.",
+      "description": "Use JSON Schema draft-04 for defining request/response models. If using links, media, or hyper-schema features, use http://json-schema.org/draft-04/hyper-schema#.",
+      "examples": {
+        "good": ["\"$schema\": \"http://json-schema.org/draft-04/schema#\""],
+        "bad": ["Using draft-03 or earlier", "No $schema declaration"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if JSON schemas use draft-04 format and include the $schema property.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-HTTP-001",
+      "title": "Use standard HTTP methods correctly",
+      "category": "http",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Correct HTTP method usage ensures predictable API behavior and enables caching, idempotency, and safety guarantees.",
+      "description": "Use HTTP methods according to their semantics:\n- GET: Retrieve resource (safe, cacheable)\n- POST: Create resource (unsafe, non-idempotent)\n- PUT: Replace resource (idempotent)\n- PATCH: Partial update (may be idempotent)\n- DELETE: Remove resource (idempotent)",
+      "examples": {
+        "good": ["GET /users/123 to retrieve a user", "POST /users to create a user", "PUT /users/123 to replace a user"],
+        "bad": ["POST /getUser to retrieve a user", "GET /deleteUser/123 to delete"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if HTTP methods are used according to their standard semantics. GET should be safe and idempotent, PUT should be idempotent, etc.",
+        "weight": 1.0,
+        "passCriteria": ["HTTP methods match their semantic intent", "GET operations are safe", "PUT/DELETE are idempotent"],
+        "failCriteria": ["GET used for mutations", "POST used where PUT/PATCH appropriate"]
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-HTTP-002",
+      "title": "Use appropriate HTTP status codes",
+      "category": "http",
+      "severity": "error",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Correct status codes enable clients to handle responses appropriately and enable proper caching behavior.",
+      "description": "Return appropriate HTTP status codes:\n- 200 OK: Successful GET/PUT/PATCH/DELETE\n- 201 Created: Successful POST creating a resource\n- 202 Accepted: Async processing accepted\n- 204 No Content: Successful with no response body\n- 400 Bad Request: Invalid request syntax or validation errors\n- 401 Unauthorized: Missing or invalid authentication\n- 403 Forbidden: Valid auth but insufficient permissions\n- 404 Not Found: Resource does not exist\n- 422 Unprocessable Entity: Semantic validation errors\n- 500 Internal Server Error: Server-side error",
+      "enforcement": {
+        "type": "spectral",
+        "function": "enumeration",
+        "given": {"paths": ["$.paths..responses"]},
+        "options": {"values": ["200", "201", "202", "204", "400", "401", "403", "404", "405", "406", "415", "422", "429", "500", "502", "503", "504"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-HTTP-003",
+      "title": "Use JSON as the primary data format",
+      "category": "http",
+      "severity": "error",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "JSON is the standard data format for REST APIs with wide tooling and library support.",
+      "description": "APIs MUST support application/json as the primary content type for requests and responses. Processing MUST be strictly JSON-based with proper serialization/deserialization.",
+      "examples": {
+        "good": ["Content-Type: application/json", "Accept: application/json"],
+        "bad": ["Content-Type: text/plain for JSON data", "XML-only APIs"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths..requestBody.content"]},
+        "options": {"match": "application/json"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-HTTP-004",
+      "title": "Use standard HTTP headers",
+      "category": "http",
+      "severity": "warn",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Standard headers ensure interoperability with HTTP infrastructure like caches and proxies.",
+      "description": "Use standard HTTP headers for common functionality:\n- Content-Type: Media type of request/response body\n- Accept: Acceptable media types for response\n- Authorization: Authentication credentials\n- Content-Language: Language of the content\n- Content-Length: Size of the entity-body",
+      "enforcement": {"type": "none"},
+      "recommended": true
+    },
+    {
+      "id": "PP-HTTP-005",
+      "title": "Use custom headers sparingly",
+      "category": "http",
+      "severity": "info",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Custom headers can cause compatibility issues with proxies and CDNs.",
+      "description": "Custom HTTP headers should be used sparingly. If needed, use a consistent prefix (e.g., Foo-Request-Id). Note that HTTP Location header should NOT be used to provide links - use response body instead.",
+      "examples": {
+        "good": ["Foo-Request-Id: abc-123-def"],
+        "bad": ["Using Location header for HATEOAS links", "Unprefixed custom headers"]
+      },
+      "enforcement": {"type": "none"},
+      "recommended": false
+    },
+    {
+      "id": "PP-HATEOAS-001",
+      "title": "Include HATEOAS links in responses",
+      "category": "hypermedia",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "HATEOAS enables loose coupling between clients and servers, allowing API evolution without breaking clients.",
+      "description": "All API responses SHOULD include links to guide clients through available state transitions. Links allow clients to navigate the API without hardcoding URIs. The client should only know a single entry point URI.",
+      "examples": {
+        "good": ["Response includes links array with self, edit, delete relations"],
+        "bad": ["Response has no links", "Client required to construct URIs"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if API responses include HATEOAS links for navigation and state transitions.",
+        "weight": 1.0,
+        "passCriteria": ["Responses include links array", "Links have href and rel properties", "Self link is present"],
+        "failCriteria": ["No links in responses", "Clients must construct URIs"]
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-HATEOAS-002",
+      "title": "Use Link Description Object schema",
+      "category": "hypermedia",
+      "severity": "error",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Consistent link structure enables tooling and client-side link processing.",
+      "description": "Links MUST use the Link Description Object (LDO) schema with required properties:\n- href: Absolute URI template (RFC 6570)\n- rel: Link relation type\n- method: HTTP verb (defaults to GET)\n- title: Optional helpful description",
+      "examples": {
+        "good": ["{\"href\": \"https://api.foo.com/v1/users/123\", \"rel\": \"self\", \"method\": \"GET\"}"],
+        "bad": ["Using relative URLs", "Missing rel property"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if links follow the Link Description Object schema with required href and rel properties, and optional method and title.",
+        "weight": 0.9,
+        "passCriteria": ["Links have href property", "Links have rel property", "href is an absolute URI"],
+        "failCriteria": ["Missing href", "Missing rel", "Relative URI in href"]
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-HATEOAS-003",
+      "title": "Use absolute URIs in links",
+      "category": "hypermedia",
+      "severity": "error",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "Absolute URIs allow clients to bookmark links and make requests without knowing the API base URL.",
+      "description": "Use ONLY absolute URIs as values for the href property. The value from the incoming Host header MUST be used as the host field. Clients bookmark absolute URIs for later use.",
+      "examples": {
+        "good": ["https://api.foo.com/v1/users/ALT-JFWXHGUV7VI"],
+        "bad": ["/v1/users/ALT-JFWXHGUV7VI", "users/ALT-JFWXHGUV7VI"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$..links[*].href"]},
+        "options": {"match": "^https?://"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-HATEOAS-004",
+      "title": "Use standard link relation types",
+      "category": "hypermedia",
+      "severity": "warn",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Standard relation types from IANA ensure consistent semantics across APIs.",
+      "description": "When semantics match, use IANA standardized link relations:\n- self: Link to the resource itself\n- create: Link to create a new resource\n- edit: Link to partially update (PATCH)\n- delete: Link to delete the resource\n- replace: Link to fully update (PUT)\n- first/last/next/prev: Pagination links\n- collection: Link to parent collection\n- search: Link to search endpoint\n\nFor controller actions, use action name as relation (e.g., activate, cancel, refund).",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if link relation types use IANA standard values where applicable.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-HATEOAS-005",
+      "title": "Include links array in schema",
+      "category": "hypermedia",
+      "severity": "warn",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Declaring links in schema enables code generators to create link accessor methods.",
+      "description": "The links array MUST be declared within the 'properties' keyword of the schema object. All possible links MUST be declared outside properties using URI templates. This enables code generators to add setter/getter methods.",
+      "enforcement": {"type": "none"},
+      "recommended": true
+    },
+    {
+      "id": "PP-NAMING-001",
+      "title": "Use lowercase letters in URIs",
+      "category": "naming",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Lowercase URIs are easier to read and avoid case-sensitivity issues.",
+      "description": "URIs MUST start with a letter and use only lowercase letters. Literals/expressions in URI paths SHOULD be separated using hyphens (-).",
+      "examples": {
+        "good": ["https://api.foo.com/v1/credit-cards", "https://api.foo.com/v1/billing-agreements"],
+        "bad": ["https://api.foo.com/v1/CreditCards", "https://api.foo.com/v1/credit_cards"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths"]},
+        "options": {"match": "^/[a-z0-9/-{}]+$"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-NAMING-002",
+      "title": "Use plural nouns for collections",
+      "category": "naming",
+      "severity": "error",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Plural nouns clearly indicate that an endpoint returns a collection of resources.",
+      "description": "Plural nouns SHOULD be used in URIs to identify collections. Resource names MUST be singular for singletons and plural for collections. Use nouns, not verbs.",
+      "examples": {
+        "good": ["/invoices", "/users", "/credit-cards"],
+        "bad": ["/invoice", "/getUsers", "/creditCard"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if collection endpoints use plural nouns and avoid verbs in resource names.",
+        "weight": 0.9
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-NAMING-003",
+      "title": "Use snake_case for field names",
+      "category": "naming",
+      "severity": "error",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "Consistent field naming improves API usability and enables automated processing.",
+      "description": "Key names MUST be lowercase words separated by underscore (_). Fields representing arrays SHOULD use plural nouns. Avoid boolean prefixes like is_ or has_.",
+      "examples": {
+        "good": ["first_name", "billing_address", "order_items"],
+        "bad": ["firstName", "FirstName", "is_active"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "casing",
+        "given": {"paths": ["$..properties"]},
+        "options": {"type": "snake"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-NAMING-004",
+      "title": "Use underscore for query parameters",
+      "category": "naming",
+      "severity": "warn",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Consistent query parameter naming across all APIs improves developer experience.",
+      "description": "Query parameter names MUST start with a letter and SHOULD be all lowercase. Only alpha characters, digits, and underscore (_) SHALL be used. Values MUST be percent-encoded.",
+      "examples": {
+        "good": ["?start_date=2024-01-01", "?page_size=20"],
+        "bad": ["?startDate=2024-01-01", "?page-size=20"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths..parameters[?(@.in=='query')].name"]},
+        "options": {"match": "^[a-z][a-z0-9_]*$"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-NAMING-005",
+      "title": "Use uppercase for enum values",
+      "category": "naming",
+      "severity": "warn",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Uppercase enum values are easily distinguishable from other string values.",
+      "description": "Enum entries SHOULD be composed of only uppercase alphanumeric characters and underscore (_). Industry standards may require exceptions.",
+      "examples": {
+        "good": ["FIELD_10", "NOT_EQUAL", "PAYMENT_COMPLETED"],
+        "bad": ["field_10", "notEqual", "PaymentCompleted"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$..enum[*]"]},
+        "options": {"match": "^[A-Z0-9_]+$"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-NAMING-006",
+      "title": "Use hyphens in URI paths",
+      "category": "naming",
+      "severity": "error",
+      "priority": 6,
+      "version": "1.0.0",
+      "rationale": "Hyphens are the standard word separator for URIs and are easier to read than underscores.",
+      "description": "Literals/expressions in URI paths SHOULD be separated using hyphens (-). This is the only place where hyphens are used as word separators. Use underscores (_) everywhere else.",
+      "examples": {
+        "good": ["/billing-agreements", "/credit-cards"],
+        "bad": ["/billing_agreements", "/creditCards"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths"]},
+        "options": {"notMatch": "_"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-URI-001",
+      "title": "Include version in URI path",
+      "category": "uri",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Version in URI makes API version explicit and enables hosting multiple versions.",
+      "description": "API endpoints MUST include the major version number in the URI path. Format: /v{major-version}/namespace/resource. Example: /v1/vault/credit-cards",
+      "examples": {
+        "good": ["/v1/payments/orders", "/v2/customer/users"],
+        "bad": ["/payments/orders", "/api/payments/orders"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths"]},
+        "options": {"match": "^/v[0-9]+/"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-URI-002",
+      "title": "Include namespace in URI path",
+      "category": "uri",
+      "severity": "error",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Namespaces provide context and scope for resources and prevent naming conflicts.",
+      "description": "URI paths MUST include a namespace identifier after the version. Namespaces are determined by logical boundaries in the business capability model.",
+      "examples": {
+        "good": ["/v1/vault/credit-cards", "/v1/payments/orders"],
+        "bad": ["/v1/credit-cards", "/v1/orders"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if URI paths include a namespace segment after the version.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-URI-003",
+      "title": "Limit sub-resource depth",
+      "category": "uri",
+      "severity": "warn",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "Deep nesting creates complex URLs and indicates potential modeling issues.",
+      "description": "No more than two levels of sub-resources SHOULD be supported. If specific sub-resource retrieval is needed and IDs are unique, prefer top-level resources.",
+      "examples": {
+        "good": ["/disputes/ABCD1234/documents", "/invoice-items/INV-001"],
+        "bad": ["/disputes/ABCD1234/documents/102030/attachments/ATT-001"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if URI paths have more than two levels of sub-resources.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-URI-004",
+      "title": "Use UUID or HMAC-based resource identifiers",
+      "category": "uri",
+      "severity": "error",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Predictable sequential IDs expose information and enable enumeration attacks.",
+      "description": "A UUID or Hashed Id (HMAC-based) is preferred as resource identifier. APIs MUST NOT use database sequence numbers as resource identifiers. Resource identifiers MUST be owned by the domain model.",
+      "examples": {
+        "good": ["CARD-7LT50814996943336KESEVWA", "550e8400-e29b-41d4-a716-446655440000"],
+        "bad": ["/users/1", "/orders/12345"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if resource identifiers use UUID or HMAC format rather than sequential integers.",
+        "weight": 0.9
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-URI-005",
+      "title": "Avoid consecutive resource identifiers",
+      "category": "uri",
+      "severity": "error",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Consecutive identifiers create ambiguous URIs and indicate poor resource modeling.",
+      "description": "There MUST NOT be two resource identifiers one after the other in a URI path.",
+      "examples": {
+        "good": ["/payments/12345/items/ABC"],
+        "bad": ["/payments/payments/12345/102030"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths"]},
+        "options": {"notMatch": "\\{[^}]+\\}/\\{[^}]+\\}"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-URI-006",
+      "title": "Scope sub-resource identifiers",
+      "category": "uri",
+      "severity": "error",
+      "priority": 6,
+      "version": "1.0.0",
+      "rationale": "Scoping prevents unauthorized access to resources through ID guessing.",
+      "description": "For security and data integrity, all sub-resource IDs MUST be scoped within the parent resource only. Even if a sub-resource exists, it MUST NOT be returned unless it belongs to the specified parent.",
+      "examples": {
+        "good": ["/users/1234/linked-accounts/ABCD returns ABCD only if linked to user 1234"],
+        "bad": ["/users/1234/linked-accounts/ABCD returns ABCD even if not linked to user 1234"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if sub-resource access is scoped to the parent resource.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-QUERY-001",
+      "title": "Use query parameters for filtering",
+      "category": "uri",
+      "severity": "warn",
+      "priority": 7,
+      "version": "1.0.0",
+      "rationale": "Query parameters are the standard mechanism for filtering collections.",
+      "description": "Query parameters SHOULD be used only for restricting collections or as search/filter criteria. Resource identifiers should be in the URI path, not query parameters.",
+      "examples": {
+        "good": ["/users?status=ACTIVE&created_after=2024-01-01"],
+        "bad": ["/users?id=123", "/getUsers?userId=123"]
+      },
+      "enforcement": {"type": "none"},
+      "recommended": true
+    },
+    {
+      "id": "PP-QUERY-002",
+      "title": "Support repeatable query parameters",
+      "category": "uri",
+      "severity": "info",
+      "priority": 8,
+      "version": "1.0.0",
+      "rationale": "Repeatable parameters are HTTP-standard and supported by most client libraries.",
+      "description": "It is RECOMMENDED to pass multiple values by repeating the query parameter (e.g., ?status=CLOSED&status=INVALID). The parameter MUST be marked as repeatable in specifications. Comma-separated values are NOT RECOMMENDED due to additional complexity.",
+      "examples": {
+        "good": ["?status=CLOSED&status=INVALID"],
+        "bad": ["?statuses=CLOSED,INVALID"]
+      },
+      "enforcement": {"type": "none"},
+      "recommended": false
+    },
+    {
+      "id": "PP-QUERY-003",
+      "title": "Support sorting with sort parameter",
+      "category": "uri",
+      "severity": "info",
+      "priority": 9,
+      "version": "1.0.0",
+      "rationale": "Consistent sort parameter syntax enables client-side sorting controls.",
+      "description": "Default sort order SHOULD be undefined and non-deterministic. For explicit sorting, use the sort query parameter with syntax: {field_name}|{asc|desc},{field_name}|{asc|desc}",
+      "examples": {
+        "good": ["/accounts?sort=date_of_birth|asc,zip_code|desc"],
+        "bad": ["/accounts?orderBy=dateOfBirth&order=asc"]
+      },
+      "enforcement": {"type": "none"},
+      "recommended": false
+    },
+    {
+      "id": "PP-JSON-001",
+      "title": "Define string min and max length",
+      "category": "json-types",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Length constraints enable database column sizing and backwards-compatible evolution.",
+      "description": "Strings SHOULD always explicitly define minLength and maxLength. Without maximum length, database columns cannot be reliably defined. Without minimum, clients may send empty strings inappropriately.",
+      "examples": {
+        "good": ["{\"type\": \"string\", \"minLength\": 1, \"maxLength\": 255}"],
+        "bad": ["{\"type\": \"string\"}"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$..properties[?(@.type=='string')].maxLength"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-JSON-002",
+      "title": "Use string for enum-like values",
+      "category": "json-types",
+      "severity": "warn",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "JSON Schema enum cannot be safely extended without breaking backwards compatibility.",
+      "description": "The enum keyword SHOULD only be used when values are fixed forever. For extensible values, use string type with documented values and pattern constraint. Set maxLength to 255 and minLength to 1 unless there's a technical reason not to.",
+      "examples": {
+        "good": ["{\"type\": \"string\", \"minLength\": 1, \"maxLength\": 255, \"pattern\": \"^[A-Z_]+$\", \"description\": \"Possible values: OPTION_ONE, OPTION_TWO\"}"],
+        "bad": ["{\"enum\": [\"OPTION_ONE\", \"OPTION_TWO\"]}"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if enum values are truly fixed or if string with pattern would be more appropriate.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-JSON-003",
+      "title": "Use string for decimal numbers",
+      "category": "json-types",
+      "severity": "error",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "JSON number precision varies by language. JavaScript only supports 64-bit floats, losing precision for large integers.",
+      "description": "Never use JSON Schema number type. Use string to represent decimal values. For integers, only use integer type for values that fit in 32-bit signed integer (-2^31 to 2^31-1). Larger values must use string.",
+      "examples": {
+        "good": ["{\"type\": \"string\", \"pattern\": \"^(-?[0-9]+|-?([0-9]+)?[.][0-9]+)$\", \"maxLength\": 32}"],
+        "bad": ["{\"type\": \"number\"}"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "falsy",
+        "given": {"paths": ["$..properties[?(@.type=='number')]"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-JSON-004",
+      "title": "Define integer bounds",
+      "category": "json-types",
+      "severity": "error",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Unbounded integers may overflow in some programming languages.",
+      "description": "When using integer type, always provide explicit minimum and maximum. Default to 32-bit signed integer bounds: minimum -2147483648, maximum 2147483647 (or 0 for non-negative).",
+      "examples": {
+        "good": ["{\"type\": \"integer\", \"minimum\": 0, \"maximum\": 2147483647}"],
+        "bad": ["{\"type\": \"integer\"}"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$..properties[?(@.type=='integer')].maximum"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-JSON-005",
+      "title": "Define array bounds",
+      "category": "json-types",
+      "severity": "warn",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Unbounded arrays may cause memory issues and should be limited for pagination.",
+      "description": "maxItems SHOULD always be defined. SHOULD NOT exceed 32767 (16-bit signed integer). minItems SHOULD also be defined, typically 0 or 1. Do not use maxItems to communicate page size.",
+      "examples": {
+        "good": ["{\"type\": \"array\", \"minItems\": 0, \"maxItems\": 100}"],
+        "bad": ["{\"type\": \"array\"}"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$..properties[?(@.type=='array')].maxItems"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-JSON-006",
+      "title": "Never use null values",
+      "category": "json-types",
+      "severity": "error",
+      "priority": 6,
+      "version": "1.0.0",
+      "rationale": "Null handling varies across languages. Undefined (absent) is clearer than null.",
+      "description": "APIs MUST NOT produce or consume null values. Omit properties rather than setting them to null. Many languages cannot distinguish between undefined and null, leading to serialization issues.",
+      "examples": {
+        "good": ["Omit optional fields: {}"],
+        "bad": ["{\"my_property\": null}"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if API examples or responses contain null values.",
+        "weight": 0.9
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-JSON-007",
+      "title": "Allow additional properties",
+      "category": "json-types",
+      "severity": "error",
+      "priority": 7,
+      "version": "1.0.0",
+      "rationale": "Setting additionalProperties: false breaks backwards compatibility when new fields are added.",
+      "description": "Schema authors MUST NOT explicitly set additionalProperties to false. This breaks clients that validate responses against schemas. Let the API implementation enforce conformance at runtime instead.",
+      "examples": {
+        "good": ["Omit additionalProperties or set to true"],
+        "bad": ["{\"type\": \"object\", \"additionalProperties\": false}"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "falsy",
+        "given": {"paths": ["$..schemas[?(@.additionalProperties===false)]"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-JSON-008",
+      "title": "Use allOf for schema extension",
+      "category": "json-schema",
+      "severity": "warn",
+      "priority": 8,
+      "version": "1.0.0",
+      "rationale": "allOf provides clear inheritance semantics supported by most tools.",
+      "description": "The allOf keyword MUST only be used for extending objects. This replaces the deprecated extends keyword from draft-03.",
+      "examples": {
+        "good": ["{\"allOf\": [{\"$ref\": \"address.json\"}, {\"properties\": {\"type\": {\"enum\": [\"residential\", \"business\"]}}}]}"],
+        "bad": ["Using extends keyword", "Duplicating base schema properties"]
+      },
+      "enforcement": {"type": "none"},
+      "recommended": true
+    },
+    {
+      "id": "PP-JSON-009",
+      "title": "Avoid anyOf and oneOf",
+      "category": "json-schema",
+      "severity": "warn",
+      "priority": 9,
+      "version": "1.0.0",
+      "rationale": "anyOf/oneOf create problems with code generation, documentation, and deserialization in typed languages.",
+      "description": "The anyOf and oneOf keywords SHOULD NOT be used. Code generators cannot accurately create models. Statically typed languages require custom deserializers. Use flat structures with optional fields instead.",
+      "examples": {
+        "good": ["{\"payment\": {...}, \"money_request\": {...}} with both optional"],
+        "bad": ["{\"extensions\": {\"oneOf\": [{\"$ref\": \"payment.json\"}, {\"$ref\": \"money_request.json\"}]}}"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "falsy",
+        "given": {"paths": ["$..oneOf", "$..anyOf"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-JSON-010",
+      "title": "Use readOnly for immutable fields",
+      "category": "json-schema",
+      "severity": "info",
+      "priority": 10,
+      "version": "1.0.0",
+      "rationale": "readOnly clearly indicates which fields cannot be modified by clients.",
+      "description": "When resources contain immutable fields, use the readOnly property to indicate them. PUT/PATCH operations can still update the resource but must not change readOnly fields.",
+      "examples": {
+        "good": ["{\"id\": {\"type\": \"string\", \"readOnly\": true}}"],
+        "bad": ["No indication of immutable fields"]
+      },
+      "enforcement": {"type": "none"},
+      "recommended": false
+    },
+    {
+      "id": "PP-COMMON-001",
+      "title": "Use ISO country codes",
+      "category": "json-types",
+      "severity": "error",
+      "priority": 11,
+      "version": "1.0.0",
+      "rationale": "ISO 3166-1 alpha-2 is the universal standard for country identification.",
+      "description": "All APIs and services MUST use the ISO 3166-1 alpha-2 two-letter country code standard.",
+      "examples": {
+        "good": ["US", "GB", "DE"],
+        "bad": ["USA", "United States", "840"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$..properties.country_code"]},
+        "options": {"match": "^[A-Z]{2}$"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-COMMON-002",
+      "title": "Use ISO currency codes",
+      "category": "json-types",
+      "severity": "error",
+      "priority": 12,
+      "version": "1.0.0",
+      "rationale": "ISO 4217 is the universal standard for currency identification.",
+      "description": "Currency type MUST use the three-letter currency code as defined in ISO 4217.",
+      "examples": {
+        "good": ["USD", "EUR", "GBP"],
+        "bad": ["$", "Dollars", "840"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$..properties.currency_code"]},
+        "options": {"match": "^[A-Z]{3}$"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-COMMON-003",
+      "title": "Use BCP-47 language tags",
+      "category": "json-types",
+      "severity": "error",
+      "priority": 13,
+      "version": "1.0.0",
+      "rationale": "BCP-47 is the standard for language identification used across web technologies.",
+      "description": "Language type MUST use BCP-47 language tags.",
+      "examples": {
+        "good": ["en", "en-US", "zh-Hans"],
+        "bad": ["English", "ENG", "1033"]
+      },
+      "enforcement": {"type": "none"},
+      "recommended": true
+    },
+    {
+      "id": "PP-COMMON-004",
+      "title": "Use RFC 3339 date-time format",
+      "category": "json-types",
+      "severity": "error",
+      "priority": 14,
+      "version": "1.0.0",
+      "rationale": "RFC 3339 is the standard date-time format for REST APIs.",
+      "description": "Date and time strings MUST conform to RFC 3339 date-time format. APIs MUST only emit UTC time in responses. Accept timezone offsets in requests but convert to UTC.",
+      "examples": {
+        "good": ["2024-01-15T14:30:00.000Z", "2024-01-15T14:30:00.000+05:00"],
+        "bad": ["01/15/2024", "January 15, 2024"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$..properties[?(@.format=='date-time')]"]},
+        "options": {"match": "date-time"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-COMMON-005",
+      "title": "Use IANA timezone identifiers",
+      "category": "json-types",
+      "severity": "warn",
+      "priority": 15,
+      "version": "1.0.0",
+      "rationale": "IANA timezone database is the authoritative source for timezone information.",
+      "description": "Timezone strings MUST use IANA timezone database identifiers (aka Olson/tzdata). Do not derive timezone from UTC offset as offsets can map to multiple timezones.",
+      "examples": {
+        "good": ["America/Los_Angeles", "Europe/Berlin"],
+        "bad": ["PST", "UTC-8", "-08:00"]
+      },
+      "enforcement": {"type": "none"},
+      "recommended": true
+    },
+    {
+      "id": "PP-COMMON-006",
+      "title": "Use money common type",
+      "category": "json-types",
+      "severity": "error",
+      "priority": 16,
+      "version": "1.0.0",
+      "rationale": "Consistent money representation prevents currency conversion errors.",
+      "description": "Use the money common type for monetary amounts. Both currency_code and value MUST exist. Amounts MUST NOT be negative. Some currencies like JPY have no sub-currency.",
+      "examples": {
+        "good": ["{\"currency_code\": \"USD\", \"value\": \"10.00\"}"],
+        "bad": ["{\"amount\": 10.00}", "{\"currency\": \"$\", \"value\": -5}"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if monetary values use the standard money type with currency_code and value fields.",
+        "weight": 0.9
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-COMMON-007",
+      "title": "Represent percentages as decimal values",
+      "category": "json-types",
+      "severity": "warn",
+      "priority": 17,
+      "version": "1.0.0",
+      "rationale": "Consistent percentage representation prevents calculation errors.",
+      "description": "Percentages and interest rates MUST be represented as percentages, not decimals. 19.99% should be serialized as 19.99, not 0.1999. Use the percentage common type.",
+      "examples": {
+        "good": ["{\"interest_rate\": \"19.99\"}"],
+        "bad": ["{\"interest_rate\": 0.1999}"]
+      },
+      "enforcement": {"type": "none"},
+      "recommended": true
+    },
+    {
+      "id": "PP-ERROR-001",
+      "title": "Use error.json schema for errors",
+      "category": "errors",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Consistent error format enables machine-readable error handling.",
+      "description": "APIs MUST return JSON error representations conforming to error.json schema with required fields:\n- name: Unique human-readable error name\n- details: Array of field-level errors (required for 4xx)\n- debug_id: Unique server-generated ID for correlation\n- message: Human-readable description of the problem\n- links: HATEOAS links for error resolution",
+      "examples": {
+        "good": ["{\"name\": \"VALIDATION_ERROR\", \"details\": [{\"field\": \"/credit_card/expire_month\", \"issue\": \"Required field is missing\", \"location\": \"body\"}], \"debug_id\": \"123456789\", \"message\": \"Invalid data provided\"}"],
+        "bad": ["{\"error\": \"Something went wrong\"}", "{\"code\": 400, \"message\": \"Bad request\"}"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if error responses follow the error.json schema with name, details, debug_id, and message fields.",
+        "weight": 1.0,
+        "passCriteria": ["Error has name field", "Error has debug_id", "Error has message", "4xx errors have details array"],
+        "failCriteria": ["Missing required error fields", "Non-standard error format"]
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-ERROR-002",
+      "title": "Use JSON Pointer for field errors",
+      "category": "errors",
+      "severity": "warn",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "JSON Pointer provides unambiguous field identification in nested structures.",
+      "description": "The field property in error details SHOULD use JSON Pointer (RFC 6901) to identify the field in error. Include location (query, path, or body) to indicate where the field is.",
+      "examples": {
+        "good": ["{\"field\": \"/credit_card/expire_month\", \"location\": \"body\"}"],
+        "bad": ["{\"field\": \"credit_card.expire_month\"}", "{\"field\": \"expireMonth\"}"]
+      },
+      "enforcement": {"type": "none"},
+      "recommended": true
+    },
+    {
+      "id": "PP-ERROR-003",
+      "title": "Use error catalogs",
+      "category": "errors",
+      "severity": "warn",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "Error catalogs enable localization, consistency, and separation of error definitions from code.",
+      "description": "Create error catalogs to externalize error specifications. The catalog contains error_spec entries with name, message, log_level, http_status_codes, issues, and suggested actions. This enables localization and keeps documentation in sync.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if errors are defined in a catalog rather than hardcoded in implementation.",
+        "weight": 0.6
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-ERROR-004",
+      "title": "Distinguish validation errors from semantic errors",
+      "category": "errors",
+      "severity": "error",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Different error types require different client handling strategies.",
+      "description": "Use appropriate status codes for validation:\n- 400 Bad Request: Not well-formed JSON or validation errors client can fix\n- 422 Unprocessable Entity: Well-formed but semantically invalid (e.g., insufficient balance)",
+      "examples": {
+        "good": ["400 for missing required field", "422 for insufficient balance"],
+        "bad": ["400 for all validation errors", "500 for validation errors"]
+      },
+      "enforcement": {"type": "none"},
+      "recommended": true
+    },
+    {
+      "id": "PP-VERSION-001",
+      "title": "Follow semantic versioning",
+      "category": "versioning",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Semantic versioning communicates the impact of changes to consumers.",
+      "description": "API specifications MUST follow versioning scheme: v{major}.{minor}. Major versions start at 1 for first LIVE release. Minor versions maintain backward compatibility within major version.",
+      "examples": {
+        "good": ["v1.0", "v2.3"],
+        "bad": ["v0.1", "version1", "1.0.0"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.info.version"]},
+        "options": {"match": "^[0-9]+\\.[0-9]+$"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-VERSION-002",
+      "title": "Only expose major version in URI",
+      "category": "versioning",
+      "severity": "error",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Minor versions should be backward compatible and not require URI changes.",
+      "description": "API endpoints MUST only reflect the major version. Minor version changes should be transparent to clients as they maintain backward compatibility.",
+      "examples": {
+        "good": ["/v1/payments/orders", "/v2/users"],
+        "bad": ["/v1.2/payments/orders", "/v1-beta/users"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths"]},
+        "options": {"match": "^/v[0-9]+/"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-VERSION-003",
+      "title": "Track API lifecycle state",
+      "category": "versioning",
+      "severity": "warn",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "Clear lifecycle states enable proper API governance and consumer planning.",
+      "description": "APIs should track lifecycle states:\n- PLANNED: Scheduled for development\n- BETA: Available to selected subscribers for testing\n- LIVE: Available to new subscribers, fully supported\n- DEPRECATED: Available to existing subscribers, not accepting new\n- RETIRED: Unpublished, removed from production",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API specification indicates its lifecycle state.",
+        "weight": 0.5
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-COMPAT-001",
+      "title": "Make only additive and optional changes",
+      "category": "compatibility",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Backward compatibility maintains consumer trust and avoids breaking deployments.",
+      "description": "Backward-compatible changes MUST be:\n1. All changes additive\n2. All changes optional\n3. Semantics unchanged\n4. Parameters unordered\n5. Additional functionality as optional extensions or new child resources",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if API changes are backward compatible: additive, optional, and semantically consistent.",
+        "weight": 1.0,
+        "passCriteria": ["New fields are optional", "No fields removed", "No semantic changes", "No required parameter additions"],
+        "failCriteria": ["Required fields removed", "Field semantics changed", "New required parameters"]
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-COMPAT-002",
+      "title": "Recognize all previous valid values",
+      "category": "compatibility",
+      "severity": "error",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Removing valid enum values breaks existing clients.",
+      "description": "A service MUST recognize all previously valid values for a parameter and SHOULD NOT throw errors when used. For enum types, existing enumerated values and their meanings MUST NOT change.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if enum values or parameter constraints have been removed or made more restrictive.",
+        "weight": 0.9
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-COMPAT-003",
+      "title": "Preserve response structure",
+      "category": "compatibility",
+      "severity": "error",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "Clients depend on response structure for deserialization.",
+      "description": "Existing properties MUST continue to be returned with same name and JSON type. Array content types MUST NOT change. New properties MAY be added but MUST NOT alter meaning of existing properties and MUST NOT be mandatory.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if response property names, types, or semantics have changed.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-DEPREC-001",
+      "title": "Use x-deprecated annotation",
+      "category": "deprecation",
+      "severity": "warn",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Deprecation annotations enable tooling to highlight deprecated elements.",
+      "description": "Use the x-deprecated annotation to mark deprecated API elements in OpenAPI specifications. Include since_version and see (replacement) properties. Supported for resources, methods, parameters, and schema properties.",
+      "examples": {
+        "good": ["{\"x-deprecated\": {\"since_version\": \"1.4\", \"see\": \"new-endpoint\"}}"],
+        "bad": ["Deprecation only in description text", "No deprecation annotation"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if deprecated API elements use the x-deprecated annotation with version and replacement info.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-DEPREC-002",
+      "title": "Return deprecation header at runtime",
+      "category": "deprecation",
+      "severity": "warn",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Runtime deprecation headers enable automated client notifications.",
+      "description": "The API server MUST respond with a custom deprecation header when deprecated elements are used in request or response. Applications should check for header existence and log warnings.",
+      "examples": {
+        "good": ["Foo-Deprecated: {}"],
+        "bad": ["No deprecation header", "Deprecation only in response body"]
+      },
+      "enforcement": {"type": "none"},
+      "recommended": true
+    },
+    {
+      "id": "PP-DEPREC-003",
+      "title": "Support deprecated elements for major version lifetime",
+      "category": "deprecation",
+      "severity": "error",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "Premature removal of deprecated features breaks existing consumers.",
+      "description": "Deprecated API elements MUST remain supported for the life of the major version or until customers are no longer using them.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if deprecated elements are still functional and documented.",
+        "weight": 0.9
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-EOL-001",
+      "title": "Provide migration path before deprecation",
+      "category": "versioning",
+      "severity": "error",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Consumers need a clear migration path before deprecated versions are removed.",
+      "description": "A major API version MUST NOT be DEPRECATED until a replacement is LIVE with clear migration path. This SHOULD include documentation, migration tools, and sample code.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if deprecated versions have documented migration paths to newer versions.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-EOL-002",
+      "title": "Allow adequate deprecation period",
+      "category": "versioning",
+      "severity": "warn",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Adequate notice enables consumers to plan and execute migrations.",
+      "description": "Deprecated API versions MUST remain in DEPRECATED state for a minimum period to give clients adequate migration notice. External clients may require longer periods.",
+      "enforcement": {"type": "none"},
+      "recommended": true
+    },
+    {
+      "id": "PP-SECURITY-001",
+      "title": "Design for external use",
+      "category": "security",
+      "severity": "warn",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "APIs designed for external use have better security posture.",
+      "description": "Services should be designed as if they will be exposed externally. Consider data sensitivity, access controls, and appropriate context for all API operations.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if API design considers security concerns like data exposure, authentication, and authorization.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-DESIGN-001",
+      "title": "Encapsulate domain data access",
+      "category": "general",
+      "severity": "error",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Direct database access creates tight coupling and bypasses business logic.",
+      "description": "A domain service can access data directly only from its own data sources. Consumers MUST NOT have direct database access and MUST go through the service API.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if API design properly encapsulates data access through service boundaries.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "PP-DESIGN-002",
+      "title": "Design reusable services",
+      "category": "general",
+      "severity": "info",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "Reusable services reduce duplication and enable broader adoption.",
+      "description": "Services should be developed to be reusable across multiple contexts and consumers. Avoid tight coupling to specific client needs.",
+      "enforcement": {"type": "none"},
+      "recommended": false
+    },
+    {
+      "id": "PP-DESIGN-003",
+      "title": "Follow principle of least astonishment",
+      "category": "general",
+      "severity": "info",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Predictable APIs are easier to use and require less documentation.",
+      "description": "Services should be easy for developers to use without extensive documentation. API behavior should be predictable and consistent with common expectations.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if API behavior follows common REST conventions and is predictable.",
+        "weight": 0.6
+      },
+      "recommended": false
+    },
+    {
+      "id": "PP-PAGINATION-001",
+      "title": "Use pagination for collections",
+      "category": "uri",
+      "severity": "warn",
+      "priority": 10,
+      "version": "1.0.0",
+      "rationale": "Unbounded collections cause performance and memory issues.",
+      "description": "Collection responses should support pagination. Use standard link relations (first, last, next, prev) for navigation. Default sort order should be undefined.",
+      "examples": {
+        "good": ["Response includes next/prev links", "total_items and total_pages provided"],
+        "bad": ["Returning entire collection", "No pagination links"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if collection endpoints support pagination with navigation links.",
+        "weight": 0.8
+      },
+      "recommended": true
+    }
+  ],
+  "conformanceLevels": {
+    "bronze": {
+      "description": "Essential rules for basic API functionality",
+      "requiredRules": ["PP-SPEC-001", "PP-HTTP-001", "PP-HTTP-002", "PP-HTTP-003", "PP-NAMING-001", "PP-NAMING-003", "PP-ERROR-001", "PP-COMPAT-001"],
+      "maxErrors": 0,
+      "maxWarnings": 10
+    },
+    "silver": {
+      "description": "Recommended rules for production APIs",
+      "requiredRules": ["PP-SPEC-001", "PP-SPEC-002", "PP-HTTP-001", "PP-HTTP-002", "PP-HTTP-003", "PP-HTTP-004", "PP-HATEOAS-001", "PP-HATEOAS-002", "PP-NAMING-001", "PP-NAMING-002", "PP-NAMING-003", "PP-NAMING-004", "PP-URI-001", "PP-URI-004", "PP-JSON-001", "PP-JSON-003", "PP-ERROR-001", "PP-ERROR-002", "PP-VERSION-001", "PP-COMPAT-001", "PP-COMPAT-002"],
+      "maxErrors": 0,
+      "maxWarnings": 5,
+      "extends": "bronze"
+    },
+    "gold": {
+      "description": "Full compliance with PayPal REST guidelines",
+      "requiredRules": ["PP-SPEC-001", "PP-SPEC-002", "PP-HTTP-001", "PP-HTTP-002", "PP-HTTP-003", "PP-HTTP-004", "PP-HTTP-005", "PP-HATEOAS-001", "PP-HATEOAS-002", "PP-HATEOAS-003", "PP-HATEOAS-004", "PP-HATEOAS-005", "PP-NAMING-001", "PP-NAMING-002", "PP-NAMING-003", "PP-NAMING-004", "PP-NAMING-005", "PP-NAMING-006", "PP-URI-001", "PP-URI-002", "PP-URI-003", "PP-URI-004", "PP-URI-005", "PP-URI-006", "PP-QUERY-001", "PP-JSON-001", "PP-JSON-002", "PP-JSON-003", "PP-JSON-004", "PP-JSON-005", "PP-JSON-006", "PP-JSON-007", "PP-JSON-008", "PP-JSON-009", "PP-COMMON-001", "PP-COMMON-002", "PP-COMMON-003", "PP-COMMON-004", "PP-COMMON-005", "PP-COMMON-006", "PP-ERROR-001", "PP-ERROR-002", "PP-ERROR-003", "PP-ERROR-004", "PP-VERSION-001", "PP-VERSION-002", "PP-VERSION-003", "PP-COMPAT-001", "PP-COMPAT-002", "PP-COMPAT-003", "PP-DEPREC-001", "PP-DEPREC-002", "PP-DEPREC-003", "PP-EOL-001", "PP-SECURITY-001"],
+      "maxErrors": 0,
+      "maxWarnings": 0,
+      "extends": "silver"
+    }
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grokify/structured-evaluation/main/schema/rubric.schema.json",
+  "metadata": {
+    "document": "profiles/microsoft-graph/microsoft-graph.api-style.json",
+    "documentTitle": "Microsoft Graph API Guidelines",
+    "generatedAt": "2025-06-17T00:00:00Z",
+    "generatedBy": "Claude Opus 4.5 (LLM-as-Judge)"
+  },
+  "reviewType": "style-guide-quality",
+  "rubricId": "api-style-guide-quality",
+  "rubricVersion": "1.0.0",
+  "categories": [
+    {
+      "category": "Content Coverage",
+      "score": "pass",
+      "numericScore": 4,
+      "reasoning": "Covers essential domains with Graph-specific focus: OData-based REST, camelCase naming, /me alias, permissions model with delegated/application scopes, v1.0/beta versioning. Strong on Graph-unique patterns (delta queries, batch, webhooks). Inherits base rules from MS REST.",
+      "findings": [
+        {"severity": "low", "category": "Content Coverage", "finding": "Some inherited MS REST topics could be cross-referenced more explicitly", "recommendation": "Add explicit cross-references to base MS REST guide for inherited patterns"}
+      ]
+    },
+    {
+      "category": "Structure & Navigation",
+      "score": "pass",
+      "numericScore": 5,
+      "reasoning": "Excellent structure: TOC, GRAPH-XXX rule IDs, 12 categories focused on Graph-specific topics. Clear navigation between delta, batch, and webhook sections. Well-defined conformance levels.",
+      "findings": []
+    },
+    {
+      "category": "Rule Quality & Clarity",
+      "score": "pass",
+      "numericScore": 4,
+      "reasoning": "Rules well-structured with IDs, titles, severity, descriptions. Good examples in delta query and batch patterns. RFC 2119 keywords used appropriately.",
+      "findings": [
+        {"severity": "low", "category": "Rule Quality & Clarity", "finding": "Some rules have brief descriptions", "recommendation": "Expand rule descriptions with more implementation context and rationale"}
+      ]
+    },
+    {
+      "category": "Examples & Code Samples",
+      "score": "pass",
+      "numericScore": 5,
+      "reasoning": "Excellent examples for Graph-specific patterns: delta query flows with mermaid diagrams, batch request/response JSON, webhook subscription examples. Delta query documentation is particularly well-illustrated.",
+      "findings": []
+    },
+    {
+      "category": "Enforceability & Tooling",
+      "score": "partial",
+      "numericScore": 3,
+      "reasoning": "Rules distinguish between lintable and judge-only. However, Graph-specific rules are harder to lint than generic REST rules. OData compliance and permission requirements often need manual review.",
+      "findings": [
+        {"severity": "medium", "category": "Enforceability & Tooling", "finding": "Many Graph-specific rules require manual/LLM review rather than linting", "recommendation": "Develop Graph-specific Spectral rules where possible; consider OData-aware validators"}
+      ]
+    },
+    {
+      "category": "Guide Versioning & Evolution",
+      "score": "pass",
+      "numericScore": 4,
+      "reasoning": "Guide has versioning and tracks changes. The v1.0/beta versioning model is clearly documented. Change tracking for the guide itself is present.",
+      "findings": [
+        {"severity": "low", "category": "Guide Versioning & Evolution", "finding": "Beta to v1.0 migration guidance could be expanded", "recommendation": "Add detailed migration guidance for promoting APIs from beta to v1.0"}
+      ]
+    },
+    {
+      "category": "Completeness & Depth",
+      "score": "pass",
+      "numericScore": 4,
+      "reasoning": "Good depth on Graph-specific topics: delta queries with full flow documentation, batch request semantics, permission scopes, throttling patterns. Some advanced scenarios could use more detail.",
+      "findings": []
+    },
+    {
+      "category": "Internal Consistency",
+      "score": "pass",
+      "numericScore": 5,
+      "reasoning": "Internally consistent with Graph API conventions. Terminology aligns with OData standards (@odata.context, @odata.deltaLink). Consistent use of /me alias pattern throughout. No contradictions.",
+      "findings": []
+    },
+    {
+      "category": "Accessibility & Tone",
+      "score": "pass",
+      "numericScore": 4,
+      "reasoning": "Written for developers familiar with Microsoft Graph. Good glossary with 12 Graph-specific terms. Professional tone. Assumes some OData knowledge which is appropriate for the audience.",
+      "findings": []
+    }
+  ],
+  "findings": [
+    {"severity": "medium", "category": "Enforceability & Tooling", "finding": "Many Graph-specific rules require manual/LLM review rather than linting"},
+    {"severity": "low", "category": "Content Coverage", "finding": "Some inherited MS REST topics could be cross-referenced more explicitly"},
+    {"severity": "low", "category": "Rule Quality & Clarity", "finding": "Some rules have brief descriptions; more detail would help"},
+    {"severity": "low", "category": "Guide Versioning & Evolution", "finding": "Beta to v1.0 migration guidance could be expanded"}
+  ],
+  "passCriteria": {
+    "minCategoriesPassing": "all_required",
+    "maxFindings": {"critical": 0, "high": 2, "medium": 5}
+  },
+  "decision": {
+    "status": "pass",
+    "reasoning": "All 9 categories pass (5 excellent, 4 good, 1 acceptable). Only 1 medium-severity and 3 low-severity findings.",
+    "categoryCounts": {"pass": 8, "partial": 1, "fail": 0, "total": 9},
+    "findingCounts": {"critical": 0, "high": 0, "medium": 1, "low": 3, "total": 4}
+  },
+  "overallDecision": "pass",
+  "nextSteps": {
+    "immediate": [],
+    "recommended": [
+      {"action": "Develop Graph-specific Spectral rules for OData patterns", "category": "Enforceability & Tooling", "effort": "high"},
+      {"action": "Add explicit cross-references to base MS REST guide", "category": "Content Coverage", "effort": "low"},
+      {"action": "Expand rule descriptions with implementation context", "category": "Rule Quality & Clarity", "effort": "medium"},
+      {"action": "Add beta-to-v1.0 API promotion migration guide", "category": "Guide Versioning & Evolution", "effort": "medium"}
+    ]
+  },
+  "summary": "Microsoft Graph API Guidelines: 4/5 overall. Solid specialized guide with 82 rules tailored for the Graph unified API model. Excels in OData patterns, delta queries, and Graph-specific conventions. Improvements: develop Graph-specific Spectral rules, expand rule descriptions, add migration guidance."
+}

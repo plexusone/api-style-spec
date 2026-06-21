@@ -1,0 +1,2837 @@
+{
+  "$schema": "../schema/api-style-spec.schema.json",
+  "version": "1.0.0",
+  "name": "Zalando REST API Guidelines",
+  "description": "Comprehensive style rules based on Zalando RESTful API Guidelines. These guidelines define standards for designing APIs at Zalando and are used by the Zally API linter. Key differentiators include snake_case property naming, cursor-based pagination, and Problem+JSON error handling.",
+  "introduction": "The Zalando RESTful API Guidelines are a set of best practices for designing REST APIs. They have been developed over several years of API development at Zalando and incorporate lessons learned from building large-scale e-commerce platforms.\n\nThese guidelines emphasize:\n- API First development approach\n- Consistent naming conventions (snake_case)\n- Cursor-based pagination for performance\n- RFC 7807 Problem+JSON for errors\n- Strong compatibility rules for evolution",
+  "metadata": {
+    "author": "Zalando SE",
+    "url": "https://opensource.zalando.com/restful-api-guidelines/",
+    "repository": "https://github.com/zalando/restful-api-guidelines",
+    "license": "CC-BY-4.0",
+    "lastUpdated": "2024-12-01"
+  },
+  "principles": [
+    {
+      "id": "api-first",
+      "title": "API First",
+      "description": "Design APIs first, before implementing them. Use OpenAPI as the specification language and ensure API specifications are the source of truth.",
+      "relatedRules": ["Z-100", "Z-101"]
+    },
+    {
+      "id": "consistency",
+      "title": "Consistency",
+      "description": "APIs should look like they came from the same hand. Use consistent naming, error handling, and patterns across all APIs.",
+      "relatedRules": ["Z-118", "Z-129", "Z-151"]
+    },
+    {
+      "id": "compatibility",
+      "title": "Backward Compatibility",
+      "description": "Change APIs without breaking consumers. Follow rules for compatible extensions and proper deprecation.",
+      "relatedRules": ["Z-106", "Z-107", "Z-108"]
+    },
+    {
+      "id": "robustness",
+      "title": "Robustness (Postel's Law)",
+      "description": "Be conservative in what you do, be liberal in what you accept from others. Design APIs that are tolerant of client variations.",
+      "relatedRules": ["Z-109", "Z-108"]
+    }
+  ],
+  "categories": [
+    {"id": "general", "title": "General Guidelines", "description": "API First principle and fundamental requirements", "order": 1},
+    {"id": "compatibility", "title": "Compatibility", "description": "Backward compatibility and API evolution", "order": 2},
+    {"id": "json", "title": "JSON Guidelines", "description": "JSON payload structure and naming", "order": 3},
+    {"id": "data-formats", "title": "Data Formats", "description": "Standard data types and formats", "order": 4},
+    {"id": "urls", "title": "URL Design", "description": "Resource paths and query parameters", "order": 5},
+    {"id": "http-methods", "title": "HTTP Methods", "description": "Correct use of GET, POST, PUT, PATCH, DELETE", "order": 6},
+    {"id": "http-status", "title": "HTTP Status Codes", "description": "Status codes and error handling", "order": 7},
+    {"id": "pagination", "title": "Pagination", "description": "Cursor-based and offset pagination patterns", "order": 8},
+    {"id": "headers", "title": "HTTP Headers", "description": "Standard and custom header usage", "order": 9},
+    {"id": "hypermedia", "title": "Hypermedia", "description": "Links and HATEOAS patterns", "order": 10},
+    {"id": "deprecation", "title": "Deprecation", "description": "Deprecation and sunset handling", "order": 11},
+    {"id": "security", "title": "Security", "description": "Authentication and authorization", "order": 12},
+    {"id": "performance", "title": "Performance", "description": "Performance considerations", "order": 13}
+  ],
+  "sections": [
+    {
+      "id": "introduction",
+      "title": "Introduction",
+      "description": "Overview of Zalando REST API Guidelines",
+      "order": 1,
+      "introduction": "These guidelines define standards for designing RESTful APIs at Zalando. They are enforced by the Zally API linter."
+    },
+    {
+      "id": "fundamentals",
+      "title": "API Fundamentals",
+      "description": "Core principles and requirements",
+      "order": 2,
+      "rules": ["Z-100", "Z-101", "Z-102", "Z-103"]
+    },
+    {
+      "id": "json-payload",
+      "title": "JSON Payload",
+      "description": "JSON structure and naming conventions",
+      "order": 3,
+      "rules": ["Z-118", "Z-120", "Z-167"]
+    },
+    {
+      "id": "rest-basics",
+      "title": "REST Basics",
+      "description": "HTTP methods and status codes",
+      "order": 4,
+      "rules": ["Z-148", "Z-150", "Z-151"]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "cursor-pagination",
+      "name": "Cursor-Based Pagination",
+      "category": "pagination",
+      "summary": "Use cursor-based pagination for large collections",
+      "problem": "Offset-based pagination performs poorly on large datasets and sharded databases.",
+      "solution": "Use opaque cursors that encode page position. Return cursors in pagination links.",
+      "when": "For collections that may contain many items or use NoSQL databases",
+      "examples": [
+        {
+          "title": "Paginated Response",
+          "type": "good",
+          "language": "json",
+          "code": "{\n  \"items\": [\n    {\"id\": \"abc123\", \"name\": \"Item 1\"},\n    {\"id\": \"def456\", \"name\": \"Item 2\"}\n  ],\n  \"self\": \"https://api.example.com/items?cursor=abc\",\n  \"next\": \"https://api.example.com/items?cursor=xyz\"\n}"
+        }
+      ],
+      "relatedRules": ["Z-159", "Z-160", "Z-161", "Z-248"]
+    },
+    {
+      "id": "problem-json",
+      "name": "Problem+JSON Error Responses",
+      "category": "errors",
+      "summary": "Use RFC 7807 Problem+JSON for error responses",
+      "problem": "Inconsistent error formats make error handling difficult for clients.",
+      "solution": "Use standard Problem+JSON format with type, title, status, detail, and instance fields.",
+      "when": "For all 4xx and 5xx error responses",
+      "examples": [
+        {
+          "title": "Problem Response",
+          "type": "good",
+          "language": "json",
+          "code": "{\n  \"type\": \"https://zalando.github.io/problem/constraint-violation\",\n  \"title\": \"Constraint Violation\",\n  \"status\": 400,\n  \"detail\": \"The 'name' field is required.\",\n  \"instance\": \"/orders/12345\"\n}"
+        }
+      ],
+      "relatedRules": ["Z-176", "Z-177"]
+    },
+    {
+      "id": "snake-case",
+      "name": "Snake Case Naming",
+      "category": "naming",
+      "summary": "Use snake_case for all JSON property names",
+      "problem": "Inconsistent naming conventions create confusion across APIs.",
+      "solution": "Use snake_case for all JSON properties: lowercase letters, digits, and underscores.",
+      "when": "Always when defining JSON property names",
+      "examples": [
+        {
+          "title": "Snake Case Properties",
+          "type": "good",
+          "language": "json",
+          "code": "{\n  \"customer_number\": \"12345\",\n  \"sales_order_number\": \"SO-001\",\n  \"billing_address\": {\n    \"street_name\": \"Example St\"\n  }\n}"
+        },
+        {
+          "title": "Camel Case (Incorrect)",
+          "type": "bad",
+          "language": "json",
+          "code": "{\n  \"customerNumber\": \"12345\",\n  \"salesOrderNumber\": \"SO-001\"\n}"
+        }
+      ],
+      "relatedRules": ["Z-118"]
+    }
+  ],
+  "glossary": [
+    {"term": "API First", "definition": "Development approach where APIs are designed before implementation, using specifications as the source of truth."},
+    {"term": "OpenAPI", "definition": "The standard specification format for REST APIs, formerly known as Swagger."},
+    {"term": "snake_case", "definition": "Naming convention using lowercase letters with underscores between words (e.g., customer_number)."},
+    {"term": "Cursor", "definition": "An opaque token that identifies a position in a paginated collection."},
+    {"term": "Problem+JSON", "definition": "RFC 7807 standard for machine-readable error responses (application/problem+json)."},
+    {"term": "Zally", "definition": "Zalando's API linter that validates OpenAPI specifications against these guidelines."},
+    {"term": "x-extensible-enum", "definition": "OpenAPI extension for enums that may have additional values added in the future."},
+    {"term": "Sunset Header", "definition": "HTTP header indicating when an API or endpoint will be deprecated (RFC 8594)."}
+  ],
+  "rules": [
+    {
+      "id": "Z-100",
+      "title": "Follow API first principle",
+      "category": "general",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "API First ensures APIs are designed intentionally before implementation, leading to better API quality and consistency.",
+      "description": "You must follow the API First principle:\n\n1. Define APIs first, before coding implementation, using OpenAPI as specification language\n2. Design APIs consistently with these guidelines\n3. Use Zally for automated rule checks\n4. Call for early review feedback from peers and client developers",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API has an OpenAPI specification and follows API First principles. Look for evidence that the spec was created before implementation.",
+        "weight": 1.0,
+        "passCriteria": ["OpenAPI specification exists", "Specification is complete and detailed", "API appears well-designed"],
+        "failCriteria": ["No OpenAPI specification", "Specification is incomplete or generated from code"]
+      },
+      "references": [{"title": "Zalando API First", "url": "https://opensource.zalando.com/restful-api-guidelines/#100"}],
+      "tags": ["api-first", "required"],
+      "recommended": true
+    },
+    {
+      "id": "Z-101",
+      "title": "Provide API specifications using OpenAPI",
+      "category": "general",
+      "severity": "error",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "OpenAPI is the standard for REST API specifications and enables tooling, documentation, and client generation.",
+      "description": "Use the OpenAPI standard to define API specifications. Provide the specification using a single self-contained YAML file. We encourage OpenAPI 3.1 for new APIs.",
+      "examples": {
+        "good": ["openapi: 3.1.0 in YAML format"],
+        "bad": ["No specification", "Multiple scattered files without proper references"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.openapi"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-102",
+      "title": "Provide API user manual",
+      "category": "general",
+      "severity": "warn",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "An API user manual helps developers understand how to use the API effectively beyond what the specification provides.",
+      "description": "In addition to the API specification, provide a user manual covering:\n- API scope, purpose, and use cases\n- Concrete examples of API usage\n- Edge cases, error details, and repair hints\n- Architecture context and dependencies",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API has documentation beyond the OpenAPI spec, such as a user guide, getting started guide, or detailed examples.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-103",
+      "title": "Write APIs using U.S. English",
+      "category": "general",
+      "severity": "error",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Using consistent English ensures APIs are understandable by a global audience.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if API names, descriptions, and examples use U.S. English spelling and terminology.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-234",
+      "title": "Only use durable and immutable remote references",
+      "category": "general",
+      "severity": "error",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Remote references to mutable content can cause API semantics to change unexpectedly.",
+      "description": "API specification files must be self-contained. Remote references are only allowed to:\n- Zalando's API repository (immutable revisions)\n- Guideline-defined fragments at opensource.zalando.com",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if $ref references point only to local definitions or approved immutable URLs.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-106",
+      "title": "Not break backward compatibility",
+      "category": "compatibility",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Breaking changes disrupt API consumers and erode trust. APIs are contracts that cannot be broken unilaterally.",
+      "description": "Change APIs, but keep all consumers running. There are two techniques:\n1. Follow rules for compatible extensions\n2. Introduce new API versions and support older versions with deprecation\n\nWe strongly encourage compatible extensions and discourage versioning.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API design avoids breaking changes: no removed fields, no changed field types, no new required fields.",
+        "weight": 1.0,
+        "passCriteria": ["No breaking changes evident", "Compatible extension patterns used"],
+        "failCriteria": ["Breaking changes without versioning", "Required fields added to existing endpoints"]
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-107",
+      "title": "Prefer compatible extensions",
+      "category": "compatibility",
+      "severity": "warn",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Compatible extensions allow API evolution without versioning complexity.",
+      "description": "Follow these rules for backward-compatible changes:\n\nFor input schemas:\n- Add optional fields only, never mandatory\n- Make mandatory fields optional, not vice-versa\n- Don't remove fields\n- Don't make validation more restrictive\n\nFor output schemas:\n- Add fields (mandatory or optional)\n- Make optional fields mandatory, not vice-versa\n- Don't remove fields\n- Enum ranges cannot be extended",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API follows compatible extension patterns for schema changes.",
+        "weight": 0.9
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-108",
+      "title": "Prepare clients to accept compatible API extensions",
+      "category": "compatibility",
+      "severity": "error",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "Clients must be tolerant of API extensions to enable server evolution.",
+      "description": "Clients must be prepared to accept:\n- New fields in response payloads (ignore unknown fields)\n- New enum values (handle gracefully)\n- New optional request fields",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API documentation advises clients to be tolerant of extensions.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-109",
+      "title": "Design APIs conservatively",
+      "category": "compatibility",
+      "severity": "warn",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Being strict about input prevents errors and makes APIs more predictable.",
+      "description": "Be conservative and accurate in what you accept from clients:\n- Unknown input fields should return HTTP 400 (not silently ignored)\n- Be accurate in defining input constraints\n- Prefer being more specific and restrictive",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API rejects unknown input fields and clearly defines input constraints.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-112",
+      "title": "Use open-ended list of values (x-extensible-enum)",
+      "category": "compatibility",
+      "severity": "warn",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Closed enums prevent backward-compatible additions; x-extensible-enum signals that new values may be added.",
+      "description": "For enumerations used in output that may be extended, use x-extensible-enum instead of enum. This signals to clients that they should handle unknown values.",
+      "examples": {
+        "good": ["x-extensible-enum: [PENDING, APPROVED, REJECTED]"],
+        "bad": ["enum: [PENDING, APPROVED, REJECTED] for output fields that may grow"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if enums used in responses use x-extensible-enum when they might be extended.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-167",
+      "title": "Use JSON as payload data interchange format",
+      "category": "json",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "JSON is the standard for REST APIs and has wide tooling support.",
+      "description": "Use JSON (RFC 7159) to represent structured data in requests and responses. The JSON payload must:\n- Use a JSON object as top-level structure (not an array)\n- Use UTF-8 encoding\n- Consist of valid Unicode strings\n- Contain only unique member names",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*][*].requestBody.content['application/json']"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-118",
+      "title": "Property names must be snake_case",
+      "category": "json",
+      "severity": "error",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Consistent naming makes APIs predictable. snake_case is preferred by many tech companies including GitHub, Twitter, and Stack Exchange.",
+      "description": "Property names must use ASCII snake_case matching regex `^[a-z_][a-z_0-9]*$`. The first character must be a lowercase letter or underscore.",
+      "examples": {
+        "good": ["customer_number", "sales_order_number", "billing_address"],
+        "bad": ["customerNumber", "SalesOrderNumber", "billingAddress"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.components.schemas[*].properties[*]~"]},
+        "options": {"match": "^[a-z_][a-z_0-9]*$"}
+      },
+      "judge": {
+        "prompt": "Check if all JSON property names use snake_case (lowercase with underscores). camelCase is not allowed.",
+        "weight": 1.0,
+        "passCriteria": ["All properties use snake_case", "No camelCase or PascalCase"],
+        "failCriteria": ["Properties use camelCase", "Mixed naming conventions"]
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-120",
+      "title": "Pluralize array names",
+      "category": "json",
+      "severity": "warn",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "Plural names clearly indicate arrays; singular names indicate single objects.",
+      "examples": {
+        "good": ["items: []", "orders: []", "addresses: []"],
+        "bad": ["item: []", "order: []"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if array properties use plural names (items, orders) not singular (item, order).",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-125",
+      "title": "Declare enum values using UPPER_SNAKE_CASE",
+      "category": "json",
+      "severity": "warn",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "UPPER_SNAKE_CASE clearly distinguishes enum values from properties.",
+      "examples": {
+        "good": ["PENDING", "IN_PROGRESS", "COMPLETED"],
+        "bad": ["pending", "inProgress", "Completed"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if enum values use UPPER_SNAKE_CASE format.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-122",
+      "title": "Null values should have their fields removed",
+      "category": "json",
+      "severity": "warn",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Omitting null fields reduces payload size and avoids ambiguity between null and missing.",
+      "description": "APIs should not return fields with null values. Instead, omit the field entirely from the response.",
+      "examples": {
+        "good": ["{\"name\": \"John\"}"],
+        "bad": ["{\"name\": \"John\", \"middle_name\": null}"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API omits null fields rather than explicitly returning null values.",
+        "weight": 0.6
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-110",
+      "title": "Response payloads must be JSON objects, not arrays",
+      "category": "json",
+      "severity": "error",
+      "priority": 6,
+      "version": "1.0.0",
+      "rationale": "Top-level arrays prevent future extension; objects allow adding metadata fields.",
+      "description": "Response payloads must use a JSON object as the top-level structure. Collections should be wrapped in an object with an 'items' property.",
+      "examples": {
+        "good": ["{\"items\": [{\"id\": 1}, {\"id\": 2}]}"],
+        "bad": ["[{\"id\": 1}, {\"id\": 2}]"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if response payloads use objects at the top level, not raw arrays.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-238",
+      "title": "Use standard data formats",
+      "category": "data-formats",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Standard formats ensure interoperability and enable proper client code generation.",
+      "description": "Use OpenAPI/JSON Schema standard formats for data types:\n- Integers: int32, int64, bigint\n- Numbers: float, double, decimal\n- Dates: date, time, date-time\n- Strings: email, uri, uuid, etc.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if data types use standard OpenAPI/JSON Schema formats.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-171",
+      "title": "Define a format for number and integer types",
+      "category": "data-formats",
+      "severity": "error",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Without explicit format, clients may guess precision incorrectly.",
+      "description": "Always provide format (int32, int64, bigint, float, double, decimal) for number and integer types.",
+      "examples": {
+        "good": ["type: integer, format: int64"],
+        "bad": ["type: integer (no format)"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if integer and number types have explicit format definitions.",
+        "weight": 0.9
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-169",
+      "title": "Use standard formats for date and time",
+      "category": "data-formats",
+      "severity": "error",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "RFC 3339/ISO 8601 dates are unambiguous and widely supported.",
+      "description": "Use string typed formats: date, time, date-time, duration, or period. Times should be UTC with uppercase T separator and Z suffix.",
+      "examples": {
+        "good": ["2024-01-15T10:30:00Z"],
+        "bad": ["01/15/2024", "1705315800"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if date/time properties use RFC 3339 format with UTC timezone.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-127",
+      "title": "Define format for duration and period",
+      "category": "data-formats",
+      "severity": "warn",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "ISO 8601 duration format is standard and unambiguous.",
+      "examples": {
+        "good": ["P1DT3H4S (1 day, 3 hours, 4 seconds)"],
+        "bad": ["86400 (seconds)", "1 day"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if duration properties use ISO 8601 format (P1DT3H).",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-129",
+      "title": "Use lowercase separate words with hyphens for paths",
+      "category": "urls",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Kebab-case paths are readable and consistent with URL conventions.",
+      "description": "URL paths must use lowercase letters with hyphens as word separators (kebab-case).",
+      "examples": {
+        "good": ["/shopping-carts", "/order-items"],
+        "bad": ["/shoppingCarts", "/order_items", "/OrderItems"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"match": "^[a-z0-9/{}-]*$"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-134",
+      "title": "Pluralize resource names",
+      "category": "urls",
+      "severity": "error",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Plural names indicate collections; consistent naming improves API predictability.",
+      "examples": {
+        "good": ["/customers", "/orders", "/products"],
+        "bad": ["/customer", "/order", "/product"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if collection resource names use plural nouns.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-135",
+      "title": "Not use /api as base path",
+      "category": "urls",
+      "severity": "warn",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "/api is redundant when the entire service is an API.",
+      "examples": {
+        "good": ["/orders", "/customers"],
+        "bad": ["/api/orders", "/api/v1/customers"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"notMatch": "^/api/"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-136",
+      "title": "Use normalized paths without trailing slashes",
+      "category": "urls",
+      "severity": "error",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Trailing slashes cause inconsistency and caching issues.",
+      "examples": {
+        "good": ["/orders", "/orders/{id}"],
+        "bad": ["/orders/", "/orders/{id}/"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"notMatch": "/$"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-137",
+      "title": "Stick to conventional query parameters",
+      "category": "urls",
+      "severity": "warn",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Standard query parameter names improve API consistency.",
+      "description": "Use conventional names for common query parameters:\n- q: search query\n- sort: sorting (e.g., sort=+name,-date)\n- fields: sparse fieldsets\n- embed: embedded resources\n- offset/cursor: pagination\n- limit: page size",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if query parameters use conventional names (q, sort, fields, limit, cursor).",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-138",
+      "title": "Allow optional embedding of sub-resources",
+      "category": "urls",
+      "severity": "info",
+      "priority": 6,
+      "version": "1.0.0",
+      "rationale": "Embedding reduces round trips while keeping default responses lightweight.",
+      "description": "Support optional embedding via 'embed' query parameter.",
+      "examples": {
+        "good": ["/orders/{id}?embed=(items,customer)"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API supports embedding sub-resources via query parameter.",
+        "weight": 0.5
+      },
+      "recommended": false
+    },
+    {
+      "id": "Z-148",
+      "title": "Use HTTP methods correctly",
+      "category": "http-methods",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Correct HTTP method semantics ensure APIs work predictably with caching and intermediaries.",
+      "description": "Use HTTP methods according to RFC 9110 semantics:\n- GET: Read resources (no body, cacheable)\n- POST: Create resources or execute operations\n- PUT: Full resource replacement\n- PATCH: Partial update (use merge-patch or JSON Patch)\n- DELETE: Remove resources",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if HTTP methods are used correctly: GET for reads, POST for creates, PUT for full replacement, PATCH for partial updates.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-149",
+      "title": "Consider idempotency for write operations",
+      "category": "http-methods",
+      "severity": "warn",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Idempotent operations can be safely retried, improving reliability.",
+      "description": "PUT and DELETE must be idempotent. POST should be idempotent when possible using idempotency keys.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if PUT and DELETE are idempotent, and if POST supports idempotency keys.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-154",
+      "title": "Use JSON merge patch for partial updates",
+      "category": "http-methods",
+      "severity": "warn",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "JSON Merge Patch (RFC 7396) is simple and widely supported.",
+      "description": "For PATCH operations, prefer JSON Merge Patch with content-type application/merge-patch+json.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if PATCH operations use JSON Merge Patch (application/merge-patch+json).",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-243",
+      "title": "Use official HTTP status codes",
+      "category": "http-status",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Official status codes are well understood and properly handled by clients and intermediaries.",
+      "description": "Only use official HTTP status codes from RFC standards (RFC 9110, RFC 6585) consistently with their defined semantics.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if only standard HTTP status codes are used.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-151",
+      "title": "Specify success and error responses",
+      "category": "http-status",
+      "severity": "error",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Clear response documentation helps clients handle both success and error cases.",
+      "description": "Define all success and service-specific error responses in the API specification. Standard errors (401, 403, 404, 500, 503) can use default description.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if success and error responses are documented in the API specification.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-150",
+      "title": "Use most common HTTP status codes",
+      "category": "http-status",
+      "severity": "warn",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "Common status codes are better understood; obscure codes cause confusion.",
+      "description": "Prefer common status codes:\n- Success: 200, 201, 202, 204\n- Client errors: 400, 401, 403, 404, 409, 429\n- Server errors: 500, 503",
+      "decisionTables": [
+        {
+          "title": "Common HTTP Status Codes",
+          "headers": ["Code", "Name", "When to Use"],
+          "rows": [
+            {"values": ["200", "OK", "General success with response body"]},
+            {"values": ["201", "Created", "Resource created (POST, PUT)"]},
+            {"values": ["202", "Accepted", "Async processing started"]},
+            {"values": ["204", "No Content", "Success without body (DELETE)"]},
+            {"values": ["400", "Bad Request", "Invalid request format"]},
+            {"values": ["401", "Unauthorized", "Authentication required"]},
+            {"values": ["403", "Forbidden", "Permission denied"]},
+            {"values": ["404", "Not Found", "Resource not found"]},
+            {"values": ["409", "Conflict", "Resource state conflict"]},
+            {"values": ["429", "Too Many Requests", "Rate limit exceeded"]},
+            {"values": ["500", "Internal Server Error", "Unexpected server error"]},
+            {"values": ["503", "Service Unavailable", "Temporary unavailability"]}
+          ]
+        }
+      ],
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if only common HTTP status codes are used (200, 201, 204, 400, 401, 403, 404, 409, 429, 500, 503).",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-176",
+      "title": "Use Problem JSON for errors",
+      "category": "http-status",
+      "severity": "error",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "RFC 7807 Problem+JSON provides a standard, machine-readable error format.",
+      "description": "Error responses (4xx, 5xx) must use application/problem+json media type with RFC 7807 Problem structure:\n- type: URI identifying error type\n- title: Human-readable summary\n- status: HTTP status code\n- detail: Human-readable explanation\n- instance: URI identifying specific occurrence",
+      "examples": {
+        "good": ["{\"type\": \"...\", \"title\": \"Bad Request\", \"status\": 400, \"detail\": \"...\"}"],
+        "bad": ["{\"error\": \"Something went wrong\"}"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if error responses use RFC 7807 Problem+JSON format with type, title, status, and detail fields.",
+        "weight": 1.0,
+        "passCriteria": ["Errors use application/problem+json", "Problem structure includes type, title, status, detail"],
+        "failCriteria": ["Custom error format", "No structured error responses"]
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-159",
+      "title": "Support pagination",
+      "category": "pagination",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Pagination protects services from overload and enables client-side iteration.",
+      "description": "All collection endpoints that may return many items must support pagination. Use cursor or offset-based pagination with consistent query parameters.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if collection endpoints support pagination via cursor/offset and limit parameters.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-160",
+      "title": "Prefer cursor-based pagination",
+      "category": "pagination",
+      "severity": "warn",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Cursor-based pagination performs better on large datasets and NoSQL databases.",
+      "description": "Prefer cursor-based pagination over offset-based pagination. Cursors are opaque tokens that encode page position. Offset pagination is acceptable when:\n- Jumping to specific pages is required\n- Dataset is small and stable",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if pagination uses cursors rather than offset/page numbers.",
+        "weight": 0.8,
+        "passCriteria": ["Cursor-based pagination is used", "Cursors are opaque tokens"],
+        "partialCriteria": ["Both cursor and offset are supported"],
+        "failCriteria": ["Only offset-based pagination"]
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-248",
+      "title": "Use pagination response page object",
+      "category": "pagination",
+      "severity": "warn",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "Consistent pagination response structure improves usability.",
+      "description": "Use consistent pagination response with fields:\n- items: Array of resources\n- self: Current page link/cursor\n- next: Next page link/cursor (omit on last page)\n- prev: Previous page link/cursor (omit on first page)\n- first, last: Optional boundary links",
+      "examples": {
+        "good": ["{\"items\": [...], \"self\": \"...\", \"next\": \"...\"}"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if paginated responses use consistent structure with items, self, next, prev fields.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-161",
+      "title": "Use pagination links where applicable",
+      "category": "pagination",
+      "severity": "warn",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Full URLs are easier for clients to use than constructing URLs from cursors.",
+      "description": "Replace plain cursor values with full pagination links when possible.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if pagination responses include full URLs for next/prev links.",
+        "weight": 0.6
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-183",
+      "title": "Use only headers with defined semantics",
+      "category": "headers",
+      "severity": "warn",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Headers should only carry general context information, not operation-specific data.",
+      "description": "Use standard headers for their intended purpose. Avoid using headers for operation-specific data that belongs in the URL or body.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if headers are used appropriately for general context, not operation-specific data.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-180",
+      "title": "Use standardized proprietary header names",
+      "category": "headers",
+      "severity": "warn",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Standard prefixes help identify custom headers and their scope.",
+      "description": "Custom headers should use prefixes:\n- X-Flow-ID: Request tracing\n- X-Tenant-ID: Multi-tenant identification\n- X-Sales-Channel: Business context",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if custom headers follow standardized naming conventions.",
+        "weight": 0.6
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-182",
+      "title": "Support conditional requests with ETag",
+      "category": "headers",
+      "severity": "warn",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "ETags enable conditional requests and optimistic locking.",
+      "description": "Support ETag header for resources that can be updated. Use If-Match/If-None-Match for conditional requests.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if GET responses include ETag and updates support If-Match.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-217",
+      "title": "Use hypermedia for navigation",
+      "category": "hypermedia",
+      "severity": "info",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Hypermedia links enable discoverable APIs and reduce client coupling.",
+      "description": "Include hypermedia links to related resources and available actions.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if responses include hypermedia links to related resources.",
+        "weight": 0.5
+      },
+      "recommended": false
+    },
+    {
+      "id": "Z-187",
+      "title": "Reflect deprecation in API specifications",
+      "category": "deprecation",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Clear deprecation signals help clients migrate before removal.",
+      "description": "Mark deprecated elements with OpenAPI 'deprecated: true' and provide migration guidance in description.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if deprecated elements are marked with deprecated: true.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-189",
+      "title": "Add Sunset header for deprecated APIs",
+      "category": "deprecation",
+      "severity": "warn",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Sunset header (RFC 8594) programmatically signals deprecation timeline.",
+      "description": "Include Sunset HTTP header with the date when the API will be removed.",
+      "examples": {
+        "good": ["Sunset: Sat, 31 Dec 2024 23:59:59 GMT"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if deprecated endpoints document Sunset header.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-104",
+      "title": "Secure endpoints with authentication",
+      "category": "security",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "APIs must be secured to protect data and prevent unauthorized access.",
+      "description": "All API endpoints must be secured with proper authentication. Use OAuth 2.0 with appropriate flows.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.components.securitySchemes"]}
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-105",
+      "title": "Define and assign permissions (scopes)",
+      "category": "security",
+      "severity": "error",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Scopes enable fine-grained access control and follow least-privilege principle.",
+      "description": "Define OAuth scopes and assign them to API operations. Document required permissions for each endpoint.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if OAuth scopes are defined and assigned to operations.",
+        "weight": 1.0
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-227",
+      "title": "Use HTTPS",
+      "category": "security",
+      "severity": "error",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "HTTPS protects data in transit from interception.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.servers[*].url"]},
+        "options": {"match": "^https://"}
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-226",
+      "title": "Design for performance",
+      "category": "performance",
+      "severity": "warn",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Performance-conscious API design improves user experience and reduces costs.",
+      "description": "Consider performance in API design:\n- Support partial responses ($fields)\n- Enable caching with ETags\n- Use pagination for collections\n- Consider compression",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API design considers performance: pagination, caching, partial responses.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-144",
+      "title": "Use UUID for resource IDs",
+      "category": "data-formats",
+      "severity": "warn",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "UUIDs are globally unique and don't leak information about resource count.",
+      "description": "Use UUID format for resource identifiers where applicable.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if resource IDs use UUID format.",
+        "weight": 0.6
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-229",
+      "title": "Use idempotency key for POST",
+      "category": "http-methods",
+      "severity": "warn",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Idempotency keys prevent duplicate resource creation on retries.",
+      "description": "Support X-Idempotency-Key header for POST operations that create resources.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if POST operations support idempotency keys.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-152",
+      "title": "Use multi-status responses for batch operations",
+      "category": "http-status",
+      "severity": "warn",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Batch operations may partially succeed; multi-status response provides per-item status.",
+      "description": "For batch operations that can partially fail, return 207 Multi-Status with per-item status codes.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if batch operations that can partially fail use 207 Multi-Status.",
+        "weight": 0.6
+      },
+      "recommended": false
+    },
+    {
+      "id": "Z-253",
+      "title": "Use 202 for async resource creation",
+      "category": "http-status",
+      "severity": "warn",
+      "priority": 6,
+      "version": "1.0.0",
+      "rationale": "202 Accepted indicates the request was accepted but not yet completed.",
+      "description": "When resource creation won't complete within the request, return 202 Accepted with a location to check status.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if async operations return 202 Accepted with status location.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-172",
+      "title": "Use standard media types",
+      "category": "json",
+      "severity": "warn",
+      "priority": 7,
+      "version": "1.0.0",
+      "rationale": "Standard media types are well-supported by clients and tools.",
+      "description": "Use application/json for JSON payloads and application/problem+json for errors. Avoid custom media types.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if standard media types are used (application/json, application/problem+json).",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-252",
+      "title": "Design single schema for reading and writing",
+      "category": "json",
+      "severity": "warn",
+      "priority": 8,
+      "version": "1.0.0",
+      "rationale": "Single schemas reduce complexity and cognitive load for API consumers.",
+      "description": "Use the same schema for reading and writing resources. Mark properties as readOnly (only in response) or writeOnly (only in request) as needed.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the same schema is used for GET and PUT/POST with readOnly/writeOnly markers.",
+        "weight": 0.7
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-143",
+      "title": "Return created resources with Location header",
+      "category": "http-methods",
+      "severity": "warn",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Location header enables clients to find the created resource.",
+      "description": "POST that creates a resource should return 201 with Location header pointing to the new resource.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if POST responses include Location header for created resources.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-219",
+      "title": "Define API audience",
+      "category": "general",
+      "severity": "error",
+      "priority": 6,
+      "version": "1.0.0",
+      "rationale": "API audience determines review requirements and documentation needs.",
+      "description": "Use x-api-audience to specify API visibility:\n- component-internal: Within component\n- business-unit-internal: Within business unit\n- company-internal: Within company\n- external-partner: Partners\n- external-public: Public",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if x-api-audience is defined in the OpenAPI specification.",
+        "weight": 0.8
+      },
+      "recommended": true
+    },
+    {
+      "id": "Z-111",
+      "title": "Treat OpenAPI specification as open for extension by default",
+      "category": "compatibility",
+      "severity": "error",
+      "priority": 6,
+      "version": "1.0.0",
+      "rationale": "OpenAPI specifications should be extensible by default to support API evolution without breaking clients.",
+      "description": "OpenAPI object definitions are considered open for extension by default. API clients must not assume objects are closed for extension in the absence of an additionalProperties declaration. API formats must not declare additionalProperties to be false.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if schema definitions avoid additionalProperties: false, allowing future extension.",
+        "weight": 0.9,
+        "passCriteria": ["No additionalProperties: false declarations", "Schemas are open for extension"],
+        "failCriteria": ["additionalProperties: false used", "Closed schema definitions"]
+      },
+      "references": [{"title": "Zalando Rule 111", "url": "https://opensource.zalando.com/restful-api-guidelines/#111"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-113",
+      "title": "Avoid versioning",
+      "category": "compatibility",
+      "severity": "warn",
+      "priority": 7,
+      "version": "1.0.0",
+      "rationale": "Multiple API versions significantly complicate understanding, testing, maintaining, and operating systems.",
+      "description": "Avoid generating additional API versions. If incompatible changes are necessary, prefer creating new resources or new service endpoints over versioning.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API avoids versioning and uses compatible extensions instead.",
+        "weight": 0.7
+      },
+      "references": [{"title": "Zalando Rule 113", "url": "https://opensource.zalando.com/restful-api-guidelines/#113"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-114",
+      "title": "Use media type versioning",
+      "category": "compatibility",
+      "severity": "error",
+      "priority": 8,
+      "version": "1.0.0",
+      "rationale": "Media type versioning is less tightly coupled and supports content negotiation.",
+      "description": "When API versioning is unavoidable, use media type versioning. Version information is provided via Content-Type header (e.g., application/x.zalando.cart+json;version=2).",
+      "examples": {
+        "good": ["Content-Type: application/x.zalando.cart+json;version=2"],
+        "bad": ["/v1/customers", "/api/v2/orders"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "If versioning is used, check if media type versioning is used instead of URL versioning.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 114", "url": "https://opensource.zalando.com/restful-api-guidelines/#114"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-115",
+      "title": "Not use URL versioning",
+      "category": "compatibility",
+      "severity": "error",
+      "priority": 9,
+      "version": "1.0.0",
+      "rationale": "URL versioning creates tight coupling and complex release management.",
+      "description": "Do not include version numbers in URLs (e.g., /v1/customers). Use media type versioning with content negotiation instead.",
+      "examples": {
+        "good": ["Accept: application/x.zalando.cart+json;version=2"],
+        "bad": ["/v1/customers", "/api/v2/orders"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"notMatch": "/v[0-9]+/"}
+      },
+      "references": [{"title": "Zalando Rule 115", "url": "https://opensource.zalando.com/restful-api-guidelines/#115"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-116",
+      "title": "Use semantic versioning",
+      "category": "general",
+      "severity": "error",
+      "priority": 7,
+      "version": "1.0.0",
+      "rationale": "Semantic versioning provides clear expectations about API changes and their impact.",
+      "description": "Use Semantic Versioning 2.0 (MAJOR.MINOR.PATCH) for API specification version in #/info/version. Increment MAJOR for incompatible changes, MINOR for backwards-compatible additions, PATCH for bug fixes.",
+      "examples": {
+        "good": ["1.0.0", "2.3.1", "0.1.0"],
+        "bad": ["1.0", "v1", "1.0.0-beta"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.info.version"]},
+        "options": {"match": "^[0-9]+\\.[0-9]+\\.[0-9]+$"}
+      },
+      "references": [{"title": "Zalando Rule 116", "url": "https://opensource.zalando.com/restful-api-guidelines/#116"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-215",
+      "title": "Provide API identifiers",
+      "category": "general",
+      "severity": "error",
+      "priority": 8,
+      "version": "1.0.0",
+      "rationale": "Globally unique API identifiers support lifecycle management and version tracking.",
+      "description": "Each API specification must have a globally unique and immutable API identifier via x-api-id extension. Use UUID format to avoid conflicts.",
+      "examples": {
+        "good": ["x-api-id: d0184f38-b98d-11e7-9c56-68f728c1ba70"],
+        "bad": ["No x-api-id defined", "x-api-id changed between versions"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.info.x-api-id"]}
+      },
+      "references": [{"title": "Zalando Rule 215", "url": "https://opensource.zalando.com/restful-api-guidelines/#215"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-218",
+      "title": "Contain API meta information",
+      "category": "general",
+      "severity": "error",
+      "priority": 9,
+      "version": "1.0.0",
+      "rationale": "Complete API metadata ensures discoverability and proper documentation.",
+      "description": "API specifications must contain: info/title, info/version, info/description, info/contact, x-api-id, and x-audience.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.info.title", "$.info.version", "$.info.description"]}
+      },
+      "references": [{"title": "Zalando Rule 218", "url": "https://opensource.zalando.com/restful-api-guidelines/#218"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-223",
+      "title": "Use functional naming schema",
+      "category": "general",
+      "severity": "warn",
+      "priority": 10,
+      "version": "1.0.0",
+      "rationale": "Functional naming aligns global resources and keeps APIs stable through organizational changes.",
+      "description": "Use functional naming for hostnames and event names: <functional-domain>-<functional-component>. Required for external APIs, recommended for internal APIs.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if hostnames and event names follow functional naming conventions.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 223", "url": "https://opensource.zalando.com/restful-api-guidelines/#223"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-224",
+      "title": "Follow naming convention for hostnames",
+      "category": "general",
+      "severity": "warn",
+      "priority": 11,
+      "version": "1.0.0",
+      "rationale": "Consistent hostname conventions improve discoverability and maintainability.",
+      "description": "Hostnames should follow functional naming: <functional-name>.zalandoapis.com for external APIs.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if server URLs follow hostname naming conventions.",
+        "weight": 0.5
+      },
+      "references": [{"title": "Zalando Rule 224", "url": "https://opensource.zalando.com/restful-api-guidelines/#224"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-123",
+      "title": "Use same semantics for null and absent properties",
+      "category": "json",
+      "severity": "error",
+      "priority": 9,
+      "version": "1.0.0",
+      "rationale": "Different semantics for null and absent values creates confusion and implementation complexity.",
+      "description": "Both null values and absent properties must have the same meaning. Exception: JSON Merge Patch uses null to indicate property deletion.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API treats null and absent properties with the same semantics.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 123", "url": "https://opensource.zalando.com/restful-api-guidelines/#123"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-124",
+      "title": "Not use null for empty arrays",
+      "category": "json",
+      "severity": "warn",
+      "priority": 10,
+      "version": "1.0.0",
+      "rationale": "Empty arrays can be unambiguously represented as [], avoiding null ambiguity.",
+      "description": "Use empty array [] instead of null to represent empty collections.",
+      "examples": {
+        "good": ["{\"items\": []}"],
+        "bad": ["{\"items\": null}"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if empty arrays use [] instead of null.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 124", "url": "https://opensource.zalando.com/restful-api-guidelines/#124"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-168",
+      "title": "Pass non-JSON media types using data specific standard formats",
+      "category": "json",
+      "severity": "info",
+      "priority": 11,
+      "version": "1.0.0",
+      "rationale": "Standard formats for non-JSON data ensure interoperability and proper client handling.",
+      "description": "Non-JSON media types may be supported if using business object specific standard formats (e.g., image/png, application/pdf). Generic formats like XML or CSV should only be provided additionally to JSON.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if non-JSON content types use appropriate standard formats.",
+        "weight": 0.5
+      },
+      "references": [{"title": "Zalando Rule 168", "url": "https://opensource.zalando.com/restful-api-guidelines/#168"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-173",
+      "title": "Use the common money object",
+      "category": "json",
+      "severity": "error",
+      "priority": 12,
+      "version": "1.0.0",
+      "rationale": "Consistent money representation prevents precision issues and enables library support.",
+      "description": "Use the standard Money structure with amount (decimal) and currency (ISO 4217) fields. Treat Money as a closed data type, not for inheritance.",
+      "examples": {
+        "good": ["{\"amount\": 19.99, \"currency\": \"EUR\"}"],
+        "bad": ["{\"price\": 19.99}", "{\"amount\": 19.99, \"currency\": \"EUR\", \"discount\": 5.00}"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if monetary values use the standard Money object with amount and currency fields.",
+        "weight": 0.9
+      },
+      "references": [{"title": "Zalando Rule 173", "url": "https://opensource.zalando.com/restful-api-guidelines/#173"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-174",
+      "title": "Use common field names and semantics",
+      "category": "json",
+      "severity": "error",
+      "priority": 13,
+      "version": "1.0.0",
+      "rationale": "Common field names create consistency across APIs and improve understanding.",
+      "description": "Use standard field names: id (opaque string identifier), xyz_id (reference to another object), e_tag (ETag for embedded sub-resources), created_at, modified_at.",
+      "examples": {
+        "good": ["id", "customer_id", "created_at", "modified_at"],
+        "bad": ["ID", "customerId", "creation_date"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if common fields like id, *_id, created_at, modified_at follow naming conventions.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 174", "url": "https://opensource.zalando.com/restful-api-guidelines/#174"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-216",
+      "title": "Define maps using additionalProperties",
+      "category": "json",
+      "severity": "warn",
+      "priority": 14,
+      "version": "1.0.0",
+      "rationale": "Maps with string keys should use additionalProperties for proper schema definition.",
+      "description": "Define maps (string key to value mappings) using additionalProperties with a schema defining the value type. Map keys don't need to follow snake_case naming.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if map-like structures use additionalProperties with proper value schemas.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 216", "url": "https://opensource.zalando.com/restful-api-guidelines/#216"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-235",
+      "title": "Use naming convention for date/time properties",
+      "category": "json",
+      "severity": "warn",
+      "priority": 15,
+      "version": "1.0.0",
+      "rationale": "Consistent date/time naming makes properties easily identifiable.",
+      "description": "Date and time property names should contain 'date', 'time', 'timestamp', or end with '_at' suffix (e.g., created_at, modified_at, campaign_start_time).",
+      "examples": {
+        "good": ["created_at", "modified_at", "campaign_start_time", "arrival_date"],
+        "bad": ["created", "modified", "campaign_start"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if date/time properties follow naming conventions with _at suffix or type indicators.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 235", "url": "https://opensource.zalando.com/restful-api-guidelines/#235"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-249",
+      "title": "Use the common address fields",
+      "category": "json",
+      "severity": "warn",
+      "priority": 16,
+      "version": "1.0.0",
+      "rationale": "Standard address structures ensure consistency across APIs handling addresses.",
+      "description": "Use standard address fields: street, additional, city, zip, country_code (ISO 3166-1 alpha-2). For addressees: salutation, first_name, last_name, business_name.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if address structures use standard field names like street, city, zip, country_code.",
+        "weight": 0.7
+      },
+      "references": [{"title": "Zalando Rule 249", "url": "https://opensource.zalando.com/restful-api-guidelines/#249"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-250",
+      "title": "Be aware of services not fully supporting JSON/unicode",
+      "category": "json",
+      "severity": "warn",
+      "priority": 17,
+      "version": "1.0.0",
+      "rationale": "Some downstream services (e.g., Postgres) cannot handle all valid JSON/unicode characters.",
+      "description": "Services forwarding JSON content to other tools should verify those tools fully support JSON/unicode. Postgres cannot handle \\u0000 in jsonb/text types.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API documents handling of special unicode characters and downstream compatibility.",
+        "weight": 0.5
+      },
+      "references": [{"title": "Zalando Rule 250", "url": "https://opensource.zalando.com/restful-api-guidelines/#250"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-239",
+      "title": "Encode binary data in base64url",
+      "category": "data-formats",
+      "severity": "error",
+      "priority": 6,
+      "version": "1.0.0",
+      "rationale": "Base64url encoding is the standard for binary data in JSON/REST APIs.",
+      "description": "Binary data must be defined as string with binary format using base64url encoding.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if binary data properties use string type with binary format.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 239", "url": "https://opensource.zalando.com/restful-api-guidelines/#239"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-244",
+      "title": "Use content negotiation",
+      "category": "data-formats",
+      "severity": "warn",
+      "priority": 7,
+      "version": "1.0.0",
+      "rationale": "Content negotiation allows clients to choose the best representation.",
+      "description": "Support content negotiation via Accept, Accept-Language, Accept-Encoding headers when serving different representations of a resource.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if multiple content types are supported with proper content negotiation.",
+        "weight": 0.5
+      },
+      "references": [{"title": "Zalando Rule 244", "url": "https://opensource.zalando.com/restful-api-guidelines/#244"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-255",
+      "title": "Use appropriate formats for date and time properties",
+      "category": "data-formats",
+      "severity": "warn",
+      "priority": 8,
+      "version": "1.0.0",
+      "rationale": "Choosing the right date/time format prevents misinterpretation and timezone issues.",
+      "description": "Use date-time for exact points in time, date for date-only (implies local timezone), time-local/date-time-local for local times supplemented with timezone field.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if date/time properties use appropriate formats based on use case requirements.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 255", "url": "https://opensource.zalando.com/restful-api-guidelines/#255"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-170",
+      "title": "Use standard formats for country, language and currency properties",
+      "category": "data-formats",
+      "severity": "error",
+      "priority": 9,
+      "version": "1.0.0",
+      "rationale": "Standard codes ensure interoperability and prevent ambiguity.",
+      "description": "Use ISO standards: ISO 3166-1 alpha-2 for country codes (format: iso-3166-alpha-2), ISO 639-1 for language codes (format: iso-639-1), BCP 47 for language tags (format: bcp47), ISO 4217 for currency codes (format: iso-4217).",
+      "examples": {
+        "good": ["DE", "en", "en-US", "EUR"],
+        "bad": ["Germany", "English", "dollars"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if country, language, and currency properties use standard ISO formats.",
+        "weight": 0.9
+      },
+      "references": [{"title": "Zalando Rule 170", "url": "https://opensource.zalando.com/restful-api-guidelines/#170"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-228",
+      "title": "Use URL-friendly resource identifiers",
+      "category": "urls",
+      "severity": "error",
+      "priority": 7,
+      "version": "1.0.0",
+      "rationale": "URL-friendly identifiers simplify encoding and prevent URL parsing issues.",
+      "description": "Resource IDs must match regex [a-zA-Z0-9:._\\-/]* - only ASCII letters, numbers, underscore, minus, colon, period, and slash (for compound keys).",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if resource identifiers use only URL-friendly characters.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 228", "url": "https://opensource.zalando.com/restful-api-guidelines/#228"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-130",
+      "title": "Use snake_case for query parameters",
+      "category": "urls",
+      "severity": "error",
+      "priority": 8,
+      "version": "1.0.0",
+      "rationale": "Consistent naming between query parameters and JSON properties improves developer experience.",
+      "description": "Query parameter names must use snake_case to match JSON property naming conventions.",
+      "examples": {
+        "good": ["?customer_id=123", "?sort_order=asc"],
+        "bad": ["?customerId=123", "?sortOrder=asc"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if query parameter names use snake_case format.",
+        "weight": 0.9
+      },
+      "references": [{"title": "Zalando Rule 130", "url": "https://opensource.zalando.com/restful-api-guidelines/#130"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-139",
+      "title": "Model complete business processes",
+      "category": "urls",
+      "severity": "warn",
+      "priority": 9,
+      "version": "1.0.0",
+      "rationale": "Complete business process modeling enables client understanding and prevents thin database wrappers.",
+      "description": "An API should contain all resources representing a complete business process, preventing services from being thin wrappers around databases.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API models complete business processes with all necessary resources.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 139", "url": "https://opensource.zalando.com/restful-api-guidelines/#139"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-140",
+      "title": "Define useful resources",
+      "category": "urls",
+      "severity": "warn",
+      "priority": 10,
+      "version": "1.0.0",
+      "rationale": "Resources should cover 90% of use cases with appropriate information density.",
+      "description": "Resources should contain as much information as necessary but as little as possible. Support filtering and embedding for edge cases.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if resources are well-defined with appropriate scope and filtering support.",
+        "weight": 0.5
+      },
+      "references": [{"title": "Zalando Rule 140", "url": "https://opensource.zalando.com/restful-api-guidelines/#140"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-141",
+      "title": "Keep URLs verb-free",
+      "category": "urls",
+      "severity": "error",
+      "priority": 11,
+      "version": "1.0.0",
+      "rationale": "URLs describe resources, not actions; HTTP methods indicate actions.",
+      "description": "Use only nouns in URLs. Instead of verbs like 'cancel', model as resources (e.g., POST /cancellations).",
+      "examples": {
+        "good": ["/orders/{id}/cancellation", "/cancellations"],
+        "bad": ["/orders/{id}/cancel", "/cancelOrder"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if URL paths contain only nouns, not verbs.",
+        "weight": 0.9,
+        "passCriteria": ["URLs contain only nouns", "Actions modeled as resources"],
+        "failCriteria": ["Verbs in URL paths", "Action-oriented endpoints"]
+      },
+      "references": [{"title": "Zalando Rule 141", "url": "https://opensource.zalando.com/restful-api-guidelines/#141"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-142",
+      "title": "Use domain-specific resource names",
+      "category": "urls",
+      "severity": "error",
+      "priority": 12,
+      "version": "1.0.0",
+      "rationale": "Domain-specific names improve understanding and reduce documentation needs.",
+      "description": "Use domain-specific nomenclature for resource names (e.g., 'sales-order-items' instead of generic 'items').",
+      "examples": {
+        "good": ["/sales-order-items", "/shipment-orders"],
+        "bad": ["/items", "/orders"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if resource names use domain-specific terminology.",
+        "weight": 0.7
+      },
+      "references": [{"title": "Zalando Rule 142", "url": "https://opensource.zalando.com/restful-api-guidelines/#142"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-145",
+      "title": "Consider using (non-) nested URLs",
+      "category": "urls",
+      "severity": "info",
+      "priority": 13,
+      "version": "1.0.0",
+      "rationale": "URL structure should reflect resource relationships and access patterns.",
+      "description": "Use nested URLs for sub-resources with lifecycle coupled to parent. Expose resources with globally unique IDs at top level.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if URL nesting appropriately reflects resource relationships.",
+        "weight": 0.5
+      },
+      "references": [{"title": "Zalando Rule 145", "url": "https://opensource.zalando.com/restful-api-guidelines/#145"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-146",
+      "title": "Limit number of resource types",
+      "category": "urls",
+      "severity": "warn",
+      "priority": 14,
+      "version": "1.0.0",
+      "rationale": "Too many resource types increases complexity and maintenance burden.",
+      "description": "Follow functional segmentation and separation of concerns. Well-defined APIs typically have 4-8 resource types.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API has a reasonable number of resource types (ideally 4-8).",
+        "weight": 0.5
+      },
+      "references": [{"title": "Zalando Rule 146", "url": "https://opensource.zalando.com/restful-api-guidelines/#146"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-147",
+      "title": "Limit number of sub-resource levels",
+      "category": "urls",
+      "severity": "warn",
+      "priority": 15,
+      "version": "1.0.0",
+      "rationale": "Deep nesting increases complexity and URL length.",
+      "description": "Use <= 3 sub-resource nesting levels. Remember URL length limits (some browsers cap at 2000 characters).",
+      "examples": {
+        "good": ["/orders/{id}/items/{item-id}"],
+        "bad": ["/customers/{id}/orders/{oid}/items/{iid}/details/{did}"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if URL paths have 3 or fewer nesting levels.",
+        "weight": 0.7
+      },
+      "references": [{"title": "Zalando Rule 147", "url": "https://opensource.zalando.com/restful-api-guidelines/#147"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-241",
+      "title": "Expose compound keys as resource identifiers",
+      "category": "urls",
+      "severity": "info",
+      "priority": 16,
+      "version": "1.0.0",
+      "rationale": "Compound keys can simplify URL structure for resources with natural multi-part identifiers.",
+      "description": "Compound keys can be exposed in URLs using slashes (e.g., /shopping-carts/{country}/{session-id}). Apply consistently and provide compound key abstraction.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if compound keys are used consistently when applicable.",
+        "weight": 0.4
+      },
+      "references": [{"title": "Zalando Rule 241", "url": "https://opensource.zalando.com/restful-api-guidelines/#241"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-231",
+      "title": "Use secondary key for idempotent POST design",
+      "category": "http-methods",
+      "severity": "warn",
+      "priority": 6,
+      "version": "1.0.0",
+      "rationale": "Secondary keys enable idempotent resource creation without client-generated IDs.",
+      "description": "Design POST as idempotent using secondary unique key provided by client. Service returns 200 OK if resource exists, 201 Created for new creation.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if POST endpoints support idempotent creation via secondary keys.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 231", "url": "https://opensource.zalando.com/restful-api-guidelines/#231"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-236",
+      "title": "Design simple query languages using query parameters",
+      "category": "http-methods",
+      "severity": "warn",
+      "priority": 7,
+      "version": "1.0.0",
+      "rationale": "Query parameters work well for simple filtering use cases.",
+      "description": "For simple queries, use standard query parameters with patterns like: field={value}, field={op}:{value} (where op: eq, ne, lt, le, gt, ge), multi-select via field={value},{value}.",
+      "examples": {
+        "good": ["?status=active", "?price=gt:100", "?category=books,music"],
+        "bad": ["?filter=status eq 'active'"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if query parameters follow simple, consistent filtering patterns.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 236", "url": "https://opensource.zalando.com/restful-api-guidelines/#236"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-237",
+      "title": "Design complex query languages using JSON",
+      "category": "http-methods",
+      "severity": "info",
+      "priority": 8,
+      "version": "1.0.0",
+      "rationale": "JSON bodies enable complex queries that don't fit in query strings.",
+      "description": "For complex queries with deep structures, use GET-with-body operations with JSON request bodies. Document using schema that mirrors property filter semantics.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if complex queries use JSON body with GET-with-body or POST.",
+        "weight": 0.4
+      },
+      "references": [{"title": "Zalando Rule 237", "url": "https://opensource.zalando.com/restful-api-guidelines/#237"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-220",
+      "title": "Use most specific HTTP status codes",
+      "category": "http-status",
+      "severity": "warn",
+      "priority": 7,
+      "version": "1.0.0",
+      "rationale": "Specific status codes provide better error handling information to clients.",
+      "description": "Use the most specific HTTP status code that accurately describes the outcome. E.g., use 409 for conflicts instead of generic 400, use 422 for semantic errors.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API uses specific HTTP status codes rather than generic ones.",
+        "weight": 0.7
+      },
+      "references": [{"title": "Zalando Rule 220", "url": "https://opensource.zalando.com/restful-api-guidelines/#220"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-177",
+      "title": "Not expose stack traces",
+      "category": "http-status",
+      "severity": "error",
+      "priority": 8,
+      "version": "1.0.0",
+      "rationale": "Stack traces expose internal implementation details and potential security vulnerabilities.",
+      "description": "Error responses must not contain stack traces or internal exception details. Return safe, user-friendly error messages with appropriate detail levels.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if error responses avoid exposing stack traces or internal details.",
+        "weight": 1.0
+      },
+      "references": [{"title": "Zalando Rule 177", "url": "https://opensource.zalando.com/restful-api-guidelines/#177"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-251",
+      "title": "Not use redirection codes",
+      "category": "http-status",
+      "severity": "warn",
+      "priority": 9,
+      "version": "1.0.0",
+      "rationale": "Redirects can cause unexpected behavior and caching issues with REST clients.",
+      "description": "Avoid using 3xx redirect status codes. Provide the correct URL in documentation. Use 301 only for permanent URL changes with communication to clients.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API avoids 3xx redirection codes.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 251", "url": "https://opensource.zalando.com/restful-api-guidelines/#251"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-132",
+      "title": "Use kebab-case with uppercase separate words for HTTP headers",
+      "category": "headers",
+      "severity": "warn",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Consistent header naming following standard conventions improves readability.",
+      "description": "HTTP header names should use Kebab-Case-With-Uppercase-Separate-Words (e.g., If-Modified-Since, Content-Type).",
+      "examples": {
+        "good": ["If-Modified-Since", "Accept-Encoding", "Content-ID"],
+        "bad": ["if-modified-since", "ACCEPT-ENCODING", "contentId"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if custom HTTP headers use proper Kebab-Case formatting.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 132", "url": "https://opensource.zalando.com/restful-api-guidelines/#132"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-133",
+      "title": "Use standard headers",
+      "category": "headers",
+      "severity": "info",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Standard HTTP headers are widely understood and supported by infrastructure.",
+      "description": "Use standard HTTP headers defined in non-obsolete RFCs where applicable. Custom headers should be documented explicitly.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if standard HTTP headers are used appropriately.",
+        "weight": 0.5
+      },
+      "references": [{"title": "Zalando Rule 133", "url": "https://opensource.zalando.com/restful-api-guidelines/#133"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-178",
+      "title": "Use Content-* headers correctly",
+      "category": "headers",
+      "severity": "error",
+      "priority": 6,
+      "version": "1.0.0",
+      "rationale": "Content headers describe the body and must be used consistently.",
+      "description": "Use Content-* headers (Content-Type, Content-Length, Content-Encoding, Content-Language, Content-Location, Content-Range, Content-Disposition) correctly to describe response body content.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if Content-* headers are used correctly in responses.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 178", "url": "https://opensource.zalando.com/restful-api-guidelines/#178"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-179",
+      "title": "Use Content-Location header",
+      "category": "headers",
+      "severity": "info",
+      "priority": 7,
+      "version": "1.0.0",
+      "rationale": "Content-Location guides caching and signals actual resource location.",
+      "description": "Content-Location can indicate the actual location of the transmitted resource. Useful for content negotiation and cache support.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if Content-Location is used appropriately when applicable.",
+        "weight": 0.4
+      },
+      "references": [{"title": "Zalando Rule 179", "url": "https://opensource.zalando.com/restful-api-guidelines/#179"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-181",
+      "title": "Consider to support Prefer header",
+      "category": "headers",
+      "severity": "info",
+      "priority": 8,
+      "version": "1.0.0",
+      "rationale": "Prefer header enables client-requested processing behaviors.",
+      "description": "Support RFC 7240 Prefer header for client preferences like return=minimal, respond-async, wait, handling=lenient/strict.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if Prefer header is supported for relevant use cases.",
+        "weight": 0.4
+      },
+      "references": [{"title": "Zalando Rule 181", "url": "https://opensource.zalando.com/restful-api-guidelines/#181"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-230",
+      "title": "Consider to support Idempotency-Key header",
+      "category": "headers",
+      "severity": "info",
+      "priority": 9,
+      "version": "1.0.0",
+      "rationale": "Idempotency-Key enables safe retries for non-idempotent operations.",
+      "description": "Support Idempotency-Key header for POST/PATCH operations to ensure idempotent behavior. Store key with response for 24 hours; return cached response on retry.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if Idempotency-Key header is supported for create/update operations.",
+        "weight": 0.5
+      },
+      "references": [{"title": "Zalando Rule 230", "url": "https://opensource.zalando.com/restful-api-guidelines/#230"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-184",
+      "title": "Propagate proprietary headers",
+      "category": "headers",
+      "severity": "error",
+      "priority": 10,
+      "version": "1.0.0",
+      "rationale": "End-to-end headers must be propagated to enable tracing and context passing.",
+      "description": "All Zalando proprietary headers (X-Flow-ID, X-Tenant-ID, etc.) are end-to-end and must be propagated to downstream services unchanged.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if proprietary headers are documented for propagation.",
+        "weight": 0.7
+      },
+      "references": [{"title": "Zalando Rule 184", "url": "https://opensource.zalando.com/restful-api-guidelines/#184"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-233",
+      "title": "Support X-Flow-ID",
+      "category": "headers",
+      "severity": "error",
+      "priority": 11,
+      "version": "1.0.0",
+      "rationale": "Flow IDs enable request tracing across distributed services.",
+      "description": "Services must support X-Flow-ID header for request correlation. Generate new Flow-ID if not provided. Propagate to all downstream calls and events.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if X-Flow-ID header is supported and documented.",
+        "weight": 0.9
+      },
+      "references": [{"title": "Zalando Rule 233", "url": "https://opensource.zalando.com/restful-api-guidelines/#233"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-153",
+      "title": "Use code 429 with headers for rate limits",
+      "category": "http-status",
+      "severity": "error",
+      "priority": 10,
+      "version": "1.0.0",
+      "rationale": "Proper rate limiting responses help clients implement backoff strategies.",
+      "description": "Return 429 Too Many Requests for rate limiting with X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, and Retry-After headers.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if rate limiting uses 429 with appropriate rate limit headers.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 153", "url": "https://opensource.zalando.com/restful-api-guidelines/#153"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-254",
+      "title": "Avoid a total result count",
+      "category": "pagination",
+      "severity": "warn",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Total counts are expensive to compute and rarely needed.",
+      "description": "Avoid providing total result counts in pagination responses. If required, support via Prefer: return=total-count header.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if pagination avoids mandatory total counts or makes them optional.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 254", "url": "https://opensource.zalando.com/restful-api-guidelines/#254"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-185",
+      "title": "Obtain approval of clients before API shut down",
+      "category": "deprecation",
+      "severity": "error",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "Uncoordinated shutdowns break clients and cause production incidents.",
+      "description": "Before shutting down an API, obtain consent from all clients on a sunset date. Help consumers migrate with migration manuals.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if deprecation process includes client communication and consent.",
+        "weight": 0.9
+      },
+      "references": [{"title": "Zalando Rule 185", "url": "https://opensource.zalando.com/restful-api-guidelines/#185"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-186",
+      "title": "Collect external partner consent on deprecation time span",
+      "category": "deprecation",
+      "severity": "error",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "External partners need adequate time to migrate.",
+      "description": "For APIs consumed by external partners, define and communicate a reasonable after-deprecation-life-span. Partners must consent before using the API.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if external partner deprecation timelines are defined.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 186", "url": "https://opensource.zalando.com/restful-api-guidelines/#186"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-188",
+      "title": "Monitor usage of deprecated API scheduled for sunset",
+      "category": "deprecation",
+      "severity": "error",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Usage monitoring prevents breaking production traffic during sunset.",
+      "description": "Monitor usage of deprecated APIs to track migration progress and avoid breaking clients still using the sunset API.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if monitoring is in place for deprecated endpoints.",
+        "weight": 0.7
+      },
+      "references": [{"title": "Zalando Rule 188", "url": "https://opensource.zalando.com/restful-api-guidelines/#188"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-190",
+      "title": "Add monitoring for Deprecation and Sunset header",
+      "category": "deprecation",
+      "severity": "warn",
+      "priority": 6,
+      "version": "1.0.0",
+      "rationale": "Clients should proactively detect API deprecations.",
+      "description": "Clients should monitor Deprecation and Sunset headers in responses and alert on their presence.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if client guidance includes monitoring for deprecation headers.",
+        "weight": 0.5
+      },
+      "references": [{"title": "Zalando Rule 190", "url": "https://opensource.zalando.com/restful-api-guidelines/#190"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-191",
+      "title": "Not start using deprecated APIs",
+      "category": "deprecation",
+      "severity": "error",
+      "priority": 7,
+      "version": "1.0.0",
+      "rationale": "New integrations with deprecated APIs create unnecessary migration work.",
+      "description": "Clients must not start using deprecated APIs, API versions, or API features.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if deprecated elements are clearly marked to prevent new usage.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 191", "url": "https://opensource.zalando.com/restful-api-guidelines/#191"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-162",
+      "title": "Use REST maturity level 2",
+      "category": "hypermedia",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "REST level 2 enables resource-oriented APIs with proper HTTP semantics.",
+      "description": "Implement REST Maturity Level 2: resource-oriented APIs using HTTP verbs correctly (GET for retrieval, POST for creation, etc.) and proper status codes.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API follows REST maturity level 2 principles.",
+        "weight": 0.9
+      },
+      "references": [{"title": "Zalando Rule 162", "url": "https://opensource.zalando.com/restful-api-guidelines/#162"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-163",
+      "title": "Consider REST maturity level 3 - HATEOAS",
+      "category": "hypermedia",
+      "severity": "info",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "HATEOAS adds complexity with limited value in typical SOA contexts.",
+      "description": "HATEOAS is not generally recommended due to added complexity without clear benefits in SOA contexts. May be useful for specific human-facing scenarios.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if HATEOAS usage is justified when implemented.",
+        "weight": 0.3
+      },
+      "references": [{"title": "Zalando Rule 163", "url": "https://opensource.zalando.com/restful-api-guidelines/#163"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-164",
+      "title": "Use common hypertext controls",
+      "category": "hypermedia",
+      "severity": "error",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "Consistent hypertext controls enable reliable link handling.",
+      "description": "Use common hypertext control objects with href attribute for resource links. Follow IANA link relations, converting hyphens to underscores.",
+      "examples": {
+        "good": ["{\"href\": \"https://api.example.com/orders/123\"}"],
+        "bad": ["{\"link\": \"https://api.example.com/orders/123\"}"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if hypertext controls use href attribute consistently.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 164", "url": "https://opensource.zalando.com/restful-api-guidelines/#164"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-165",
+      "title": "Use simple hypertext controls for pagination and self-references",
+      "category": "hypermedia",
+      "severity": "warn",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Simple URI values reduce overhead for common pagination patterns.",
+      "description": "For pagination and self-references, use simple URI strings with standard link relations (next, prev, first, last, self).",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if pagination uses simple URI values for links.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 165", "url": "https://opensource.zalando.com/restful-api-guidelines/#165"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-166",
+      "title": "Not use link headers with JSON entities",
+      "category": "hypermedia",
+      "severity": "error",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Embedded links in JSON are more flexible than HTTP Link headers.",
+      "description": "Do not use RFC 8288 Link headers with JSON responses. Embed links directly in the JSON payload for flexibility and precision.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if links are embedded in JSON rather than using Link headers.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 166", "url": "https://opensource.zalando.com/restful-api-guidelines/#166"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-225",
+      "title": "Follow naming convention for permissions (scopes)",
+      "category": "security",
+      "severity": "error",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Consistent permission naming enables authorization management.",
+      "description": "Permission names must follow pattern: <application-id>.<access-mode> or <application-id>.<resource-name>.<access-mode>. Use 'uid' for unrestricted access.",
+      "examples": {
+        "good": ["order-management.read", "order-management.sales-order.write"],
+        "bad": ["read_orders", "ORDER_MANAGEMENT_READ"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if OAuth scopes follow the naming convention pattern.",
+        "weight": 0.9
+      },
+      "references": [{"title": "Zalando Rule 225", "url": "https://opensource.zalando.com/restful-api-guidelines/#225"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-155",
+      "title": "Reduce bandwidth needs and improve responsiveness",
+      "category": "performance",
+      "severity": "warn",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Bandwidth optimization is critical for mobile clients.",
+      "description": "Support bandwidth reduction techniques: compression, field filtering, ETag/If-Match headers, Prefer header with return=minimal, pagination, and caching.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if API supports bandwidth optimization techniques.",
+        "weight": 0.7
+      },
+      "references": [{"title": "Zalando Rule 155", "url": "https://opensource.zalando.com/restful-api-guidelines/#155"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-156",
+      "title": "Use gzip compression",
+      "category": "performance",
+      "severity": "warn",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "Compression significantly reduces payload size for text-based responses.",
+      "description": "Servers and clients should support gzip content encoding via Accept-Encoding and Content-Encoding headers. Document compression support.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if gzip compression is supported and documented.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 156", "url": "https://opensource.zalando.com/restful-api-guidelines/#156"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-157",
+      "title": "Support partial responses via filtering",
+      "category": "performance",
+      "severity": "warn",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Field filtering reduces payload size when clients need subset of data.",
+      "description": "Support 'fields' query parameter for partial responses. Syntax: fields=(name,friends(name)) for nested filtering.",
+      "examples": {
+        "good": ["?fields=(name,email)", "?fields=(id,items(sku,price))"],
+        "bad": ["?select=name,email"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if 'fields' query parameter is supported for partial responses.",
+        "weight": 0.5
+      },
+      "references": [{"title": "Zalando Rule 157", "url": "https://opensource.zalando.com/restful-api-guidelines/#157"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-158",
+      "title": "Allow optional embedding of sub-resources",
+      "category": "performance",
+      "severity": "warn",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Resource embedding reduces N+1 query problems.",
+      "description": "Support 'embed' query parameter for sub-resource expansion. Syntax: embed=(items) to include order items with order response.",
+      "examples": {
+        "good": ["?embed=(items)", "?embed=(customer,items)"],
+        "bad": ["?include=items"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if 'embed' query parameter is supported for sub-resource expansion.",
+        "weight": 0.5
+      },
+      "references": [{"title": "Zalando Rule 158", "url": "https://opensource.zalando.com/restful-api-guidelines/#158"}],
+      "recommended": false
+    },
+    {
+      "id": "Z-194",
+      "title": "Treat events as part of the service interface",
+      "category": "events",
+      "severity": "error",
+      "priority": 1,
+      "version": "1.0.0",
+      "rationale": "Events are a first-class contract with the same care as REST APIs.",
+      "description": "Events are part of a service's interface equivalent to REST APIs. Design events with API-first principle in mind.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if event schemas are treated as formal API contracts.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 194", "url": "https://opensource.zalando.com/restful-api-guidelines/#194"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-195",
+      "title": "Make event schema available for review",
+      "category": "events",
+      "severity": "error",
+      "priority": 2,
+      "version": "1.0.0",
+      "rationale": "Event schemas must be reviewable by consumers.",
+      "description": "Services publishing events must make event schema and event type definition available for consumer review.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if event schemas are documented and available for review.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 195", "url": "https://opensource.zalando.com/restful-api-guidelines/#195"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-196",
+      "title": "Ensure event schema conforms to OpenAPI schema object",
+      "category": "events",
+      "severity": "error",
+      "priority": 3,
+      "version": "1.0.0",
+      "rationale": "OpenAPI schema alignment enables tooling consistency.",
+      "description": "Event schemas should use OpenAPI Schema Object specification (extended JSON Schema Draft 4). Avoid additionalItems, contains, patternProperties, dependencies, propertyNames, const, not, oneOf.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if event schemas conform to OpenAPI schema constraints.",
+        "weight": 0.9
+      },
+      "references": [{"title": "Zalando Rule 196", "url": "https://opensource.zalando.com/restful-api-guidelines/#196"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-197",
+      "title": "Specify and register events as event types",
+      "category": "events",
+      "severity": "error",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Event type registration enables discoverability and validation.",
+      "description": "Register events as Event Types with: name, category (data/general), owning_application, schema, compatibility_mode, and audience.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if events are registered with proper type definitions.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 197", "url": "https://opensource.zalando.com/restful-api-guidelines/#197"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-198",
+      "title": "Ensure that events conform to an event category",
+      "category": "events",
+      "severity": "error",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Event categories provide standard structure and metadata.",
+      "description": "Events must conform to either General Event (business processes) or Data Change Event (entity mutations) category with required metadata.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if events follow General or Data Change category structures.",
+        "weight": 0.9
+      },
+      "references": [{"title": "Zalando Rule 198", "url": "https://opensource.zalando.com/restful-api-guidelines/#198"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-199",
+      "title": "Ensure that events define useful business resources",
+      "category": "events",
+      "severity": "warn",
+      "priority": 6,
+      "version": "1.0.0",
+      "rationale": "Events should represent meaningful business value.",
+      "description": "Events should be based on business resources and processes. Avoid explosion of event types; prefer abstract/generic types valuable for multiple use cases.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if events represent meaningful business resources.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 199", "url": "https://opensource.zalando.com/restful-api-guidelines/#199"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-200",
+      "title": "Avoid writing sensitive data to events",
+      "category": "events",
+      "severity": "warn",
+      "priority": 7,
+      "version": "1.0.0",
+      "rationale": "Sensitive data in events increases compliance and security risks.",
+      "description": "Avoid writing sensitive data (personal data, PII) to events unless required for business purposes.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if events avoid unnecessary sensitive data.",
+        "weight": 0.7
+      },
+      "references": [{"title": "Zalando Rule 200", "url": "https://opensource.zalando.com/restful-api-guidelines/#200"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-201",
+      "title": "Use general events to signal steps in business processes",
+      "category": "events",
+      "severity": "error",
+      "priority": 8,
+      "version": "1.0.0",
+      "rationale": "General events enable business process tracking and replay.",
+      "description": "Use General Event category for business process steps. Include business process ID, ordering information (parent_eids for causality), and only new information per step.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if business process events use General Event category.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 201", "url": "https://opensource.zalando.com/restful-api-guidelines/#201"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-202",
+      "title": "Use data change events to signal mutations",
+      "category": "events",
+      "severity": "error",
+      "priority": 9,
+      "version": "1.0.0",
+      "rationale": "Data change events enable change data capture and replication.",
+      "description": "Use Data Change Event category for entity mutations (create, update, delete). Provide complete entity data, entity identifier, and data_op field.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if entity mutations use Data Change Event category.",
+        "weight": 0.9
+      },
+      "references": [{"title": "Zalando Rule 202", "url": "https://opensource.zalando.com/restful-api-guidelines/#202"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-203",
+      "title": "Provide explicit event ordering for general events",
+      "category": "events",
+      "severity": "warn",
+      "priority": 10,
+      "version": "1.0.0",
+      "rationale": "Ordering enables event stream reconstruction and replay.",
+      "description": "Provide ordering_key_fields and optionally ordering_instance_ids in event type definition. Use monotonically increasing versions or sequence counters.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if general events include explicit ordering information.",
+        "weight": 0.7
+      },
+      "references": [{"title": "Zalando Rule 203", "url": "https://opensource.zalando.com/restful-api-guidelines/#203"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-204",
+      "title": "Use the hash partition strategy for data change events",
+      "category": "events",
+      "severity": "warn",
+      "priority": 11,
+      "version": "1.0.0",
+      "rationale": "Hash partitioning ensures ordered delivery per entity.",
+      "description": "Use hash partition strategy with entity identifier as key. This ensures all events for an entity go to the same partition for ordered processing.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if data change events use hash partitioning by entity.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 204", "url": "https://opensource.zalando.com/restful-api-guidelines/#204"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-205",
+      "title": "Ensure data change events match APIs resources",
+      "category": "events",
+      "severity": "warn",
+      "priority": 12,
+      "version": "1.0.0",
+      "rationale": "Consistent representations reduce consumer complexity.",
+      "description": "Data change event entity representation should correspond to REST API resource representation where possible.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if event entities match REST API resource structures.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 205", "url": "https://opensource.zalando.com/restful-api-guidelines/#205"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-207",
+      "title": "Indicate ownership of event types",
+      "category": "events",
+      "severity": "error",
+      "priority": 13,
+      "version": "1.0.0",
+      "rationale": "Clear ownership enables accountability and coordination.",
+      "description": "Event types must have clear ownership via owning_application field. Owner is responsible for definition and evolution.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if event types have clear ownership defined.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 207", "url": "https://opensource.zalando.com/restful-api-guidelines/#207"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-208",
+      "title": "Define events compliant with overall API guidelines",
+      "category": "events",
+      "severity": "error",
+      "priority": 14,
+      "version": "1.0.0",
+      "rationale": "Events should follow same quality standards as REST APIs.",
+      "description": "Events must follow API guidelines for general conventions, JSON guidelines, data formats, and hypermedia principles.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if events follow API guidelines for data formats and conventions.",
+        "weight": 0.9
+      },
+      "references": [{"title": "Zalando Rule 208", "url": "https://opensource.zalando.com/restful-api-guidelines/#208"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-209",
+      "title": "Maintain backwards compatibility for events",
+      "category": "events",
+      "severity": "error",
+      "priority": 15,
+      "version": "1.0.0",
+      "rationale": "Events need even stricter compatibility than REST APIs due to async nature.",
+      "description": "Event changes must be additive and backward compatible. Compatible changes: new optional fields, field order changes. Incompatible: removing required fields, changing types.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if event schema evolution follows backward compatibility rules.",
+        "weight": 1.0
+      },
+      "references": [{"title": "Zalando Rule 209", "url": "https://opensource.zalando.com/restful-api-guidelines/#209"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-210",
+      "title": "Avoid additionalProperties in event type schemas",
+      "category": "events",
+      "severity": "warn",
+      "priority": 16,
+      "version": "1.0.0",
+      "rationale": "Wildcard extensions hinder schema evolution.",
+      "description": "Event schemas should avoid additionalProperties: true. Define new optional fields explicitly. Consumers must ignore unknown fields.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if event schemas avoid additionalProperties: true.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 210", "url": "https://opensource.zalando.com/restful-api-guidelines/#210"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-211",
+      "title": "Provide unique event identifiers",
+      "category": "events",
+      "severity": "error",
+      "priority": 17,
+      "version": "1.0.0",
+      "rationale": "Event identifiers enable deduplication and idempotent processing.",
+      "description": "Provide eid (event identifier) as UUID in event metadata. Use same eid for retries of the same event.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if events include unique eid identifiers.",
+        "weight": 0.9
+      },
+      "references": [{"title": "Zalando Rule 211", "url": "https://opensource.zalando.com/restful-api-guidelines/#211"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-212",
+      "title": "Design for idempotent out-of-order processing",
+      "category": "events",
+      "severity": "warn",
+      "priority": 18,
+      "version": "1.0.0",
+      "rationale": "Idempotent processing enables resilient event consumption.",
+      "description": "Design events for idempotent out-of-order processing by including entity identifier, monotonically increasing ordering key, and state after change.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if events support idempotent processing with ordering info.",
+        "weight": 0.7
+      },
+      "references": [{"title": "Zalando Rule 212", "url": "https://opensource.zalando.com/restful-api-guidelines/#212"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-213",
+      "title": "Follow naming convention for event type names",
+      "category": "events",
+      "severity": "error",
+      "priority": 19,
+      "version": "1.0.0",
+      "rationale": "Consistent event naming enables discoverability.",
+      "description": "Event type names must follow pattern: <functional-name>.<event-name>[.<version>]. Use functional naming for external events.",
+      "examples": {
+        "good": ["transactions-order.order-cancelled", "customer-personal-data.email-changed.v2"],
+        "bad": ["order_cancelled", "OrderCancelledEvent"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if event type names follow naming conventions.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 213", "url": "https://opensource.zalando.com/restful-api-guidelines/#213"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-214",
+      "title": "Be robust against duplicates when consuming events",
+      "category": "events",
+      "severity": "error",
+      "priority": 20,
+      "version": "1.0.0",
+      "rationale": "Duplicate events are inherent in distributed systems.",
+      "description": "Event consumers must be robust against duplicates. Use eid for deduplication or leverage data keys and ordering for CDC.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if event handling documents duplicate handling strategy.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 214", "url": "https://opensource.zalando.com/restful-api-guidelines/#214"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-242",
+      "title": "Provide explicit event ordering for data change events",
+      "category": "events",
+      "severity": "error",
+      "priority": 21,
+      "version": "1.0.0",
+      "rationale": "Data change ordering is critical for CDC and replication.",
+      "description": "Data change events must provide explicit ordering information via ordering_key_fields and ordering_instance_ids.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if data change events have required ordering fields.",
+        "weight": 0.9
+      },
+      "references": [{"title": "Zalando Rule 242", "url": "https://opensource.zalando.com/restful-api-guidelines/#242"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-245",
+      "title": "Carefully define the compatibility mode",
+      "category": "events",
+      "severity": "error",
+      "priority": 22,
+      "version": "1.0.0",
+      "rationale": "Compatibility mode affects schema evolution flexibility.",
+      "description": "Choose compatibility mode carefully: none (any change), forward (consumers can read with old schema), compatible (all versions validate).",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if event compatibility mode is explicitly defined.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 245", "url": "https://opensource.zalando.com/restful-api-guidelines/#245"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-246",
+      "title": "Use semantic versioning of event type schemas",
+      "category": "events",
+      "severity": "error",
+      "priority": 23,
+      "version": "1.0.0",
+      "rationale": "Semantic versioning communicates impact of schema changes.",
+      "description": "Event schemas must follow semantic versioning (MAJOR.MINOR.PATCH). PATCH for description changes, MINOR for optional fields, MAJOR for breaking changes.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if event schemas use semantic versioning.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 246", "url": "https://opensource.zalando.com/restful-api-guidelines/#246"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-247",
+      "title": "Provide mandatory event metadata",
+      "category": "events",
+      "severity": "error",
+      "priority": 24,
+      "version": "1.0.0",
+      "rationale": "Metadata enables event tracking and processing.",
+      "description": "Events must include metadata with eid (event identifier) and occurred_at (event creation timestamp). Optional: event_type, version, parent_eids, flow_id, partition.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if events include required metadata fields.",
+        "weight": 0.9
+      },
+      "references": [{"title": "Zalando Rule 247", "url": "https://opensource.zalando.com/restful-api-guidelines/#247"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-192",
+      "title": "Publish OpenAPI specification for APIs",
+      "category": "general",
+      "severity": "error",
+      "priority": 12,
+      "version": "1.0.0",
+      "rationale": "Published API specifications enable discoverability and client generation.",
+      "description": "All service applications must publish API specifications of their external APIs. While optional for component-internal APIs, it is recommended to profit from API documentation and review tooling.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if the API specification is published and accessible.",
+        "weight": 0.8
+      },
+      "references": [{"title": "Zalando Rule 192", "url": "https://opensource.zalando.com/restful-api-guidelines/#192"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-193",
+      "title": "Monitor API usage",
+      "category": "general",
+      "severity": "warn",
+      "priority": 13,
+      "version": "1.0.0",
+      "rationale": "API usage monitoring identifies clients and supports change management.",
+      "description": "Owners of APIs used in production should monitor API usage to identify clients. This helps find review partners for API changes and track deprecation migration progress.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if API monitoring and usage tracking is documented.",
+        "weight": 0.6
+      },
+      "references": [{"title": "Zalando Rule 193", "url": "https://opensource.zalando.com/restful-api-guidelines/#193"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-126",
+      "title": "Use standard formats for date and time properties",
+      "category": "data-formats",
+      "severity": "error",
+      "priority": 4,
+      "version": "1.0.0",
+      "rationale": "Standard date/time formats ensure interoperability and parsing consistency.",
+      "description": "Use string typed formats: date, time-local, date-time-local, time, date-time, duration, or period for date/time properties. Date-time must be UTC with Z suffix (ISO 8601).",
+      "examples": {
+        "good": ["2024-01-15", "2024-01-15T14:30:00Z", "14:30:00", "P1DT2H30M"],
+        "bad": ["01/15/2024", "2024-01-15T14:30:00+00:00"]
+      },
+      "aliasOf": "Z-169",
+      "enforcement": {"type": "none"},
+      "references": [{"title": "Zalando Rule 126/169", "url": "https://opensource.zalando.com/restful-api-guidelines/#126"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-128",
+      "title": "Use standard formats for country, language and currency",
+      "category": "data-formats",
+      "severity": "error",
+      "priority": 5,
+      "version": "1.0.0",
+      "rationale": "Standard codes ensure interoperability and prevent ambiguity.",
+      "description": "Use ISO standards: ISO 3166-1 alpha-2 for countries, ISO 639-1 for languages, BCP 47 for language tags, ISO 4217 for currencies.",
+      "examples": {
+        "good": ["DE", "en", "en-US", "EUR"],
+        "bad": ["Germany", "English", "dollars"]
+      },
+      "aliasOf": "Z-170",
+      "enforcement": {"type": "none"},
+      "references": [{"title": "Zalando Rule 128/170", "url": "https://opensource.zalando.com/restful-api-guidelines/#128"}],
+      "recommended": true
+    },
+    {
+      "id": "Z-240",
+      "title": "Declare enum values using UPPER_SNAKE_CASE string",
+      "category": "json",
+      "severity": "warn",
+      "priority": 11,
+      "version": "1.0.0",
+      "rationale": "Consistent enum value formatting improves readability and code generation.",
+      "description": "Enum values should use UPPER_SNAKE_CASE format. Use string type for enums. For extensible enums, use x-extensible-enum or examples with description.",
+      "examples": {
+        "good": ["ACTIVE", "PENDING_APPROVAL", "OUT_OF_STOCK"],
+        "bad": ["active", "PendingApproval", "out-of-stock"]
+      },
+      "aliasOf": "Z-125",
+      "enforcement": {"type": "none"},
+      "references": [{"title": "Zalando Rule 240/125", "url": "https://opensource.zalando.com/restful-api-guidelines/#240"}],
+      "recommended": true
+    }
+  ],
+  "conformanceLevels": {
+    "bronze": {
+      "description": "Basic Zalando compliance",
+      "requiredCategories": ["general", "json", "urls", "http-status"],
+      "requiredRules": ["Z-100", "Z-101", "Z-118", "Z-129", "Z-134", "Z-167", "Z-176", "Z-243"],
+      "maxErrors": 5,
+      "maxWarnings": 20
+    },
+    "silver": {
+      "description": "Standard Zalando compliance",
+      "extends": "bronze",
+      "requiredCategories": ["general", "compatibility", "json", "data-formats", "urls", "http-methods", "http-status", "pagination", "security"],
+      "requiredRules": ["Z-100", "Z-101", "Z-103", "Z-106", "Z-107", "Z-118", "Z-120", "Z-125", "Z-129", "Z-134", "Z-136", "Z-148", "Z-150", "Z-151", "Z-159", "Z-160", "Z-167", "Z-169", "Z-171", "Z-176", "Z-243", "Z-104", "Z-227"],
+      "maxErrors": 0,
+      "maxWarnings": 10
+    },
+    "gold": {
+      "description": "Full Zalando compliance",
+      "extends": "silver",
+      "requiredRules": ["Z-100", "Z-101", "Z-102", "Z-103", "Z-106", "Z-107", "Z-108", "Z-109", "Z-112", "Z-118", "Z-120", "Z-122", "Z-125", "Z-110", "Z-129", "Z-134", "Z-135", "Z-136", "Z-137", "Z-148", "Z-149", "Z-150", "Z-151", "Z-154", "Z-159", "Z-160", "Z-161", "Z-248", "Z-167", "Z-169", "Z-171", "Z-172", "Z-176", "Z-182", "Z-183", "Z-187", "Z-189", "Z-219", "Z-227", "Z-229", "Z-238", "Z-243", "Z-252", "Z-253", "Z-104", "Z-105"],
+      "maxErrors": 0,
+      "maxWarnings": 3
+    }
+  },
+  "lexicon": {
+    "approved": [
+      "items", "self", "next", "prev", "first", "last", "cursor", "limit", "q", "sort", "fields", "embed"
+    ],
+    "forbidden": [
+      {"term": "value", "replaceWith": "items", "reason": "Zalando uses 'items' for collection arrays"},
+      {"term": "data", "replaceWith": "items", "reason": "Use 'items' for collection arrays"},
+      {"term": "results", "replaceWith": "items", "reason": "Use 'items' for collection arrays"},
+      {"term": "nextLink", "replaceWith": "next", "reason": "Use 'next' for pagination links"},
+      {"term": "customerNumber", "replaceWith": "customer_number", "reason": "Use snake_case, not camelCase"}
+    ],
+    "casingRules": {
+      "paths": "kebab-case",
+      "parameters": "snake_case",
+      "properties": "snake_case",
+      "headers": "kebab-case"
+    }
+  }
+}
