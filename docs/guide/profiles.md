@@ -7,9 +7,9 @@ Profiles are collections of API style rules. api-style-spec includes profiles ba
 | Profile | Based On | Rules | Focus |
 |---------|----------|-------|-------|
 | `default` | Common best practices | ~30 | General REST API design |
-| `azure` | Microsoft/Azure guidelines | ~25 | Enterprise cloud APIs |
+| `azure` | Microsoft/Azure guidelines | 76 | Enterprise cloud APIs |
 | `google` | Google API Design Guide | ~20 | Resource-oriented design |
-| `zalando` | Zalando RESTful Guidelines | ~30 | E-commerce APIs |
+| `zalando` | Zalando RESTful Guidelines | 55 | E-commerce APIs |
 
 ## Selecting a Profile
 
@@ -127,7 +127,22 @@ api-style lint openapi.yaml --profile azure --level silver
 
 Rules are tagged with minimum conformance levels. Higher levels include all rules from lower levels.
 
+## Generating Documentation
+
+Convert any profile into human-readable documentation:
+
+```bash
+# Single-page Markdown
+api-style generate guide --profile zalando --output zalando-guide.md
+
+# MkDocs multi-page site
+api-style generate mkdocs --profile zalando --output ./zalando-docs
+```
+
+See [Documentation Generation](documentation-generation.md) for details.
+
 ## Next Steps
 
+- [Documentation Generation](documentation-generation.md) - Generate Markdown and MkDocs docs
 - [Custom Rules](custom-rules.md) - Create your own rules
 - [Profile Reference](../profiles/default.md) - Detailed rule documentation

@@ -8,7 +8,9 @@ The Zalando profile implements Zalando's RESTful API Guidelines for pragmatic AP
 |----------|-------|
 | Name | `zalando` |
 | Based On | [Zalando RESTful API Guidelines](https://opensource.zalando.com/restful-api-guidelines/) |
-| Rules | ~30 |
+| Rules | 55 |
+| Categories | 13 |
+| Patterns | 3 |
 | Focus | Pragmatic e-commerce APIs |
 
 ## Philosophy
@@ -47,16 +49,21 @@ Zalando's API guidelines emphasize:
 
 ## Categories
 
-| Category | Focus |
-|----------|-------|
-| General | API-first principles |
-| URLs | URL naming and structure |
-| JSON | JSON property guidelines |
-| HTTP | HTTP method and status usage |
-| Errors | Problem details (RFC 7807) |
-| Pagination | Cursor-based pagination |
-| Hypermedia | HATEOAS patterns |
-| Compatibility | Evolution strategies |
+| Category | Rules | Focus |
+|----------|-------|-------|
+| General | 4 | API-first principles |
+| Compatibility | 4 | Evolution and versioning |
+| JSON | 5 | Property naming and formats |
+| Data Formats | 3 | Date/time, enums, money |
+| URLs | 4 | URL naming and structure |
+| HTTP Methods | 6 | Method semantics |
+| HTTP Status | 5 | Response codes |
+| Headers | 3 | Standard headers |
+| Hypermedia | 3 | HATEOAS patterns |
+| Pagination | 4 | Cursor-based patterns |
+| Performance | 4 | Caching, compression |
+| Security | 4 | OAuth2, TLS |
+| Deprecation | 3 | Sunset headers |
 
 ## Notable Rules
 
@@ -113,6 +120,23 @@ api-style lint openapi.yaml --profile zalando
 # Analyze for Zalando compliance
 api-style analyze openapi.yaml --profile zalando
 ```
+
+## Generate Documentation
+
+Generate a human-readable style guide from the Zalando profile:
+
+```bash
+# Single-page Markdown (25KB+)
+api-style generate guide --profile zalando --output zalando-guide.md
+
+# MkDocs site (20 pages)
+api-style generate mkdocs --profile zalando --output ./zalando-docs
+
+# Build and serve MkDocs site
+cd zalando-docs && pip install mkdocs-material && mkdocs serve
+```
+
+The generated documentation includes all 55 rules organized by category, design patterns (cursor pagination, Problem+JSON), principles, and glossary.
 
 ## When to Use
 

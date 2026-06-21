@@ -143,7 +143,7 @@ Generate artifacts from a style profile.
 
 #### generate guide
 
-Generate Markdown documentation from a profile.
+Generate single-page Markdown documentation from a profile.
 
 ```bash
 api-style generate guide [flags]
@@ -154,7 +154,83 @@ api-style generate guide [flags]
 | Flag | Short | Default | Description |
 |------|-------|---------|-------------|
 | `--profile` | `-p` | `default` | Style profile to use |
-| `--output` | `-o` | stdout | Output directory or file |
+| `--output` | `-o` | stdout | Output file path |
+| `--no-toc` | | `false` | Exclude table of contents |
+| `--no-examples` | | `false` | Exclude examples |
+| `--no-patterns` | | `false` | Exclude design patterns section |
+| `--no-principles` | | `false` | Exclude design principles section |
+| `--no-glossary` | | `false` | Exclude glossary |
+| `--emojis` | | `false` | Use emojis for severity indicators |
+
+**Examples:**
+
+```bash
+# Generate full guide to stdout
+api-style generate guide --profile zalando
+
+# Save to file
+api-style generate guide --profile azure --output azure-guide.md
+
+# Minimal output (rules only)
+api-style generate guide --profile azure --no-patterns --no-principles --no-glossary
+```
+
+#### generate mkdocs
+
+Generate a complete MkDocs documentation site from a profile.
+
+```bash
+api-style generate mkdocs [flags]
+```
+
+**Flags:**
+
+| Flag | Short | Default | Description |
+|------|-------|---------|-------------|
+| `--profile` | `-p` | `default` | Style profile to use |
+| `--output` | `-o` | `./docs` | Output directory |
+| `--site-name` | | from profile | MkDocs site name |
+| `--site-url` | | | Base URL for the site |
+| `--repo-url` | | from profile | Repository URL |
+| `--theme` | | `material` | MkDocs theme |
+| `--split-patterns` | | `false` | Create separate pages per pattern |
+| `--no-split-categories` | | `false` | Keep all rules in one page |
+| `--no-search` | | `false` | Disable search plugin |
+
+**Examples:**
+
+```bash
+# Generate MkDocs site
+api-style generate mkdocs --profile zalando --output ./zalando-docs
+
+# Custom site name and URL
+api-style generate mkdocs --profile azure \
+  --site-name "My API Guidelines" \
+  --site-url "https://api.example.com/guidelines"
+
+# Split patterns into individual pages
+api-style generate mkdocs --profile azure --split-patterns
+
+# Build and serve the generated site
+cd zalando-docs && pip install mkdocs-material && mkdocs serve
+```
+
+**Generated Structure:**
+
+```
+output/
+├── mkdocs.yml              # MkDocs configuration
+└── docs/
+    ├── index.md            # Home page
+    ├── introduction.md     # Introduction (if defined)
+    ├── principles.md       # Design principles
+    ├── patterns.md         # Design patterns
+    ├── conformance.md      # Conformance levels
+    ├── glossary.md         # Glossary
+    └── rules/
+        ├── index.md        # Rules overview
+        └── {category}.md   # One file per category
+```
 
 #### generate spectral
 
@@ -170,6 +246,16 @@ api-style generate spectral [flags]
 |------|-------|---------|-------------|
 | `--profile` | `-p` | `default` | Style profile to use |
 | `--output` | `-o` | stdout | Output file path |
+
+**Examples:**
+
+```bash
+# Generate Spectral ruleset
+api-style generate spectral --profile azure --output .spectral.yaml
+
+# Use with vacuum
+vacuum lint openapi.yaml -r .spectral.yaml
+```
 
 ---
 
