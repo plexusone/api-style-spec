@@ -48,7 +48,9 @@ nav:
   - Guide:
       - Getting Started: guide/getting-started.md
       - Automated API Governance: guide/automated-api-governance.md
+      - CI/CD Integration: guide/ci-cd.md
       - Using Profiles: guide/profiles.md
+      - Documentation Generation: guide/documentation-generation.md
       - Custom Rules: guide/custom-rules.md
       - MCP Server: guide/mcp-server.md
   - Reference:
