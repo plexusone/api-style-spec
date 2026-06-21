@@ -1,0 +1,112 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grokify/structured-evaluation/main/schema/rubric.schema.json",
+  "metadata": {
+    "document": "profiles/zalando-rest/zalando-rest.api-style.json",
+    "documentTitle": "Zalando REST API Guidelines",
+    "generatedAt": "2025-06-17T00:00:00Z",
+    "generatedBy": "Claude Opus 4.5 (LLM-as-Judge)"
+  },
+  "reviewType": "style-guide-quality",
+  "rubricId": "api-style-guide-quality",
+  "rubricVersion": "1.0.0",
+  "categories": [
+    {
+      "category": "Content Coverage",
+      "score": "pass",
+      "numericScore": 5,
+      "reasoning": "Covers all 6 essential domains: REST/API First architecture, OpenAPI 3.1, snake_case naming (147 rules), RFC 7807 Problem+JSON errors, OAuth2 security, semantic versioning with Sunset header. Also includes pagination, hypermedia, and events.",
+      "findings": []
+    },
+    {
+      "category": "Structure & Navigation",
+      "score": "pass",
+      "numericScore": 5,
+      "reasoning": "Excellent structure: clear TOC, numbered rules (Z-100 through Z-255), 13 logical categories, cross-references between related rules. Hierarchical organization from principles → patterns → rules.",
+      "findings": []
+    },
+    {
+      "category": "Rule Quality & Clarity",
+      "score": "pass",
+      "numericScore": 5,
+      "reasoning": "Well-structured rules with clear titles, severity levels (error/warn/info), rationale explaining WHY, RFC 2119 keywords (MUST/SHOULD/MAY). Each rule has unique ID and is actionable.",
+      "findings": [
+        {"severity": "low", "category": "Rule Quality & Clarity", "finding": "Some rules lack detailed implementation guidance", "recommendation": "Add step-by-step HOW guidance for complex rules like Z-162 (HATEOAS) and Z-159 (pagination)"}
+      ]
+    },
+    {
+      "category": "Examples & Code Samples",
+      "score": "pass",
+      "numericScore": 4,
+      "reasoning": "Good/bad examples for naming, errors, pagination. Design patterns section has comprehensive JSON examples. However, not all 147 rules include examples.",
+      "findings": [
+        {"severity": "low", "category": "Examples & Code Samples", "finding": "~40% of rules lack concrete examples", "recommendation": "Add JSON/HTTP examples to rules without them, especially compatibility rules (Z-106 through Z-115)"}
+      ]
+    },
+    {
+      "category": "Enforceability & Tooling",
+      "score": "pass",
+      "numericScore": 5,
+      "reasoning": "Zally linter provides automated enforcement. Rules clearly indicate spectral vs. judge-only enforcement. Excellent tooling integration.",
+      "findings": []
+    },
+    {
+      "category": "Guide Versioning & Evolution",
+      "score": "pass",
+      "numericScore": 4,
+      "reasoning": "Version numbers, GitHub history, rule version fields. However, migration guidance for rule changes is limited.",
+      "findings": [
+        {"severity": "low", "category": "Guide Versioning & Evolution", "finding": "No changelog showing rule additions/changes over time", "recommendation": "Add CHANGELOG.md tracking rule evolution with migration notes for breaking changes"}
+      ]
+    },
+    {
+      "category": "Completeness & Depth",
+      "score": "pass",
+      "numericScore": 5,
+      "reasoning": "Deep coverage of pagination (cursor vs offset), error handling, compatibility rules, deprecation timelines. Decision guidance for pattern selection.",
+      "findings": []
+    },
+    {
+      "category": "Internal Consistency",
+      "score": "pass",
+      "numericScore": 5,
+      "reasoning": "Consistent terminology (resource, endpoint, property). Examples align with rules. No contradictions. Accurate cross-references.",
+      "findings": []
+    },
+    {
+      "category": "Accessibility & Tone",
+      "score": "pass",
+      "numericScore": 4,
+      "reasoning": "Appropriate technical level. Professional tone. Glossary provided but limited to 8 terms for 147 rules.",
+      "findings": [
+        {"severity": "low", "category": "Accessibility & Tone", "finding": "Glossary has only 8 terms", "recommendation": "Expand glossary to cover: cursor pagination, Problem+JSON, idempotency, ETag, HATEOAS, and other key concepts"}
+      ]
+    }
+  ],
+  "findings": [
+    {"severity": "low", "category": "Examples & Code Samples", "finding": "~40% of rules lack concrete examples", "recommendation": "Add JSON/HTTP examples to rules without them"},
+    {"severity": "low", "category": "Rule Quality & Clarity", "finding": "Some rules lack detailed implementation guidance", "recommendation": "Add step-by-step HOW guidance for complex rules"},
+    {"severity": "low", "category": "Guide Versioning & Evolution", "finding": "No changelog showing rule additions/changes", "recommendation": "Add CHANGELOG.md tracking rule evolution"},
+    {"severity": "low", "category": "Accessibility & Tone", "finding": "Glossary has only 8 terms", "recommendation": "Expand glossary to 20+ key concepts"}
+  ],
+  "passCriteria": {
+    "minCategoriesPassing": "all_required",
+    "maxFindings": {"critical": 0, "high": 2, "medium": 5}
+  },
+  "decision": {
+    "status": "pass",
+    "reasoning": "All 9 categories pass (5 excellent, 4 good). Only 4 low-severity improvement opportunities.",
+    "categoryCounts": {"pass": 9, "partial": 0, "fail": 0, "total": 9},
+    "findingCounts": {"critical": 0, "high": 0, "medium": 0, "low": 4, "total": 4}
+  },
+  "overallDecision": "pass",
+  "nextSteps": {
+    "immediate": [],
+    "recommended": [
+      {"action": "Add examples to remaining ~60 rules without them", "category": "Examples & Code Samples", "effort": "medium"},
+      {"action": "Expand glossary from 8 to 20+ terms", "category": "Accessibility & Tone", "effort": "low"},
+      {"action": "Add CHANGELOG.md for rule versioning", "category": "Guide Versioning & Evolution", "effort": "low"},
+      {"action": "Add implementation HOW guidance to complex rules", "category": "Rule Quality & Clarity", "effort": "medium"}
+    ]
+  },
+  "summary": "Zalando REST API Guidelines: 5/5 overall. Exemplary style guide with 147 rules, excellent Zally tooling, and comprehensive coverage. Improvements: add more examples, expand glossary, add changelog."
+}

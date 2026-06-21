@@ -1,0 +1,282 @@
+# Spectral Ruleset
+# Generated from: PayPal REST API Guidelines
+# Version: 1.0.0
+#
+# This file was auto-generated from an api-style-spec profile.
+# Do not edit manually - modify the source profile instead.
+
+extends:
+  - spectral:oas
+
+rules:
+
+  # PP-SPEC-001: Use OpenAPI for API contract description
+  # OpenAPI provides a vendor-neutral API description format that enables tooling...
+  pp-spec-001:
+    description: "Use OpenAPI for API contract description"
+    message: "Use OpenAPI for API contract description"
+    severity: error
+    given:
+      - "$.openapi"
+      - "$.swagger"
+    then:
+      function: truthy
+
+  # PP-HTTP-002: Use appropriate HTTP status codes
+  # Correct status codes enable clients to handle responses appropriately and ena...
+  pp-http-002:
+    description: "Use appropriate HTTP status codes"
+    message: "Use appropriate HTTP status codes"
+    severity: error
+    given: "$.paths..responses"
+    then:
+      function: enumeration
+      functionOptions:
+        values:
+          - "200"
+          - "201"
+          - "202"
+          - "204"
+          - "400"
+          - "401"
+          - "403"
+          - "404"
+          - "405"
+          - "406"
+          - "415"
+          - "422"
+          - "429"
+          - "500"
+          - "502"
+          - "503"
+          - "504"
+
+  # PP-HTTP-003: Use JSON as the primary data format
+  # JSON is the standard data format for REST APIs with wide tooling and library ...
+  pp-http-003:
+    description: "Use JSON as the primary data format"
+    message: "JSON is the standard data format for REST APIs with wide tooling and library support."
+    severity: error
+    given: "$.paths..requestBody.content"
+    then:
+      function: pattern
+      functionOptions:
+        match: "application/json"
+
+  # PP-HATEOAS-003: Use absolute URIs in links
+  # Absolute URIs allow clients to bookmark links and make requests without knowi...
+  pp-hateoas-003:
+    description: "Use absolute URIs in links"
+    message: "Absolute URIs allow clients to bookmark links and make requests without knowing the API base URL."
+    severity: error
+    given: "$..links[*].href"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^https?://"
+
+  # PP-NAMING-001: Use lowercase letters in URIs
+  # Lowercase URIs are easier to read and avoid case-sensitivity issues.
+  pp-naming-001:
+    description: "Use lowercase letters in URIs"
+    message: "Lowercase URIs are easier to read and avoid case-sensitivity issues."
+    severity: error
+    given: "$.paths"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^/[a-z0-9/-{}]+$"
+
+  # PP-NAMING-003: Use snake_case for field names
+  # Consistent field naming improves API usability and enables automated processing.
+  pp-naming-003:
+    description: "Use snake_case for field names"
+    message: "Consistent field naming improves API usability and enables automated processing."
+    severity: error
+    given: "$..properties"
+    then:
+      function: casing
+      functionOptions:
+        type: snake
+
+  # PP-NAMING-004: Use underscore for query parameters
+  # Consistent query parameter naming across all APIs improves developer experience.
+  pp-naming-004:
+    description: "Use underscore for query parameters"
+    message: "Consistent query parameter naming across all APIs improves developer experience."
+    severity: warn
+    given: "$.paths..parameters[?(@.in=='query')].name"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[a-z][a-z0-9_]*$"
+
+  # PP-NAMING-005: Use uppercase for enum values
+  # Uppercase enum values are easily distinguishable from other string values.
+  pp-naming-005:
+    description: "Use uppercase for enum values"
+    message: "Uppercase enum values are easily distinguishable from other string values."
+    severity: warn
+    given: "$..enum[*]"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[A-Z0-9_]+$"
+
+  # PP-NAMING-006: Use hyphens in URI paths
+  # Hyphens are the standard word separator for URIs and are easier to read than ...
+  pp-naming-006:
+    description: "Use hyphens in URI paths"
+    message: "Hyphens are the standard word separator for URIs and are easier to read than underscores."
+    severity: error
+    given: "$.paths"
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: "_"
+
+  # PP-URI-001: Include version in URI path
+  # Version in URI makes API version explicit and enables hosting multiple versions.
+  pp-uri-001:
+    description: "Include version in URI path"
+    message: "Version in URI makes API version explicit and enables hosting multiple versions."
+    severity: error
+    given: "$.paths"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^/v[0-9]+/"
+
+  # PP-URI-005: Avoid consecutive resource identifiers
+  # Consecutive identifiers create ambiguous URIs and indicate poor resource mode...
+  pp-uri-005:
+    description: "Avoid consecutive resource identifiers"
+    message: "Consecutive identifiers create ambiguous URIs and indicate poor resource modeling."
+    severity: error
+    given: "$.paths"
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: "\\{[^}]+\\}/\\{[^}]+\\}"
+
+  # PP-JSON-001: Define string min and max length
+  # Length constraints enable database column sizing and backwards-compatible evo...
+  pp-json-001:
+    description: "Define string min and max length"
+    message: "Length constraints enable database column sizing and backwards-compatible evolution."
+    severity: error
+    given: "$..properties[?(@.type=='string')].maxLength"
+    then:
+      function: truthy
+
+  # PP-JSON-003: Use string for decimal numbers
+  # JSON number precision varies by language. JavaScript only supports 64-bit flo...
+  pp-json-003:
+    description: "Use string for decimal numbers"
+    message: "Use string for decimal numbers"
+    severity: error
+    given: "$..properties[?(@.type=='number')]"
+    then:
+      function: falsy
+
+  # PP-JSON-004: Define integer bounds
+  # Unbounded integers may overflow in some programming languages.
+  pp-json-004:
+    description: "Define integer bounds"
+    message: "Unbounded integers may overflow in some programming languages."
+    severity: error
+    given: "$..properties[?(@.type=='integer')].maximum"
+    then:
+      function: truthy
+
+  # PP-JSON-005: Define array bounds
+  # Unbounded arrays may cause memory issues and should be limited for pagination.
+  pp-json-005:
+    description: "Define array bounds"
+    message: "Unbounded arrays may cause memory issues and should be limited for pagination."
+    severity: warn
+    given: "$..properties[?(@.type=='array')].maxItems"
+    then:
+      function: truthy
+
+  # PP-JSON-007: Allow additional properties
+  # Setting additionalProperties: false breaks backwards compatibility when new f...
+  pp-json-007:
+    description: "Allow additional properties"
+    message: "Setting additionalProperties: false breaks backwards compatibility when new fields are added."
+    severity: error
+    given: "$..schemas[?(@.additionalProperties===false)]"
+    then:
+      function: falsy
+
+  # PP-JSON-009: Avoid anyOf and oneOf
+  # anyOf/oneOf create problems with code generation, documentation, and deserial...
+  pp-json-009:
+    description: "Avoid anyOf and oneOf"
+    message: "Avoid anyOf and oneOf"
+    severity: warn
+    given:
+      - "$..oneOf"
+      - "$..anyOf"
+    then:
+      function: falsy
+
+  # PP-COMMON-001: Use ISO country codes
+  # ISO 3166-1 alpha-2 is the universal standard for country identification.
+  pp-common-001:
+    description: "Use ISO country codes"
+    message: "ISO 3166-1 alpha-2 is the universal standard for country identification."
+    severity: error
+    given: "$..properties.country_code"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[A-Z]{2}$"
+
+  # PP-COMMON-002: Use ISO currency codes
+  # ISO 4217 is the universal standard for currency identification.
+  pp-common-002:
+    description: "Use ISO currency codes"
+    message: "ISO 4217 is the universal standard for currency identification."
+    severity: error
+    given: "$..properties.currency_code"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[A-Z]{3}$"
+
+  # PP-COMMON-004: Use RFC 3339 date-time format
+  # RFC 3339 is the standard date-time format for REST APIs.
+  pp-common-004:
+    description: "Use RFC 3339 date-time format"
+    message: "RFC 3339 is the standard date-time format for REST APIs."
+    severity: error
+    given: "$..properties[?(@.format=='date-time')]"
+    then:
+      function: pattern
+      functionOptions:
+        match: "date-time"
+
+  # PP-VERSION-001: Follow semantic versioning
+  # Semantic versioning communicates the impact of changes to consumers.
+  pp-version-001:
+    description: "Follow semantic versioning"
+    message: "Semantic versioning communicates the impact of changes to consumers."
+    severity: error
+    given: "$.info.version"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[0-9]+\\.[0-9]+$"
+
+  # PP-VERSION-002: Only expose major version in URI
+  # Minor versions should be backward compatible and not require URI changes.
+  pp-version-002:
+    description: "Only expose major version in URI"
+    message: "Minor versions should be backward compatible and not require URI changes."
+    severity: error
+    given: "$.paths"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^/v[0-9]+/"

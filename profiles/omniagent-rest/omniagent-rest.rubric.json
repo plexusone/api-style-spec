@@ -1,0 +1,218 @@
+{
+  "id": "OmniAgent REST API Guidelines",
+  "name": "OmniAgent REST API Guidelines Evaluation Rubric",
+  "version": "1.0.0",
+  "description": "REST API guidelines for OmniAgent with OpenAI API compatibility. Uses snake_case for properties to match OpenAI conventions.",
+  "evaluationType": "analytic",
+  "passCriteria": {
+    "minCategoriesPassing": "all_required",
+    "maxFindingsSeverity": {
+      "critical": 0,
+      "high": 0,
+      "medium": -1
+    }
+  },
+  "categories": [
+    {
+      "id": "general",
+      "name": "General Guidelines",
+      "description": "Fundamental requirements for all APIs",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      }
+    },
+    {
+      "id": "naming",
+      "name": "Naming Conventions",
+      "description": "Consistent naming using snake_case for OpenAI compatibility",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "All properties use snake_case",
+              "Matches OpenAI API conventions"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": [
+              "Most properties use snake_case"
+            ]
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "Mixed naming conventions",
+              "camelCase used instead of snake_case"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if all property names use snake_case for OpenAI API compatibility"
+    },
+    {
+      "id": "urls",
+      "name": "URL Design",
+      "description": "Resource-oriented URL patterns",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "All collection endpoints use plural nouns",
+              "URLs use lowercase with hyphens"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": null
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "Singular nouns used for collections",
+              "Mixed case in URLs"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if URLs follow RESTful conventions"
+    },
+    {
+      "id": "http-methods",
+      "name": "HTTP Methods",
+      "description": "Proper use of HTTP verbs and semantics",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "GET for reads",
+              "POST for creates",
+              "PATCH for updates",
+              "DELETE for removals"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": null
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "Actions in URL with wrong method",
+              "GET with side effects"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Verify HTTP methods are used according to REST semantics"
+    },
+    {
+      "id": "http-status",
+      "name": "HTTP Status Codes",
+      "description": "Appropriate status code usage",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      }
+    },
+    {
+      "id": "security",
+      "name": "Security",
+      "description": "Authentication using Bearer tokens for OpenAI compatibility",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "Bearer token authentication supported",
+              "Compatible with OpenAI client libraries"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": [
+              "Authentication present but not Bearer"
+            ]
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "No authentication defined"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if Bearer token authentication is supported"
+    },
+    {
+      "id": "documentation",
+      "name": "Documentation",
+      "description": "OpenAPI specification requirements",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "All operations have summaries",
+              "Schemas have descriptions",
+              "Servers defined"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": [
+              "Some documentation missing"
+            ]
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "No documentation"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if API is well documented"
+    }
+  ],
+  "metadata": {
+    "author": "PlexusOne",
+    "basedOn": "plexusone-rest"
+  }
+}

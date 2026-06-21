@@ -1,0 +1,255 @@
+{
+  "id": "PayPal REST API Guidelines",
+  "name": "PayPal REST API Guidelines Evaluation Rubric",
+  "version": "1.0.0",
+  "description": "Comprehensive style rules based on PayPal RESTful API Guidelines. These guidelines define standards for designing REST APIs following PayPal's internal best practices. Key differentiators include snake_case property naming, HATEOAS-driven API design, and structured error handling with error catalogs.",
+  "evaluationType": "analytic",
+  "passCriteria": {
+    "minCategoriesPassing": "all_required",
+    "maxFindingsSeverity": {
+      "critical": 0,
+      "high": 0,
+      "medium": -1
+    }
+  },
+  "categories": [
+    {
+      "id": "general",
+      "name": "General Guidelines",
+      "description": "API specification and fundamental requirements",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if API design properly encapsulates data access through service boundaries."
+    },
+    {
+      "id": "http",
+      "name": "HTTP Fundamentals",
+      "description": "HTTP methods, headers, and status codes",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "HTTP methods match their semantic intent",
+              "GET operations are safe",
+              "PUT/DELETE are idempotent"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": null
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "GET used for mutations",
+              "POST used where PUT/PATCH appropriate"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if HTTP methods are used according to their standard semantics. GET should be safe and idempotent, PUT should be idempotent, etc."
+    },
+    {
+      "id": "hypermedia",
+      "name": "Hypermedia",
+      "description": "HATEOAS links and navigation",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "Responses include links array",
+              "Links have href and rel properties",
+              "Self link is present",
+              "Links have href property",
+              "Links have rel property",
+              "href is an absolute URI"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": null
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "No links in responses",
+              "Clients must construct URIs",
+              "Missing href",
+              "Missing rel",
+              "Relative URI in href"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if API responses include HATEOAS links for navigation and state transitions."
+    },
+    {
+      "id": "naming",
+      "name": "Naming Conventions",
+      "description": "URI, field, and resource naming",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if collection endpoints use plural nouns and avoid verbs in resource names."
+    },
+    {
+      "id": "uri",
+      "name": "URI Design",
+      "description": "Resource paths and query parameters",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if URI paths include a namespace segment after the version."
+    },
+    {
+      "id": "json-schema",
+      "name": "JSON Schema",
+      "description": "JSON Schema usage and best practices",
+      "weight": 1,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if JSON schemas use draft-04 format and include the $schema property."
+    },
+    {
+      "id": "json-types",
+      "name": "JSON Types",
+      "description": "Primitive types and common types",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if enum values are truly fixed or if string with pattern would be more appropriate."
+    },
+    {
+      "id": "errors",
+      "name": "Error Handling",
+      "description": "Error schema and error catalog",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "Error has name field",
+              "Error has debug_id",
+              "Error has message",
+              "4xx errors have details array"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": null
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "Missing required error fields",
+              "Non-standard error format"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if error responses follow the error.json schema with name, details, debug_id, and message fields."
+    },
+    {
+      "id": "versioning",
+      "name": "API Versioning",
+      "description": "Lifecycle and versioning policy",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if the API specification indicates its lifecycle state."
+    },
+    {
+      "id": "deprecation",
+      "name": "Deprecation",
+      "description": "Deprecation annotations and runtime",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if deprecated API elements use the x-deprecated annotation with version and replacement info."
+    },
+    {
+      "id": "compatibility",
+      "name": "Compatibility",
+      "description": "Backward compatibility rules",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "New fields are optional",
+              "No fields removed",
+              "No semantic changes",
+              "No required parameter additions"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": null
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "Required fields removed",
+              "Field semantics changed",
+              "New required parameters"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if API changes are backward compatible: additive, optional, and semantically consistent."
+    },
+    {
+      "id": "security",
+      "name": "Security",
+      "description": "Security and data protection",
+      "weight": 1,
+      "scale": {
+        "type": "categorical"
+      },
+      "evaluationPrompt": "Check if API design considers security concerns like data exposure, authentication, and authorization."
+    }
+  ],
+  "metadata": {
+    "author": "PayPal"
+  }
+}

@@ -1,0 +1,373 @@
+{
+  "id": "PlexusOne REST API Guidelines",
+  "name": "PlexusOne REST API Guidelines Evaluation Rubric",
+  "version": "1.0.0",
+  "description": "Opinionated best practices for REST APIs, synthesized from Microsoft, Zalando, and PayPal guidelines. Uses camelCase for properties, kebab-case for URLs, and RFC 7807 for errors.",
+  "evaluationType": "analytic",
+  "passCriteria": {
+    "minCategoriesPassing": "all_required",
+    "maxFindingsSeverity": {
+      "critical": 0,
+      "high": 0,
+      "medium": -1
+    }
+  },
+  "categories": [
+    {
+      "id": "general",
+      "name": "General Guidelines",
+      "description": "Fundamental requirements for all APIs",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      }
+    },
+    {
+      "id": "naming",
+      "name": "Naming Conventions",
+      "description": "Consistent naming for resources, properties, and URLs",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      }
+    },
+    {
+      "id": "urls",
+      "name": "URL Design",
+      "description": "Resource-oriented URL patterns",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "All collection endpoints use plural nouns"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": null
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "Singular nouns used for collections"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if collection resources use plural nouns"
+    },
+    {
+      "id": "http-methods",
+      "name": "HTTP Methods",
+      "description": "Proper use of HTTP verbs and semantics",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "GET for reads",
+              "POST for creates",
+              "PATCH for updates",
+              "DELETE for removals",
+              "Repeated requests have same effect",
+              "No side effects on GET"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": null
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "Actions in URL with wrong method",
+              "GET with side effects",
+              "GET creates resources",
+              "DELETE is not idempotent"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Verify HTTP methods are used according to REST semantics"
+    },
+    {
+      "id": "http-status",
+      "name": "HTTP Status Codes",
+      "description": "Appropriate status code usage",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical"
+      }
+    },
+    {
+      "id": "request-response",
+      "name": "Request \u0026 Response",
+      "description": "JSON payload structure and conventions",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "X-Request-ID header documented",
+              "ETag in GET responses",
+              "If-Match supported for updates",
+              "201 response includes created resource",
+              "200 response includes updated resource"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": [
+              "Some form of request correlation present",
+              "Only ETag or only If-Match present",
+              "Only ID returned, not full resource"
+            ]
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": null
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if response headers include request ID"
+    },
+    {
+      "id": "errors",
+      "name": "Error Handling",
+      "description": "Consistent error responses using RFC 7807",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "Generic error messages",
+              "No stack traces in schema",
+              "No internal paths"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": null
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "Stack traces in examples",
+              "Internal paths exposed",
+              "Database errors exposed"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check that error schemas don't expose internal implementation details"
+    },
+    {
+      "id": "pagination",
+      "name": "Pagination",
+      "description": "Cursor-based pagination patterns",
+      "weight": 1,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "Uses cursor parameter",
+              "Returns nextCursor in response",
+              "Default limit specified",
+              "Maximum limit enforced"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": [
+              "Uses offset/limit but not cursor"
+            ]
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "No pagination on large collections",
+              "No pagination",
+              "Unlimited response size"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if collection endpoints use cursor-based pagination"
+    },
+    {
+      "id": "filtering",
+      "name": "Filtering \u0026 Sorting",
+      "description": "Query parameter conventions",
+      "weight": 1,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "Simple key=value parameters",
+              "Clear parameter names"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": null
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "Complex query DSL",
+              "JSON in query string"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if filtering uses simple query parameters"
+    },
+    {
+      "id": "versioning",
+      "name": "Versioning",
+      "description": "API versioning and deprecation",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "Sunset header present",
+              "At least 6 months notice",
+              "Only new fields added",
+              "No removed fields",
+              "No renamed fields"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": null
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": [
+              "No deprecation notice",
+              "Immediate removal",
+              "Fields removed",
+              "Fields renamed",
+              "Types changed"
+            ]
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if deprecated endpoints have Sunset headers and sufficient notice period"
+    },
+    {
+      "id": "security",
+      "name": "Security",
+      "description": "Authentication, authorization, and security headers",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "CORS headers documented",
+              "Appropriate origins configured"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": [
+              "CORS mentioned but not fully documented"
+            ]
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": null
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if the API documents CORS support"
+    },
+    {
+      "id": "documentation",
+      "name": "Documentation",
+      "description": "OpenAPI specification requirements",
+      "weight": 1,
+      "required": true,
+      "scale": {
+        "type": "categorical",
+        "options": [
+          {
+            "value": "pass",
+            "label": "Pass",
+            "criteria": [
+              "Rate limits documented",
+              "RateLimit headers present"
+            ]
+          },
+          {
+            "value": "partial",
+            "label": "Partial",
+            "criteria": [
+              "Rate limits mentioned but not specified"
+            ]
+          },
+          {
+            "value": "fail",
+            "label": "Fail",
+            "criteria": null
+          }
+        ]
+      },
+      "evaluationPrompt": "Check if rate limits are documented"
+    }
+  ],
+  "metadata": {
+    "author": "PlexusOne"
+  }
+}

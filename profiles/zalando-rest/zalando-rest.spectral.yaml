@@ -1,0 +1,148 @@
+# Spectral Ruleset
+# Generated from: Zalando REST API Guidelines
+# Version: 1.0.0
+#
+# This file was auto-generated from an api-style-spec profile.
+# Do not edit manually - modify the source profile instead.
+
+extends:
+  - spectral:oas
+
+rules:
+
+  # Z-101: Provide API specifications using OpenAPI
+  # OpenAPI is the standard for REST API specifications and enables tooling, docu...
+  z-101:
+    description: "Provide API specifications using OpenAPI"
+    message: "Provide API specifications using OpenAPI"
+    severity: error
+    given: "$.openapi"
+    then:
+      function: truthy
+
+  # Z-167: Use JSON as payload data interchange format
+  # JSON is the standard for REST APIs and has wide tooling support.
+  z-167:
+    description: "Use JSON as payload data interchange format"
+    message: "JSON is the standard for REST APIs and has wide tooling support."
+    severity: error
+    given: "$.paths[*][*].requestBody.content['application/json']"
+    then:
+      function: truthy
+
+  # Z-118: Property names must be snake_case
+  # Consistent naming makes APIs predictable. snake_case is preferred by many tec...
+  z-118:
+    description: "Property names must be snake_case"
+    message: "Property names must be snake_case"
+    severity: error
+    given: "$.components.schemas[*].properties[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[a-z_][a-z_0-9]*$"
+
+  # Z-129: Use lowercase separate words with hyphens for paths
+  # Kebab-case paths are readable and consistent with URL conventions.
+  z-129:
+    description: "Use lowercase separate words with hyphens for paths"
+    message: "Kebab-case paths are readable and consistent with URL conventions."
+    severity: error
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[a-z0-9/{}-]*$"
+
+  # Z-135: Not use /api as base path
+  # /api is redundant when the entire service is an API.
+  z-135:
+    description: "Not use /api as base path"
+    message: "/api is redundant when the entire service is an API."
+    severity: warn
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: "^/api/"
+
+  # Z-136: Use normalized paths without trailing slashes
+  # Trailing slashes cause inconsistency and caching issues.
+  z-136:
+    description: "Use normalized paths without trailing slashes"
+    message: "Trailing slashes cause inconsistency and caching issues."
+    severity: error
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: "/$"
+
+  # Z-104: Secure endpoints with authentication
+  # APIs must be secured to protect data and prevent unauthorized access.
+  z-104:
+    description: "Secure endpoints with authentication"
+    message: "APIs must be secured to protect data and prevent unauthorized access."
+    severity: error
+    given: "$.components.securitySchemes"
+    then:
+      function: truthy
+
+  # Z-227: Use HTTPS
+  # HTTPS protects data in transit from interception.
+  z-227:
+    description: "Use HTTPS"
+    message: "HTTPS protects data in transit from interception."
+    severity: error
+    given: "$.servers[*].url"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^https://"
+
+  # Z-115: Not use URL versioning
+  # URL versioning creates tight coupling and complex release management.
+  z-115:
+    description: "Not use URL versioning"
+    message: "URL versioning creates tight coupling and complex release management."
+    severity: error
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: "/v[0-9]+/"
+
+  # Z-116: Use semantic versioning
+  # Semantic versioning provides clear expectations about API changes and their i...
+  z-116:
+    description: "Use semantic versioning"
+    message: "Semantic versioning provides clear expectations about API changes and their impact."
+    severity: error
+    given: "$.info.version"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+
+  # Z-215: Provide API identifiers
+  # Globally unique API identifiers support lifecycle management and version trac...
+  z-215:
+    description: "Provide API identifiers"
+    message: "Globally unique API identifiers support lifecycle management and version tracking."
+    severity: error
+    given: "$.info.x-api-id"
+    then:
+      function: truthy
+
+  # Z-218: Contain API meta information
+  # Complete API metadata ensures discoverability and proper documentation.
+  z-218:
+    description: "Contain API meta information"
+    message: "Complete API metadata ensures discoverability and proper documentation."
+    severity: error
+    given:
+      - "$.info.title"
+      - "$.info.version"
+      - "$.info.description"
+    then:
+      function: truthy

@@ -1,0 +1,107 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grokify/structured-evaluation/main/schema/rubric.schema.json",
+  "metadata": {
+    "document": "profiles/paypal-rest/paypal-rest.api-style.json",
+    "documentTitle": "PayPal REST API Guidelines",
+    "generatedAt": "2025-06-17T00:00:00Z",
+    "generatedBy": "Claude Opus 4.5 (LLM-as-Judge)"
+  },
+  "reviewType": "style-guide-quality",
+  "rubricId": "api-style-guide-quality",
+  "rubricVersion": "1.0.0",
+  "categories": [
+    {
+      "category": "Content Coverage",
+      "score": "pass",
+      "numericScore": 5,
+      "reasoning": "Covers all 6 essential domains with distinctive approaches: REST with strong HATEOAS emphasis, OpenAPI with JSON Schema draft-04, snake_case fields/hyphen-case URIs (64 rules), structured error.json with catalogs, OAuth patterns, semantic versioning with lifecycle. Unique strength in HATEOAS, i18n types, and error catalogs.",
+      "findings": []
+    },
+    {
+      "category": "Structure & Navigation",
+      "score": "pass",
+      "numericScore": 5,
+      "reasoning": "Excellent structure: TOC, PP-XXX rule IDs, 12 categories, design patterns section. Logical grouping from principles → JSON types → versioning/deprecation. Good cross-references between related rules.",
+      "findings": []
+    },
+    {
+      "category": "Rule Quality & Clarity",
+      "score": "pass",
+      "numericScore": 5,
+      "reasoning": "Well-structured rules with IDs, clear titles, severity levels, and excellent rationale. Particularly strong rationale in JSON types section explaining cross-language compatibility. RFC 2119 keywords used appropriately.",
+      "findings": []
+    },
+    {
+      "category": "Examples & Code Samples",
+      "score": "pass",
+      "numericScore": 5,
+      "reasoning": "Excellent examples throughout: HATEOAS links, error responses, JSON Schema patterns. Good/bad examples clearly contrast correct and incorrect approaches. Error catalog JSON examples are comprehensive.",
+      "findings": []
+    },
+    {
+      "category": "Enforceability & Tooling",
+      "score": "partial",
+      "numericScore": 3,
+      "reasoning": "Rules distinguish between Spectral-lintable and judge-only. However, many HATEOAS and JSON Schema rules require custom Spectral functions not commonly available. Less mature tooling ecosystem compared to Zalando's Zally.",
+      "findings": [
+        {"severity": "medium", "category": "Enforceability & Tooling", "finding": "Many rules require custom Spectral functions not commonly available", "recommendation": "Develop and publish custom @paypal/api-guidelines Spectral ruleset"},
+        {"severity": "low", "category": "Enforceability & Tooling", "finding": "No publicly available PayPal linter equivalent to Zally", "recommendation": "Consider open-sourcing a PayPal API linter tool"}
+      ]
+    },
+    {
+      "category": "Guide Versioning & Evolution",
+      "score": "pass",
+      "numericScore": 5,
+      "reasoning": "Excellent coverage: API versioning lifecycle (PLANNED→BETA→LIVE→DEPRECATED→RETIRED), x-deprecated annotation schema, runtime headers, clear EOL policy with business justification requirements.",
+      "findings": []
+    },
+    {
+      "category": "Completeness & Depth",
+      "score": "pass",
+      "numericScore": 5,
+      "reasoning": "Outstanding depth: HATEOAS with Link Description Object schema, JSON Schema pitfalls (null handling, additionalProperties), internationalization types (ISO codes, timezones), error catalog architecture.",
+      "findings": []
+    },
+    {
+      "category": "Internal Consistency",
+      "score": "pass",
+      "numericScore": 5,
+      "reasoning": "Internally consistent: snake_case throughout for field names, hyphen-case for URIs, standardized HATEOAS link format, consistent error format. No contradictions found.",
+      "findings": []
+    },
+    {
+      "category": "Accessibility & Tone",
+      "score": "pass",
+      "numericScore": 4,
+      "reasoning": "Well-written for API developers with clear explanations. The 8 design principles provide good philosophical grounding. Glossary covers key terms but could be expanded.",
+      "findings": [
+        {"severity": "low", "category": "Accessibility & Tone", "finding": "Glossary could be expanded with more terms", "recommendation": "Add glossary entries for HATEOAS, Link Description Object, error catalog, and other PayPal-specific concepts"}
+      ]
+    }
+  ],
+  "findings": [
+    {"severity": "medium", "category": "Enforceability & Tooling", "finding": "Many rules require custom Spectral functions not commonly available", "recommendation": "Develop and publish custom @paypal/api-guidelines Spectral ruleset"},
+    {"severity": "low", "category": "Enforceability & Tooling", "finding": "No publicly available PayPal linter equivalent to Zally", "recommendation": "Consider open-sourcing a PayPal API linter tool"},
+    {"severity": "low", "category": "Accessibility & Tone", "finding": "Glossary could be expanded with more terms", "recommendation": "Add glossary entries for PayPal-specific concepts"}
+  ],
+  "passCriteria": {
+    "minCategoriesPassing": "all_required",
+    "maxFindings": {"critical": 0, "high": 2, "medium": 5}
+  },
+  "decision": {
+    "status": "pass",
+    "reasoning": "All 9 categories pass (7 excellent, 1 good, 1 acceptable). Only 1 medium-severity and 2 low-severity findings.",
+    "categoryCounts": {"pass": 8, "partial": 1, "fail": 0, "total": 9},
+    "findingCounts": {"critical": 0, "high": 0, "medium": 1, "low": 2, "total": 3}
+  },
+  "overallDecision": "pass",
+  "nextSteps": {
+    "immediate": [],
+    "recommended": [
+      {"action": "Develop and publish @paypal/api-guidelines Spectral ruleset", "category": "Enforceability & Tooling", "effort": "high"},
+      {"action": "Consider open-sourcing PayPal API linter tool", "category": "Enforceability & Tooling", "effort": "high"},
+      {"action": "Expand glossary with HATEOAS, LDO, error catalog terms", "category": "Accessibility & Tone", "effort": "low"}
+    ]
+  },
+  "summary": "PayPal REST API Guidelines: 5/5 overall. Exceptional depth with 64 rules focusing on HATEOAS patterns, error catalogs, JSON Schema, and versioning lifecycle. Strong design principles. Improvements: develop Spectral ruleset, expand glossary."
+}
