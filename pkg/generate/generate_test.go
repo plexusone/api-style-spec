@@ -296,3 +296,263 @@ func TestToKebabCase(t *testing.T) {
 		}
 	}
 }
+
+func TestMarkdown_WithPrinciples(t *testing.T) {
+	spec := &types.APIStyleSpec{
+		Name: "Test",
+		Principles: []types.Principle{
+			{
+				ID:           "p1",
+				Title:        "Consistency",
+				Description:  "APIs should be consistent.",
+				RelatedRules: []string{"RULE-001"},
+			},
+		},
+		Rules: []types.Rule{
+			{ID: "RULE-001", Title: "Rule 1", Category: "test"},
+		},
+	}
+
+	opts := DefaultMarkdownOptions()
+	opts.IncludePrinciples = true
+
+	md, err := Markdown(spec, opts)
+	if err != nil {
+		t.Fatalf("Markdown() error = %v", err)
+	}
+
+	if !strings.Contains(md, "Design Principles") {
+		t.Error("Missing principles section")
+	}
+
+	if !strings.Contains(md, "Consistency") {
+		t.Error("Missing principle title")
+	}
+
+	if !strings.Contains(md, "APIs should be consistent.") {
+		t.Error("Missing principle description")
+	}
+}
+
+func TestMarkdown_WithPatterns(t *testing.T) {
+	spec := &types.APIStyleSpec{
+		Name: "Test",
+		Patterns: []types.Pattern{
+			{
+				ID:       "cursor-pagination",
+				Name:     "Cursor-Based Pagination",
+				Summary:  "Use cursors for pagination.",
+				Problem:  "Offset pagination has issues.",
+				Solution: "Use opaque cursors.",
+			},
+		},
+		Rules: []types.Rule{},
+	}
+
+	opts := DefaultMarkdownOptions()
+	opts.IncludePatterns = true
+
+	md, err := Markdown(spec, opts)
+	if err != nil {
+		t.Fatalf("Markdown() error = %v", err)
+	}
+
+	if !strings.Contains(md, "Design Patterns") {
+		t.Error("Missing patterns section")
+	}
+
+	if !strings.Contains(md, "Cursor-Based Pagination") {
+		t.Error("Missing pattern name")
+	}
+
+	if !strings.Contains(md, "Problem:") {
+		t.Error("Missing problem section")
+	}
+}
+
+func TestMarkdown_WithGlossary(t *testing.T) {
+	spec := &types.APIStyleSpec{
+		Name: "Test",
+		Glossary: []types.GlossaryTerm{
+			{
+				Term:       "Resource",
+				Definition: "An entity that can be manipulated via the API.",
+				Aliases:    []string{"Entity"},
+			},
+		},
+		Rules: []types.Rule{},
+	}
+
+	opts := DefaultMarkdownOptions()
+	opts.IncludeGlossary = true
+
+	md, err := Markdown(spec, opts)
+	if err != nil {
+		t.Fatalf("Markdown() error = %v", err)
+	}
+
+	if !strings.Contains(md, "Glossary") {
+		t.Error("Missing glossary section")
+	}
+
+	if !strings.Contains(md, "Resource") {
+		t.Error("Missing term")
+	}
+
+	if !strings.Contains(md, "Entity") {
+		t.Error("Missing alias")
+	}
+}
+
+func TestMarkdown_WithDetailedExamples(t *testing.T) {
+	spec := &types.APIStyleSpec{
+		Name: "Test",
+		Rules: []types.Rule{
+			{
+				ID:       "TEST-001",
+				Title:    "Test Rule",
+				Category: "test",
+				Examples: &types.Examples{
+					Detailed: []types.DetailedExample{
+						{
+							Title:       "Collection Response",
+							Description: "How to return a list",
+							Type:        "good",
+							Language:    "json",
+							Code:        `{"items": []}`,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	opts := DefaultMarkdownOptions()
+	opts.IncludeExamples = true
+
+	md, err := Markdown(spec, opts)
+	if err != nil {
+		t.Fatalf("Markdown() error = %v", err)
+	}
+
+	if !strings.Contains(md, "Collection Response (Correct)") {
+		t.Error("Missing detailed example title")
+	}
+
+	if !strings.Contains(md, "```json") {
+		t.Error("Missing code block with language")
+	}
+}
+
+func TestMkDocs_Basic(t *testing.T) {
+	spec := &types.APIStyleSpec{
+		Name:        "Test Guidelines",
+		Version:     "1.0.0",
+		Description: "Test API guidelines.",
+		Categories: []types.Category{
+			{ID: "uri", Title: "URI Design"},
+		},
+		Rules: []types.Rule{
+			{ID: "URI-001", Title: "Use plural nouns", Category: "uri", Severity: types.SeverityError},
+		},
+	}
+
+	result, err := MkDocs(spec, nil)
+	if err != nil {
+		t.Fatalf("MkDocs() error = %v", err)
+	}
+
+	// Check config
+	if !strings.Contains(result.Config, "site_name: Test Guidelines") {
+		t.Error("Missing site_name in config")
+	}
+
+	if !strings.Contains(result.Config, "theme:") {
+		t.Error("Missing theme in config")
+	}
+
+	// Check index page
+	if _, ok := result.Pages["index.md"]; !ok {
+		t.Error("Missing index.md")
+	}
+
+	// Check rules index (split by default)
+	if _, ok := result.Pages["rules/index.md"]; !ok {
+		t.Error("Missing rules/index.md")
+	}
+}
+
+func TestMkDocs_WithPatternsAndGlossary(t *testing.T) {
+	spec := &types.APIStyleSpec{
+		Name: "Test",
+		Patterns: []types.Pattern{
+			{ID: "p1", Name: "Pattern 1", Summary: "Test pattern"},
+		},
+		Glossary: []types.GlossaryTerm{
+			{Term: "API", Definition: "Application Programming Interface"},
+		},
+		Rules: []types.Rule{
+			{ID: "R-001", Title: "Rule", Category: "general"},
+		},
+	}
+
+	result, err := MkDocs(spec, nil)
+	if err != nil {
+		t.Fatalf("MkDocs() error = %v", err)
+	}
+
+	if _, ok := result.Pages["patterns.md"]; !ok {
+		t.Error("Missing patterns.md")
+	}
+
+	if _, ok := result.Pages["glossary.md"]; !ok {
+		t.Error("Missing glossary.md")
+	}
+}
+
+func TestMkDocs_SplitPatterns(t *testing.T) {
+	spec := &types.APIStyleSpec{
+		Name: "Test",
+		Patterns: []types.Pattern{
+			{ID: "cursor-pagination", Name: "Cursor Pagination", Summary: "Test"},
+		},
+		Rules: []types.Rule{
+			{ID: "R-001", Title: "Rule", Category: "general"},
+		},
+	}
+
+	opts := DefaultMkDocsOptions()
+	opts.SplitPatterns = true
+
+	result, err := MkDocs(spec, opts)
+	if err != nil {
+		t.Fatalf("MkDocs() error = %v", err)
+	}
+
+	if _, ok := result.Pages["patterns/index.md"]; !ok {
+		t.Error("Missing patterns/index.md")
+	}
+
+	if _, ok := result.Pages["patterns/cursor-pagination.md"]; !ok {
+		t.Error("Missing individual pattern page")
+	}
+}
+
+func TestSanitizeFilename(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{"uri-design", "uri-design"},
+		{"URI Design", "uri-design"},
+		{"http_methods", "http-methods"},
+		{"test@#$file", "testfile"},
+	}
+
+	for _, tt := range tests {
+		result := sanitizeFilename(tt.input)
+		if result != tt.expected {
+			t.Errorf("sanitizeFilename(%q) = %q, want %q", tt.input, result, tt.expected)
+		}
+	}
+}
