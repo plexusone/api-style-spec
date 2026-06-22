@@ -7,6 +7,50 @@
   "maintainers": ["johnwang", "johncwang@gmail.com"],
   "releases": [
     {
+      "version": "v0.3.0",
+      "date": "2026-06-22",
+      "highlights": [
+        { "description": "Extended type definitions for patterns, principles, glossary, decision tables, and migration guidance" },
+        { "description": "MkDocs multi-page documentation site generator with Material theme support" },
+        { "description": "Rubric generation for structured-evaluation LLM-as-Judge integration" },
+        { "description": "Vendor API style profiles for reference implementations" }
+      ],
+      "added": [
+        { "description": "Extended type definitions: `Pattern`, `Principle`, `GlossaryTerm`, `Section`, `DecisionTable`, `DetailedExample`, `MigrationGuidance`, `RuleApplicability`, `Condition`, `RuleRelation`, `DeprecationInfo`", "commit": "c4b191f" },
+        { "description": "Enhanced `Rule` type with `description`, `background`, `priority`, `version`, `deprecated`, `applicability`, `conditions`, `relations`, `decisionTables`, and `migration` fields", "commit": "c4b191f" },
+        { "description": "Enhanced `JudgeCriteria` with pass/partial/fail criteria and few-shot examples", "commit": "c4b191f" },
+        { "description": "Markdown generator support for patterns, principles, glossary, decision tables, and detailed examples", "commit": "20efa34" },
+        { "description": "Mermaid diagram support in markdown output", "commit": "20efa34" },
+        { "description": "MkDocs multi-page documentation site generator with Material theme", "commit": "62b356b" },
+        { "description": "MkDocs generator options: `--split-patterns`, `--no-split-categories`, `--no-search`", "commit": "62b356b" },
+        { "description": "Rubric generation for structured-evaluation integration (`GenerateRubricSet`)", "commit": "8794add" },
+        { "description": "`generate mkdocs` CLI subcommand with site configuration flags", "commit": "231ede8" },
+        { "description": "`generate rubric` CLI subcommand for LLM evaluation rubrics", "commit": "231ede8" },
+        { "description": "`generate guide` flags: `--no-patterns`, `--no-principles`, `--no-glossary`", "commit": "231ede8" },
+        { "description": "Vendor API style profiles: Microsoft Graph, Microsoft REST, OmniAgent, PayPal, PlexusOne, Zalando", "commit": "9fb12fb" }
+      ],
+      "changed": [
+        { "description": "JSON schema updated with extended type definitions", "commit": "9ca05cc" },
+        { "description": "Style guide quality rubric added to schema", "commit": "9ca05cc" }
+      ],
+      "documentation": [
+        { "description": "CI/CD integration guide with exit codes, pipeline examples, pre-commit hooks", "commit": "366ff8b" },
+        { "description": "Documentation generation guide comparing Markdown and MkDocs output", "commit": "366ff8b" },
+        { "description": "CLI reference updates for `generate mkdocs` and `generate rubric`", "commit": "6cb42c6" },
+        { "description": "Getting started and profiles guides updated for new features", "commit": "6cb42c6" }
+      ],
+      "tests": [
+        { "description": "Unit tests for extended markdown generation (patterns, principles, glossary, decision tables)", "commit": "eaf71cb" }
+      ],
+      "build": [
+        { "description": "Add `github.com/plexusone/structured-evaluation v0.8.0` dependency", "commit": "32f6204" },
+        { "description": "Update `github.com/plexusone/omniskill` from v0.8.0 to v0.9.0", "commit": "32f6204" },
+        { "description": "Update `github.com/plexusone/assistantkit` from v0.12.0 to v0.13.0", "commit": "3ef736c" },
+        { "description": "Update `github.com/daveshanley/vacuum` from v0.29.2 to v0.29.4", "commit": "c84d697" },
+        { "description": "Update indirect dependencies via `go mod tidy`", "commit": "77e8c42" }
+      ]
+    },
+    {
       "version": "v0.2.0",
       "date": "2026-06-07",
       "highlights": [
