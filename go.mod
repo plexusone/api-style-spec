@@ -8,7 +8,7 @@ require (
 	github.com/grokify/mogo v0.74.6
 	github.com/invopop/jsonschema v0.14.0
 	github.com/modelcontextprotocol/go-sdk v1.6.1
-	github.com/plexusone/assistantkit v0.12.0
+	github.com/plexusone/assistantkit v0.13.0
 	github.com/plexusone/omniskill v0.9.0
 	github.com/plexusone/structured-evaluation v0.8.0
 	github.com/spf13/cobra v1.10.2
@@ -76,7 +76,7 @@ require (
 	github.com/yuin/goldmark v1.8.2 // indirect
 	github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	go.yaml.in/yaml/v4 v4.0.0-rc.5 // indirect
+	go.yaml.in/yaml/v4 v4.0.0-rc.6 // indirect
 	golang.ngrok.com/muxado/v2 v2.0.1 // indirect
 	golang.ngrok.com/ngrok v1.13.0 // indirect
 	golang.org/x/exp v0.0.0-20260611194520-c48552f49976 // indirect
