@@ -379,12 +379,58 @@
   
   
     <li class="md-nav__item">
+      <a href="../../guide/ci-cd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CI/CD Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../guide/profiles/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     Using Profiles
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guide/documentation-generation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Documentation Generation
     
   </span>
   
@@ -910,6 +956,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#generate-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generate Documentation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#when-to-use" class="md-nav__link">
     <span class="md-ellipsis">
       When to Use
@@ -1194,6 +1249,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../releases/v0.3.0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    v0.3.0
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../releases/v0.2.0/" class="md-nav__link">
         
   
@@ -1414,6 +1492,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#generate-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generate Documentation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#when-to-use" class="md-nav__link">
     <span class="md-ellipsis">
       When to Use
@@ -1480,7 +1567,15 @@
 </tr>
 <tr>
 <td>Rules</td>
-<td>~30</td>
+<td>55</td>
+</tr>
+<tr>
+<td>Categories</td>
+<td>13</td>
+</tr>
+<tr>
+<td>Patterns</td>
+<td>3</td>
 </tr>
 <tr>
 <td>Focus</td>
@@ -1525,41 +1620,75 @@
 <thead>
 <tr>
 <th>Category</th>
+<th>Rules</th>
 <th>Focus</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>General</td>
+<td>4</td>
 <td>API-first principles</td>
 </tr>
 <tr>
-<td>URLs</td>
-<td>URL naming and structure</td>
+<td>Compatibility</td>
+<td>4</td>
+<td>Evolution and versioning</td>
 </tr>
 <tr>
 <td>JSON</td>
-<td>JSON property guidelines</td>
+<td>5</td>
+<td>Property naming and formats</td>
 </tr>
 <tr>
-<td>HTTP</td>
-<td>HTTP method and status usage</td>
+<td>Data Formats</td>
+<td>3</td>
+<td>Date/time, enums, money</td>
 </tr>
 <tr>
-<td>Errors</td>
-<td>Problem details (RFC 7807)</td>
+<td>URLs</td>
+<td>4</td>
+<td>URL naming and structure</td>
 </tr>
 <tr>
-<td>Pagination</td>
-<td>Cursor-based pagination</td>
+<td>HTTP Methods</td>
+<td>6</td>
+<td>Method semantics</td>
+</tr>
+<tr>
+<td>HTTP Status</td>
+<td>5</td>
+<td>Response codes</td>
+</tr>
+<tr>
+<td>Headers</td>
+<td>3</td>
+<td>Standard headers</td>
 </tr>
 <tr>
 <td>Hypermedia</td>
+<td>3</td>
 <td>HATEOAS patterns</td>
 </tr>
 <tr>
-<td>Compatibility</td>
-<td>Evolution strategies</td>
+<td>Pagination</td>
+<td>4</td>
+<td>Cursor-based patterns</td>
+</tr>
+<tr>
+<td>Performance</td>
+<td>4</td>
+<td>Caching, compression</td>
+</tr>
+<tr>
+<td>Security</td>
+<td>4</td>
+<td>OAuth2, TLS</td>
+</tr>
+<tr>
+<td>Deprecation</td>
+<td>3</td>
+<td>Sunset headers</td>
 </tr>
 </tbody>
 </table>
@@ -1603,6 +1732,18 @@
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Analyze for Zalando compliance</span>
 <a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>api-style<span class="w"> </span>analyze<span class="w"> </span>openapi.yaml<span class="w"> </span>--profile<span class="w"> </span>zalando
 </code></pre></div>
+<h2 id="generate-documentation">Generate Documentation<a class="headerlink" href="#generate-documentation" title="Permanent link">&para;</a></h2>
+<p>Generate a human-readable style guide from the Zalando profile:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Single-page Markdown (25KB+)</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>api-style<span class="w"> </span>generate<span class="w"> </span>guide<span class="w"> </span>--profile<span class="w"> </span>zalando<span class="w"> </span>--output<span class="w"> </span>zalando-guide.md
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># MkDocs site (20 pages)</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>api-style<span class="w"> </span>generate<span class="w"> </span>mkdocs<span class="w"> </span>--profile<span class="w"> </span>zalando<span class="w"> </span>--output<span class="w"> </span>./zalando-docs
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># Build and serve MkDocs site</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="nb">cd</span><span class="w"> </span>zalando-docs<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>mkdocs-material<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mkdocs<span class="w"> </span>serve
+</code></pre></div>
+<p>The generated documentation includes all 55 rules organized by category, design patterns (cursor pagination, Problem+JSON), principles, and glossary.</p>
 <h2 id="when-to-use">When to Use<a class="headerlink" href="#when-to-use" title="Permanent link">&para;</a></h2>
 <p>Use the Zalando profile when:</p>
 <ul>

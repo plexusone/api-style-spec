@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://api-style-spec.dev/guide/profiles/">
+        <link rel="canonical" href="https://api-style-spec.dev/releases/v0.3.0/">
       
       
-        <link rel="prev" href="../ci-cd/">
+        <link rel="prev" href="../changelog/">
       
       
-        <link rel="next" href="../documentation-generation/">
+        <link rel="next" href="../v0.2.0/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Using Profiles - api-style-spec</title>
+        <title>v0.3.0 - api-style-spec</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#using-profiles" class="md-skip">
+        <a href="#v030" class="md-skip">
           Skip to content
         </a>
       
@@ -119,7 +119,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Using Profiles
+              v0.3.0
             
           </span>
         </div>
@@ -285,8 +285,6 @@
       
   
   
-    
-  
   
   
     
@@ -299,11 +297,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -319,7 +319,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Guide
@@ -333,7 +333,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting-started/" class="md-nav__link">
+      <a href="../../guide/getting-started/" class="md-nav__link">
         
   
   
@@ -356,7 +356,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../automated-api-governance/" class="md-nav__link">
+      <a href="../../guide/automated-api-governance/" class="md-nav__link">
         
   
   
@@ -379,7 +379,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci-cd/" class="md-nav__link">
+      <a href="../../guide/ci-cd/" class="md-nav__link">
         
   
   
@@ -399,32 +399,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Using Profiles
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../guide/profiles/" class="md-nav__link">
         
   
   
@@ -435,140 +413,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#built-in-profiles" class="md-nav__link">
-    <span class="md-ellipsis">
-      Built-in Profiles
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#selecting-a-profile" class="md-nav__link">
-    <span class="md-ellipsis">
-      Selecting a Profile
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#profile-details" class="md-nav__link">
-    <span class="md-ellipsis">
-      Profile Details
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Profile Details">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#default-profile" class="md-nav__link">
-    <span class="md-ellipsis">
-      Default Profile
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#azure-profile" class="md-nav__link">
-    <span class="md-ellipsis">
-      Azure Profile
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#google-profile" class="md-nav__link">
-    <span class="md-ellipsis">
-      Google Profile
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#zalando-profile" class="md-nav__link">
-    <span class="md-ellipsis">
-      Zalando Profile
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#listing-profile-rules" class="md-nav__link">
-    <span class="md-ellipsis">
-      Listing Profile Rules
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#comparing-profiles" class="md-nav__link">
-    <span class="md-ellipsis">
-      Comparing Profiles
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#conformance-levels" class="md-nav__link">
-    <span class="md-ellipsis">
-      Conformance Levels
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#generating-documentation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Generating Documentation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Next Steps
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -581,7 +425,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../documentation-generation/" class="md-nav__link">
+      <a href="../../guide/documentation-generation/" class="md-nav__link">
         
   
   
@@ -604,7 +448,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../custom-rules/" class="md-nav__link">
+      <a href="../../guide/custom-rules/" class="md-nav__link">
         
   
   
@@ -627,7 +471,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mcp-server/" class="md-nav__link">
+      <a href="../../guide/mcp-server/" class="md-nav__link">
         
   
   
@@ -1109,8 +953,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -1121,13 +967,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
           <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
@@ -1143,7 +987,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             Releases
@@ -1157,7 +1001,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../releases/changelog/" class="md-nav__link">
+      <a href="../changelog/" class="md-nav__link">
         
   
   
@@ -1177,10 +1021,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../releases/v0.3.0/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    v0.3.0
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1191,6 +1057,173 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#highlights" class="md-nav__link">
+    <span class="md-ellipsis">
+      Highlights
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upgrade-from-v020" class="md-nav__link">
+    <span class="md-ellipsis">
+      Upgrade from v0.2.0
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extended-type-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extended Type Definitions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mkdocs-site-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      MkDocs Site Generator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rubric-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rubric Generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vendor-api-style-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vendor API Style Profiles
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-cli-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      New CLI Commands
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="New CLI Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generate-mkdocs" class="md-nav__link">
+    <span class="md-ellipsis">
+      generate mkdocs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-rubric" class="md-nav__link">
+    <span class="md-ellipsis">
+      generate rubric
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-guide-enhanced" class="md-nav__link">
+    <span class="md-ellipsis">
+      generate guide (enhanced)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Documentation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dependencies
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      Links
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1203,7 +1236,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../releases/v0.2.0/" class="md-nav__link">
+      <a href="../v0.2.0/" class="md-nav__link">
         
   
   
@@ -1226,7 +1259,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../releases/v0.1.0/" class="md-nav__link">
+      <a href="../v0.1.0/" class="md-nav__link">
         
   
   
@@ -1276,64 +1309,73 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#built-in-profiles" class="md-nav__link">
+  <a href="#highlights" class="md-nav__link">
     <span class="md-ellipsis">
-      Built-in Profiles
+      Highlights
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#selecting-a-profile" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
-      Selecting a Profile
+      Installation
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#profile-details" class="md-nav__link">
+  <a href="#upgrade-from-v020" class="md-nav__link">
     <span class="md-ellipsis">
-      Profile Details
+      Upgrade from v0.2.0
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Profile Details">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Features">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#default-profile" class="md-nav__link">
+  <a href="#extended-type-definitions" class="md-nav__link">
     <span class="md-ellipsis">
-      Default Profile
+      Extended Type Definitions
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#azure-profile" class="md-nav__link">
+  <a href="#mkdocs-site-generator" class="md-nav__link">
     <span class="md-ellipsis">
-      Azure Profile
+      MkDocs Site Generator
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#google-profile" class="md-nav__link">
+  <a href="#rubric-generation" class="md-nav__link">
     <span class="md-ellipsis">
-      Google Profile
+      Rubric Generation
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#zalando-profile" class="md-nav__link">
+  <a href="#vendor-api-style-profiles" class="md-nav__link">
     <span class="md-ellipsis">
-      Zalando Profile
+      Vendor API Style Profiles
     </span>
   </a>
   
@@ -1345,45 +1387,69 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#listing-profile-rules" class="md-nav__link">
+  <a href="#new-cli-commands" class="md-nav__link">
     <span class="md-ellipsis">
-      Listing Profile Rules
+      New CLI Commands
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="New CLI Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generate-mkdocs" class="md-nav__link">
+    <span class="md-ellipsis">
+      generate mkdocs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-rubric" class="md-nav__link">
+    <span class="md-ellipsis">
+      generate rubric
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-guide-enhanced" class="md-nav__link">
+    <span class="md-ellipsis">
+      generate guide (enhanced)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Documentation
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#comparing-profiles" class="md-nav__link">
+  <a href="#dependencies" class="md-nav__link">
     <span class="md-ellipsis">
-      Comparing Profiles
+      Dependencies
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#conformance-levels" class="md-nav__link">
+  <a href="#links" class="md-nav__link">
     <span class="md-ellipsis">
-      Conformance Levels
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#generating-documentation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Generating Documentation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Next Steps
+      Links
     </span>
   </a>
   
@@ -1408,197 +1474,275 @@
   
 
 
-<h1 id="using-profiles">Using Profiles<a class="headerlink" href="#using-profiles" title="Permanent link">&para;</a></h1>
-<p>Profiles are collections of API style rules. api-style-spec includes profiles based on industry-standard guidelines.</p>
-<h2 id="built-in-profiles">Built-in Profiles<a class="headerlink" href="#built-in-profiles" title="Permanent link">&para;</a></h2>
+<h1 id="v030">v0.3.0<a class="headerlink" href="#v030" title="Permanent link">&para;</a></h1>
+<p><strong>Released:</strong> 2026-06-22</p>
+<p>This release adds extended type definitions for rich documentation, MkDocs site generation, LLM evaluation rubric generation, and vendor API style profiles for reference implementations.</p>
+<h2 id="highlights">Highlights<a class="headerlink" href="#highlights" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Extended type definitions for patterns, principles, glossary, decision tables, and migration guidance</li>
+<li>MkDocs multi-page documentation site generator with Material theme support</li>
+<li>Rubric generation for structured-evaluation LLM-as-Judge integration</li>
+<li>Vendor API style profiles (Microsoft Graph, Microsoft REST, PayPal, Zalando, etc.)</li>
+</ul>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>go<span class="w"> </span>install<span class="w"> </span>github.com/plexusone/api-style-spec/cmd/api-style@v0.3.0
+</code></pre></div>
+<h2 id="upgrade-from-v020">Upgrade from v0.2.0<a class="headerlink" href="#upgrade-from-v020" title="Permanent link">&para;</a></h2>
+<p>No breaking changes. All v0.2.0 commands continue to work.</p>
+<p>New features:</p>
+<ol>
+<li>Use <code>api-style generate mkdocs</code> to create full documentation sites</li>
+<li>Use <code>api-style generate rubric</code> for LLM evaluation integration</li>
+<li>Extended profile format supports patterns, principles, and glossary sections</li>
+</ol>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
+<h3 id="extended-type-definitions">Extended Type Definitions<a class="headerlink" href="#extended-type-definitions" title="Permanent link">&para;</a></h3>
+<p>New types for comprehensive API style documentation:</p>
+<ul>
+<li><strong>Pattern</strong> - Reusable API design patterns with problem/solution/when-to-use</li>
+<li><strong>Principle</strong> - High-level design principles with related rules</li>
+<li><strong>GlossaryTerm</strong> - Terminology definitions with aliases</li>
+<li><strong>Section</strong> - Document structure for navigation</li>
+<li><strong>DecisionTable</strong> - Structured decision guidance</li>
+<li><strong>DetailedExample</strong> - Rich examples with code annotations</li>
+<li><strong>MigrationGuidance</strong> - Instructions for fixing violations</li>
+<li><strong>RuleApplicability</strong> - Conditional rule application logic</li>
+<li><strong>DeprecationInfo</strong> - Deprecation tracking for rules</li>
+</ul>
+<p>Enhanced <code>Rule</code> type with:</p>
+<ul>
+<li><code>description</code> vs <code>rationale</code> distinction</li>
+<li>Priority and version fields</li>
+<li>Decision tables and migration guidance</li>
+<li>Conditional applicability</li>
+<li>Enhanced judge criteria with pass/partial/fail definitions</li>
+</ul>
+<h3 id="mkdocs-site-generator">MkDocs Site Generator<a class="headerlink" href="#mkdocs-site-generator" title="Permanent link">&para;</a></h3>
+<p>Generate complete MkDocs documentation sites:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>api-style<span class="w"> </span>generate<span class="w"> </span>mkdocs<span class="w"> </span>--profile<span class="w"> </span>zalando<span class="w"> </span>--output<span class="w"> </span>./docs
+</code></pre></div>
+<p>Features:</p>
+<ul>
+<li>Material theme with dark mode, navigation tabs, search</li>
+<li>Automatic navigation structure from content</li>
+<li>Separate pages for principles, patterns, rules, glossary</li>
+<li>Mermaid diagram support</li>
+<li>Code highlighting with copy buttons</li>
+<li>Optional pattern splitting (one page per pattern)</li>
+</ul>
+<p>Generated structure:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>output/
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>├── mkdocs.yml
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>└── docs/
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    ├── index.md
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    ├── introduction.md
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    ├── principles.md
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    ├── patterns.md
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    ├── conformance.md
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    ├── glossary.md
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    └── rules/
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        └── {category}.md
+</code></pre></div>
+<h3 id="rubric-generation">Rubric Generation<a class="headerlink" href="#rubric-generation" title="Permanent link">&para;</a></h3>
+<p>Generate structured-evaluation rubrics for LLM-as-Judge evaluation:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>api-style<span class="w"> </span>generate<span class="w"> </span>rubric<span class="w"> </span>--profile<span class="w"> </span>azure<span class="w"> </span>--output<span class="w"> </span>rubric.json
+</code></pre></div>
+<p>The generator:</p>
+<ul>
+<li>Groups rules by category into rubric categories</li>
+<li>Converts error-severity rules to required criteria</li>
+<li>Aggregates pass/partial/fail criteria from rule definitions</li>
+<li>Includes few-shot examples for each category</li>
+<li>Sets pass criteria (no critical/high findings allowed)</li>
+</ul>
+<p>Compatible with the <a href="https://github.com/plexusone/structured-evaluation">structured-evaluation</a> framework.</p>
+<h3 id="vendor-api-style-profiles">Vendor API Style Profiles<a class="headerlink" href="#vendor-api-style-profiles" title="Permanent link">&para;</a></h3>
+<p>Reference implementations demonstrating the extended type system:</p>
 <table>
 <thead>
 <tr>
 <th>Profile</th>
-<th>Based On</th>
-<th>Rules</th>
-<th>Focus</th>
+<th>Source</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>default</code></td>
-<td>Common best practices</td>
-<td>~30</td>
-<td>General REST API design</td>
+<td><code>microsoft-graph</code></td>
+<td>Microsoft Graph API Guidelines</td>
 </tr>
 <tr>
-<td><code>azure</code></td>
-<td>Microsoft/Azure guidelines</td>
-<td>76</td>
-<td>Enterprise cloud APIs</td>
+<td><code>microsoft-rest</code></td>
+<td>Microsoft REST API Guidelines</td>
 </tr>
 <tr>
-<td><code>google</code></td>
-<td>Google API Design Guide</td>
-<td>~20</td>
-<td>Resource-oriented design</td>
+<td><code>omniagent-rest</code></td>
+<td>OmniAgent REST API Guidelines</td>
 </tr>
 <tr>
-<td><code>zalando</code></td>
-<td>Zalando RESTful Guidelines</td>
-<td>55</td>
-<td>E-commerce APIs</td>
+<td><code>paypal-rest</code></td>
+<td>PayPal REST API Guidelines</td>
+</tr>
+<tr>
+<td><code>plexusone-rest</code></td>
+<td>PlexusOne REST API Guidelines</td>
+</tr>
+<tr>
+<td><code>zalando-rest</code></td>
+<td>Zalando RESTful API Guidelines</td>
 </tr>
 </tbody>
 </table>
-<h2 id="selecting-a-profile">Selecting a Profile<a class="headerlink" href="#selecting-a-profile" title="Permanent link">&para;</a></h2>
-<p>Use the <code>--profile</code> flag with any command:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Lint with Azure profile</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>api-style<span class="w"> </span>lint<span class="w"> </span>openapi.yaml<span class="w"> </span>--profile<span class="w"> </span>azure
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Analyze with Google profile</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>api-style<span class="w"> </span>analyze<span class="w"> </span>openapi.yaml<span class="w"> </span>--profile<span class="w"> </span>google
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Generate documentation for Zalando profile</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>api-style<span class="w"> </span>generate<span class="w"> </span>guide<span class="w"> </span>--profile<span class="w"> </span>zalando
-</code></pre></div>
-<h2 id="profile-details">Profile Details<a class="headerlink" href="#profile-details" title="Permanent link">&para;</a></h2>
-<h3 id="default-profile">Default Profile<a class="headerlink" href="#default-profile" title="Permanent link">&para;</a></h3>
-<p>The default profile covers fundamental REST API best practices:</p>
+<p>Each profile includes:</p>
 <ul>
-<li><strong>URI Design</strong> - Plural resources, lowercase, hyphens</li>
-<li><strong>HTTP Methods</strong> - Proper verb usage</li>
-<li><strong>Status Codes</strong> - Appropriate response codes</li>
-<li><strong>Versioning</strong> - API version strategies</li>
-<li><strong>Documentation</strong> - Required descriptions</li>
+<li><code>*.api-style.json</code> - Full specification</li>
+<li><code>*.api-style.md</code> - Generated Markdown documentation</li>
+<li><code>*.spectral.yaml</code> - Generated Spectral ruleset</li>
+<li><code>*.rubric.json</code> - Generated evaluation rubric</li>
+<li><code>*.evaluation.{json,md,txt}</code> - Sample evaluation outputs</li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>api-style<span class="w"> </span>lint<span class="w"> </span>openapi.yaml<span class="w"> </span>--profile<span class="w"> </span>default
-</code></pre></div>
-<h3 id="azure-profile">Azure Profile<a class="headerlink" href="#azure-profile" title="Permanent link">&para;</a></h3>
-<p>Based on <a href="https://github.com/microsoft/api-guidelines">Microsoft Azure REST API Guidelines</a>:</p>
-<ul>
-<li><strong>Consistency</strong> - Uniform interface patterns</li>
-<li><strong>Versioning</strong> - Date-based API versions</li>
-<li><strong>Error Handling</strong> - Standard error response format</li>
-<li><strong>Pagination</strong> - Consistent collection handling</li>
-<li><strong>Long-running Operations</strong> - Async patterns</li>
-</ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>api-style<span class="w"> </span>lint<span class="w"> </span>openapi.yaml<span class="w"> </span>--profile<span class="w"> </span>azure
-</code></pre></div>
-<h3 id="google-profile">Google Profile<a class="headerlink" href="#google-profile" title="Permanent link">&para;</a></h3>
-<p>Based on <a href="https://cloud.google.com/apis/design">Google API Design Guide</a>:</p>
-<ul>
-<li><strong>Resource-Oriented Design</strong> - Everything is a resource</li>
-<li><strong>Standard Methods</strong> - List, Get, Create, Update, Delete</li>
-<li><strong>Naming Conventions</strong> - Consistent field names</li>
-<li><strong>Error Model</strong> - Structured error details</li>
-<li><strong>Documentation</strong> - Comprehensive descriptions</li>
-</ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>api-style<span class="w"> </span>lint<span class="w"> </span>openapi.yaml<span class="w"> </span>--profile<span class="w"> </span>google
-</code></pre></div>
-<h3 id="zalando-profile">Zalando Profile<a class="headerlink" href="#zalando-profile" title="Permanent link">&para;</a></h3>
-<p>Based on <a href="https://opensource.zalando.com/restful-api-guidelines/">Zalando RESTful API Guidelines</a>:</p>
-<ul>
-<li><strong>Pragmatic REST</strong> - Practical over dogmatic</li>
-<li><strong>Hypermedia</strong> - HATEOAS where appropriate</li>
-<li><strong>Events</strong> - Async event patterns</li>
-<li><strong>Compatibility</strong> - Evolution strategies</li>
-<li><strong>Security</strong> - OAuth2 patterns</li>
-</ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>api-style<span class="w"> </span>lint<span class="w"> </span>openapi.yaml<span class="w"> </span>--profile<span class="w"> </span>zalando
-</code></pre></div>
-<h2 id="listing-profile-rules">Listing Profile Rules<a class="headerlink" href="#listing-profile-rules" title="Permanent link">&para;</a></h2>
-<p>View all rules in a profile:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># List all rules</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>api-style<span class="w"> </span>list-rules<span class="w"> </span>--profile<span class="w"> </span>azure
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Filter by category</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>api-style<span class="w"> </span>list-rules<span class="w"> </span>--profile<span class="w"> </span>azure<span class="w"> </span>--category<span class="w"> </span>uri-design
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># Filter by severity</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>api-style<span class="w"> </span>list-rules<span class="w"> </span>--profile<span class="w"> </span>azure<span class="w"> </span>--severity<span class="w"> </span>error
-</code></pre></div>
-<h2 id="comparing-profiles">Comparing Profiles<a class="headerlink" href="#comparing-profiles" title="Permanent link">&para;</a></h2>
-<p>Different profiles may have different opinions on the same topic:</p>
+<h2 id="new-cli-commands">New CLI Commands<a class="headerlink" href="#new-cli-commands" title="Permanent link">&para;</a></h2>
+<h3 id="generate-mkdocs">generate mkdocs<a class="headerlink" href="#generate-mkdocs" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>Topic</th>
+<th>Flag</th>
+<th>Short</th>
 <th>Default</th>
-<th>Azure</th>
-<th>Google</th>
-<th>Zalando</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Resource names</td>
-<td>Plural</td>
-<td>Plural</td>
-<td>Plural</td>
-<td>Plural</td>
-</tr>
-<tr>
-<td>Case style</td>
-<td>kebab-case</td>
-<td>camelCase</td>
-<td>snake_case</td>
-<td>kebab-case</td>
-</tr>
-<tr>
-<td>Versioning</td>
-<td>URL path</td>
-<td>URL path</td>
-<td>URL path</td>
-<td>URL/Header</td>
-</tr>
-<tr>
-<td>Date format</td>
-<td>ISO 8601</td>
-<td>ISO 8601</td>
-<td>RFC 3339</td>
-<td>ISO 8601</td>
-</tr>
-</tbody>
-</table>
-<h2 id="conformance-levels">Conformance Levels<a class="headerlink" href="#conformance-levels" title="Permanent link">&para;</a></h2>
-<p>Profiles support graduated compliance levels:</p>
-<table>
-<thead>
-<tr>
-<th>Level</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Bronze</td>
-<td>Minimum viable API quality</td>
+<td><code>--profile</code></td>
+<td><code>-p</code></td>
+<td><code>default</code></td>
+<td>Style profile to use</td>
 </tr>
 <tr>
-<td>Silver</td>
-<td>Production-ready APIs</td>
+<td><code>--output</code></td>
+<td><code>-o</code></td>
+<td><code>./docs</code></td>
+<td>Output directory</td>
 </tr>
 <tr>
-<td>Gold</td>
-<td>Best-in-class API design</td>
+<td><code>--site-name</code></td>
+<td></td>
+<td>from profile</td>
+<td>MkDocs site name</td>
+</tr>
+<tr>
+<td><code>--site-url</code></td>
+<td></td>
+<td></td>
+<td>Base URL for the site</td>
+</tr>
+<tr>
+<td><code>--repo-url</code></td>
+<td></td>
+<td>from profile</td>
+<td>Repository URL</td>
+</tr>
+<tr>
+<td><code>--theme</code></td>
+<td></td>
+<td><code>material</code></td>
+<td>MkDocs theme</td>
+</tr>
+<tr>
+<td><code>--split-patterns</code></td>
+<td></td>
+<td><code>false</code></td>
+<td>Create separate pages per pattern</td>
+</tr>
+<tr>
+<td><code>--no-split-categories</code></td>
+<td></td>
+<td><code>false</code></td>
+<td>Keep all rules in one page</td>
+</tr>
+<tr>
+<td><code>--no-search</code></td>
+<td></td>
+<td><code>false</code></td>
+<td>Disable search plugin</td>
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Check against silver level</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>api-style<span class="w"> </span>lint<span class="w"> </span>openapi.yaml<span class="w"> </span>--profile<span class="w"> </span>azure<span class="w"> </span>--level<span class="w"> </span>silver
-</code></pre></div>
-<p>Rules are tagged with minimum conformance levels. Higher levels include all rules from lower levels.</p>
-<h2 id="generating-documentation">Generating Documentation<a class="headerlink" href="#generating-documentation" title="Permanent link">&para;</a></h2>
-<p>Convert any profile into human-readable documentation:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Single-page Markdown</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>api-style<span class="w"> </span>generate<span class="w"> </span>guide<span class="w"> </span>--profile<span class="w"> </span>zalando<span class="w"> </span>--output<span class="w"> </span>zalando-guide.md
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># MkDocs multi-page site</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>api-style<span class="w"> </span>generate<span class="w"> </span>mkdocs<span class="w"> </span>--profile<span class="w"> </span>zalando<span class="w"> </span>--output<span class="w"> </span>./zalando-docs
-</code></pre></div>
-<p>See <a href="../documentation-generation/">Documentation Generation</a> for details.</p>
-<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<h3 id="generate-rubric">generate rubric<a class="headerlink" href="#generate-rubric" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Short</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--profile</code></td>
+<td><code>-p</code></td>
+<td><code>default</code></td>
+<td>Style profile to use</td>
+</tr>
+<tr>
+<td><code>--output</code></td>
+<td><code>-o</code></td>
+<td>stdout</td>
+<td>Output file path</td>
+</tr>
+</tbody>
+</table>
+<h3 id="generate-guide-enhanced">generate guide (enhanced)<a class="headerlink" href="#generate-guide-enhanced" title="Permanent link">&para;</a></h3>
+<p>New flags:</p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--no-patterns</code></td>
+<td>Exclude design patterns section</td>
+</tr>
+<tr>
+<td><code>--no-principles</code></td>
+<td>Exclude design principles section</td>
+</tr>
+<tr>
+<td><code>--no-glossary</code></td>
+<td>Exclude glossary</td>
+</tr>
+</tbody>
+</table>
+<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
+<p>New documentation added:</p>
 <ul>
-<li><a href="../documentation-generation/">Documentation Generation</a> - Generate Markdown and MkDocs docs</li>
-<li><a href="../custom-rules/">Custom Rules</a> - Create your own rules</li>
-<li><a href="../../profiles/default/">Profile Reference</a> - Detailed rule documentation</li>
+<li><strong>CI/CD Integration Guide</strong> - Exit codes, pipeline examples, pre-commit hooks</li>
+<li><strong>Documentation Generation Guide</strong> - Markdown vs MkDocs comparison</li>
+</ul>
+<p>Updated documentation:</p>
+<ul>
+<li>CLI Reference with new commands and flags</li>
+<li>Getting Started guide with documentation generation</li>
+<li>Profiles guide with extended capabilities</li>
+</ul>
+<h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Added <code>github.com/plexusone/structured-evaluation v0.8.0</code></li>
+<li>Updated <code>github.com/plexusone/omniskill v0.8.0</code> → <code>v0.9.0</code></li>
+<li>Updated <code>github.com/plexusone/assistantkit v0.12.0</code> → <code>v0.13.0</code></li>
+<li>Updated <code>github.com/daveshanley/vacuum v0.29.2</code> → <code>v0.29.4</code></li>
+</ul>
+<h2 id="links">Links<a class="headerlink" href="#links" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://github.com/plexusone/api-style-spec">GitHub Repository</a></li>
+<li><a href="https://plexusone.github.io/api-style-spec">Documentation</a></li>
+<li><a href="../../guide/documentation-generation/">Documentation Generation Guide</a></li>
+<li><a href="../../guide/ci-cd/">CI/CD Integration Guide</a></li>
+<li><a href="../changelog/">Changelog</a></li>
 </ul>
 
 
