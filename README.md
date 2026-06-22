@@ -145,7 +145,9 @@ See [.api-style.yaml.example](.api-style.yaml.example) for a complete example.
 | `api-style evaluate` | LLM-based evaluation |
 | `api-style analyze` | Combined lint + evaluate |
 | `api-style generate guide` | Generate Markdown documentation |
+| `api-style generate mkdocs` | Generate MkDocs multi-page site |
 | `api-style generate spectral` | Generate Spectral ruleset |
+| `api-style generate rubric` | Generate LLM evaluation rubric |
 | `api-style hooks` | Generate AI assistant hooks |
 | `api-style hooks init` | Install git pre-commit hook |
 | `api-style diff` | Breaking change detection |
@@ -165,6 +167,8 @@ See [.api-style.yaml.example](.api-style.yaml.example) for a complete example.
 
 - [Getting Started](docs/guide/getting-started.md)
 - [Automated API Governance](docs/guide/automated-api-governance.md) - AI-first API design workflow
+- [CI/CD Integration](docs/guide/ci-cd.md) - Pipeline integration and pre-commit hooks
+- [Documentation Generation](docs/guide/documentation-generation.md) - Generate Markdown and MkDocs sites
 - [Creating Custom Profiles](docs/guide/profiles.md)
 - [Writing Custom Rules](docs/guide/custom-rules.md)
 - [MRD](docs/specs/inception/MRD.md) | [PRD](docs/specs/inception/PRD.md) | [TRD](docs/specs/inception/TRD.md) | [Roadmap](docs/specs/inception/ROADMAP.md)
