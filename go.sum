@@ -142,8 +142,8 @@ github.com/pb33f/ordered-map/v2 v2.3.1 h1:5319HDO0aw4DA4gzi+zv4FXU9UlSs3xGZ40wcP
 github.com/pb33f/ordered-map/v2 v2.3.1/go.mod h1:qxFQgd0PkVUtOMCkTapqotNgzRhMPL7VvaHKbd1HnmQ=
 github.com/pb33f/testify v0.1.0 h1:g48/HDU/jn2COspS4nM0scptxiKTJ4DnbX/4ehK6IZ8=
 github.com/pb33f/testify v0.1.0/go.mod h1:nq283P/jJ8hXMmdhAqfj7BJIz0y+6IOHj9q0044rKt4=
-github.com/plexusone/assistantkit v0.12.0 h1:hgSWC4IQrqKls4LoIcCHU+/cPOcMb1ZRKR3V0rqDL6E=
-github.com/plexusone/assistantkit v0.12.0/go.mod h1:wi8K+HRqIBBQyQ+a9nrjkw8iUeOjw03Ga4riCR1LULQ=
+github.com/plexusone/assistantkit v0.13.0 h1:o72MfEsi5NK6ymlvWbxGYl2vNXSBgv8TmCkP8N52N9Y=
+github.com/plexusone/assistantkit v0.13.0/go.mod h1:aqBPbh0TLGRassIp2vkuq3I6EZKlI5M+Lq4aZQLngiQ=
 github.com/plexusone/omniskill v0.9.0 h1:QrOyJ2BWIpYcaW8lTtYxHQUWmLUq4+nAcW9CJ5OImm4=
 github.com/plexusone/omniskill v0.9.0/go.mod h1:L0MW5av6S0EkgGByFMwDmTJBy/7h8ourBmQ5xxM2vQI=
 github.com/plexusone/structured-evaluation v0.8.0 h1:dfXXp26ZzvaQaAaY27jh/OYB9J0TrTN7s9IfU8DqS1w=
@@ -188,8 +188,8 @@ github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc/go.m
 go.uber.org/multierr v1.11.0 h1:blXXJkSxSSfBVBlC76pxqeO+LN3aDfLQo+309xJstO0=
 go.uber.org/multierr v1.11.0/go.mod h1:20+QtiLqy0Nd6FdQB9TLXag12DsQkrbs3htMFfDN80Y=
 go.yaml.in/yaml/v3 v3.0.4/go.mod h1:DhzuOOF2ATzADvBadXxruRBLzYTpT36CKvDb3+aBEFg=
-go.yaml.in/yaml/v4 v4.0.0-rc.5 h1:JVliQq9EGOYaTgMi+k8BhUJyqcGk4ZqeuiN1Cirba9c=
-go.yaml.in/yaml/v4 v4.0.0-rc.5/go.mod h1:aZqd9kCMsGL7AuUv/m/PvWLdg5sjJsZ4oHDEnfPPfY0=
+go.yaml.in/yaml/v4 v4.0.0-rc.6 h1:1h7H1ohdUh93/FyE4YaDa1Zh64K6VVbjF4K6WUxMtH4=
+go.yaml.in/yaml/v4 v4.0.0-rc.6/go.mod h1:aZqd9kCMsGL7AuUv/m/PvWLdg5sjJsZ4oHDEnfPPfY0=
 golang.ngrok.com/muxado/v2 v2.0.1 h1:jM9i6Pom6GGmnPrHKNR6OJRrUoHFkSZlJ3/S0zqdVpY=
 golang.ngrok.com/muxado/v2 v2.0.1/go.mod h1:wzxJYX4xiAtmwumzL+QsukVwFRXmPNv86vB8RPpOxyM=
 golang.ngrok.com/ngrok v1.13.0 h1:6SeOS+DAeIaHlkDmNH5waFHv0xjlavOV3wml0Z59/8k=
