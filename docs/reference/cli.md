@@ -232,6 +232,45 @@ output/
         └── {category}.md   # One file per category
 ```
 
+#### generate rubric
+
+Generate a structured-evaluation rubric for LLM-as-Judge evaluation.
+
+```bash
+api-style generate rubric [flags]
+```
+
+**Flags:**
+
+| Flag | Short | Default | Description |
+|------|-------|---------|-------------|
+| `--profile` | `-p` | `default` | Style profile to use |
+| `--output` | `-o` | stdout | Output file path |
+
+**Examples:**
+
+```bash
+# Generate rubric to stdout
+api-style generate rubric --profile azure
+
+# Save rubric to file
+api-style generate rubric --profile zalando --output zalando.rubric.json
+
+# Use with structured-evaluation
+api-style generate rubric --profile azure --output rubric.json
+structured-eval evaluate openapi.yaml --rubric rubric.json
+```
+
+The generated rubric:
+
+- Groups rules by category into rubric categories
+- Converts rule severity to required/optional status
+- Includes pass/partial/fail criteria from rule definitions
+- Provides few-shot examples for each category
+- Compatible with the [structured-evaluation](https://github.com/plexusone/structured-evaluation) framework
+
+---
+
 #### generate spectral
 
 Generate a Spectral ruleset from a profile.
