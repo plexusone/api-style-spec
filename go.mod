@@ -3,7 +3,7 @@ module github.com/plexusone/api-style-spec
 go 1.26.3
 
 require (
-	github.com/daveshanley/vacuum v0.29.4
+	github.com/daveshanley/vacuum v0.29.6
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/grokify/mogo v0.74.6
 	github.com/invopop/jsonschema v0.14.0
@@ -61,8 +61,8 @@ require (
 	github.com/pb33f/doctor v0.0.78 // indirect
 	github.com/pb33f/jsonpath v0.8.2 // indirect
 	github.com/pb33f/libasyncapi v0.0.1 // indirect
-	github.com/pb33f/libopenapi v0.38.1 // indirect
-	github.com/pb33f/libopenapi-validator v0.13.11 // indirect
+	github.com/pb33f/libopenapi v0.38.3 // indirect
+	github.com/pb33f/libopenapi-validator v0.13.13 // indirect
 	github.com/pb33f/ordered-map/v2 v2.3.1 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
