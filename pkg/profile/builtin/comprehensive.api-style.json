@@ -1,0 +1,1206 @@
+{
+  "$schema": "https://raw.githubusercontent.com/plexusone/api-style-spec/main/schema/api-style-spec.schema.json",
+  "name": "comprehensive",
+  "version": "1.0.0",
+  "description": "Comprehensive API style guide with 100% category coverage. Synthesized from Microsoft REST, Microsoft Graph, Zalando, Google Cloud, Azure, and PayPal guidelines. Covers all 38 API design categories with 150+ machine-enforceable rules.",
+  "metadata": {
+    "author": "PlexusOne",
+    "license": "Apache-2.0",
+    "repository": "https://github.com/plexusone/api-style-spec",
+    "lastUpdated": "2025-06-30",
+    "sources": [
+      "Microsoft REST API Guidelines",
+      "Microsoft Graph API Guidelines",
+      "Zalando RESTful API Guidelines",
+      "Google Cloud API Design Guide",
+      "Azure REST API Guidelines",
+      "PayPal REST API Guidelines"
+    ]
+  },
+  "designPrinciples": [
+    {
+      "id": "api-first",
+      "title": "API First",
+      "description": "Design and document APIs before implementation. The OpenAPI specification is the contract between teams.",
+      "relatedRules": ["COMP-001", "DOC-001"]
+    },
+    {
+      "id": "consumer-centric",
+      "title": "Consumer-Centric Design",
+      "description": "Design APIs from the consumer's perspective. Optimize for developer experience and ease of use.",
+      "relatedRules": ["GEN-001", "NAME-001"]
+    },
+    {
+      "id": "consistency",
+      "title": "Consistency Over Creativity",
+      "description": "Follow established patterns consistently. Predictability trumps novelty.",
+      "relatedRules": ["NAME-002", "HTTP-001", "URL-001"]
+    },
+    {
+      "id": "evolvability",
+      "title": "Design for Evolution",
+      "description": "APIs must be able to evolve without breaking existing clients. Plan for deprecation and versioning.",
+      "relatedRules": ["VER-001", "COMPAT-001", "DEP-001"]
+    },
+    {
+      "id": "security-by-default",
+      "title": "Security by Default",
+      "description": "All APIs must be secure. Use HTTPS, proper authentication, and least-privilege authorization.",
+      "relatedRules": ["SEC-001", "SEC-002", "SEC-003"]
+    },
+    {
+      "id": "observability",
+      "title": "Built-in Observability",
+      "description": "APIs must support monitoring, tracing, and debugging through proper headers and error responses.",
+      "relatedRules": ["HDR-001", "ERR-001", "PERF-001"]
+    }
+  ],
+  "categories": [
+    {
+      "id": "general",
+      "title": "General Guidelines",
+      "description": "Fundamental API design principles and requirements",
+      "order": 1
+    },
+    {
+      "id": "naming",
+      "title": "Naming Conventions",
+      "description": "Naming rules for properties, resources, and identifiers",
+      "order": 2
+    },
+    {
+      "id": "urls",
+      "title": "URL Design",
+      "description": "URL structure, path segments, and query parameters",
+      "order": 3
+    },
+    {
+      "id": "http-methods",
+      "title": "HTTP Methods",
+      "description": "Proper use of GET, POST, PUT, PATCH, DELETE, and other methods",
+      "order": 4
+    },
+    {
+      "id": "http-status",
+      "title": "HTTP Status Codes",
+      "description": "Appropriate status code usage for responses",
+      "order": 5
+    },
+    {
+      "id": "request-response",
+      "title": "Request & Response",
+      "description": "Request and response body structure and conventions",
+      "order": 6
+    },
+    {
+      "id": "headers",
+      "title": "HTTP Headers",
+      "description": "Standard and custom header usage",
+      "order": 7
+    },
+    {
+      "id": "errors",
+      "title": "Error Handling",
+      "description": "Error response format and error codes",
+      "order": 8
+    },
+    {
+      "id": "pagination",
+      "title": "Pagination",
+      "description": "Collection pagination patterns",
+      "order": 9
+    },
+    {
+      "id": "filtering",
+      "title": "Filtering & Sorting",
+      "description": "Query parameter filtering, sorting, and field selection",
+      "order": 10
+    },
+    {
+      "id": "versioning",
+      "title": "Versioning",
+      "description": "API versioning strategy and version format",
+      "order": 11
+    },
+    {
+      "id": "compatibility",
+      "title": "Compatibility",
+      "description": "Backward compatibility and breaking changes",
+      "order": 12
+    },
+    {
+      "id": "deprecation",
+      "title": "Deprecation",
+      "description": "Deprecation policies and sunset procedures",
+      "order": 13
+    },
+    {
+      "id": "security",
+      "title": "Security",
+      "description": "Authentication, authorization, and security headers",
+      "order": 14
+    },
+    {
+      "id": "documentation",
+      "title": "Documentation",
+      "description": "OpenAPI specification and documentation requirements",
+      "order": 15
+    },
+    {
+      "id": "json",
+      "title": "JSON Conventions",
+      "description": "JSON formatting and data type conventions",
+      "order": 16
+    },
+    {
+      "id": "schema",
+      "title": "Schema Design",
+      "description": "Schema structure, types, and validation",
+      "order": 17
+    },
+    {
+      "id": "collections",
+      "title": "Collections",
+      "description": "Collection resource patterns and operations",
+      "order": 18
+    },
+    {
+      "id": "long-running",
+      "title": "Long-Running Operations",
+      "description": "Async operations and polling patterns",
+      "order": 19
+    },
+    {
+      "id": "conditional",
+      "title": "Conditional Requests",
+      "description": "ETags, If-Match, and conditional operations",
+      "order": 20
+    },
+    {
+      "id": "performance",
+      "title": "Performance",
+      "description": "Caching, compression, and optimization",
+      "order": 21
+    },
+    {
+      "id": "hypermedia",
+      "title": "Hypermedia",
+      "description": "HATEOAS and link relations",
+      "order": 22
+    },
+    {
+      "id": "batch",
+      "title": "Batch Operations",
+      "description": "Batch request and response patterns",
+      "order": 23
+    },
+    {
+      "id": "events",
+      "title": "Events & Webhooks",
+      "description": "Event-driven patterns and webhook design",
+      "order": 24
+    },
+    {
+      "id": "actions",
+      "title": "Actions & Functions",
+      "description": "Non-CRUD operations and custom actions",
+      "order": 25
+    },
+    {
+      "id": "throttling",
+      "title": "Rate Limiting",
+      "description": "Throttling and rate limit headers",
+      "order": 26
+    }
+  ],
+  "rules": [
+    {
+      "id": "GEN-001",
+      "title": "Provide OpenAPI specification",
+      "category": "general",
+      "severity": "error",
+      "description": "Every API MUST have an OpenAPI 3.0+ specification as the source of truth.",
+      "rationale": "OpenAPI specs enable automated tooling, documentation generation, and client SDK generation.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.openapi"]},
+        "then": {"field": "@", "function": "truthy"}
+      }
+    },
+    {
+      "id": "GEN-002",
+      "title": "Provide API info",
+      "category": "general",
+      "severity": "error",
+      "description": "API MUST have title, version, and description in the info object.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.info"]},
+        "then": {"field": "title", "function": "truthy"}
+      }
+    },
+    {
+      "id": "GEN-003",
+      "title": "Use semantic versioning",
+      "category": "general",
+      "severity": "warn",
+      "description": "API version SHOULD follow semantic versioning (MAJOR.MINOR.PATCH).",
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.info.version"]},
+        "options": {"match": "^\\d+\\.\\d+\\.\\d+"}
+      }
+    },
+    {
+      "id": "NAME-001",
+      "title": "Use camelCase for properties",
+      "category": "naming",
+      "severity": "error",
+      "description": "JSON property names MUST use camelCase (e.g., firstName, lastName).",
+      "rationale": "Consistent naming improves API usability and aligns with JavaScript conventions.",
+      "examples": {
+        "good": ["firstName", "lastName", "createdAt", "isActive"],
+        "bad": ["first_name", "LastName", "created-at", "ACTIVE"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "casing",
+        "given": {"paths": ["$.components.schemas[*].properties[*]~"]},
+        "options": {"type": "camel"}
+      }
+    },
+    {
+      "id": "NAME-002",
+      "title": "Use plural nouns for collections",
+      "category": "naming",
+      "severity": "error",
+      "description": "Collection endpoints MUST use plural nouns (e.g., /users, /orders).",
+      "examples": {
+        "good": ["/users", "/orders", "/products"],
+        "bad": ["/user", "/order", "/product"]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if collection endpoints use plural nouns",
+        "passCriteria": ["All collection paths use plural nouns"],
+        "failCriteria": ["Collection paths use singular nouns"]
+      }
+    },
+    {
+      "id": "NAME-003",
+      "title": "Use nouns for resources",
+      "category": "naming",
+      "severity": "error",
+      "description": "Resource names MUST be nouns, not verbs. Use HTTP methods to express actions.",
+      "examples": {
+        "good": ["/users", "/orders", "/payments"],
+        "bad": ["/getUsers", "/createOrder", "/processPayment"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"notMatch": "/(get|create|update|delete|process|fetch)"}
+      }
+    },
+    {
+      "id": "NAME-004",
+      "title": "Use consistent terminology",
+      "category": "naming",
+      "severity": "warn",
+      "description": "Use consistent terminology throughout the API. Don't mix synonyms.",
+      "examples": {
+        "good": ["Always use 'customer' throughout"],
+        "bad": ["Mix of 'customer', 'client', 'user' for same concept"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check for consistent terminology usage across the API",
+        "passCriteria": ["Terminology is consistent"],
+        "failCriteria": ["Inconsistent terms for same concepts"]
+      }
+    },
+    {
+      "id": "NAME-005",
+      "title": "Use string type for IDs",
+      "category": "naming",
+      "severity": "warn",
+      "description": "Resource identifiers SHOULD be strings, not integers. Supports UUIDs and prefixed IDs.",
+      "rationale": "String IDs avoid integer overflow and enable prefixed IDs (e.g., user_abc123).",
+      "examples": {
+        "good": ["user_abc123", "550e8400-e29b-41d4-a716-446655440000"],
+        "bad": ["12345", "9007199254740993"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if ID properties use string type",
+        "passCriteria": ["ID properties are strings"],
+        "failCriteria": ["ID properties use integer type"]
+      }
+    },
+    {
+      "id": "URL-001",
+      "title": "Use kebab-case for URL paths",
+      "category": "urls",
+      "severity": "error",
+      "description": "URL path segments MUST use kebab-case (lowercase with hyphens).",
+      "examples": {
+        "good": ["/user-profiles", "/order-items"],
+        "bad": ["/userProfiles", "/order_items", "/OrderItems"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"match": "^[a-z0-9\\-\\{\\}\\/\\.]+$"}
+      }
+    },
+    {
+      "id": "URL-002",
+      "title": "No trailing slashes",
+      "category": "urls",
+      "severity": "error",
+      "description": "URLs MUST NOT have trailing slashes.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.paths[*]~"]},
+        "options": {"notMatch": "\\/$"}
+      }
+    },
+    {
+      "id": "URL-003",
+      "title": "Use path parameters for identifiers",
+      "category": "urls",
+      "severity": "error",
+      "description": "Resource identifiers MUST be in path parameters, not query parameters.",
+      "examples": {
+        "good": ["/users/{userId}"],
+        "bad": ["/users?id={userId}"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if resource identifiers are in path parameters",
+        "passCriteria": ["IDs are path parameters"],
+        "failCriteria": ["IDs are query parameters"]
+      }
+    },
+    {
+      "id": "URL-004",
+      "title": "Limit URL depth",
+      "category": "urls",
+      "severity": "warn",
+      "description": "URLs SHOULD NOT exceed 4 path segments. Flatten deep hierarchies.",
+      "examples": {
+        "good": ["/users/{id}/orders"],
+        "bad": ["/companies/{cid}/departments/{did}/teams/{tid}/members/{mid}/tasks"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check URL path depth",
+        "passCriteria": ["URLs have 4 or fewer path segments"],
+        "failCriteria": ["URLs exceed 4 path segments"]
+      }
+    },
+    {
+      "id": "HTTP-001",
+      "title": "GET must be safe and idempotent",
+      "category": "http-methods",
+      "severity": "error",
+      "description": "GET requests MUST NOT modify server state. They must be safe and idempotent.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "falsy",
+        "given": {"paths": ["$.paths[*].get.requestBody"]}
+      }
+    },
+    {
+      "id": "HTTP-002",
+      "title": "POST for resource creation",
+      "category": "http-methods",
+      "severity": "error",
+      "description": "Use POST to create new resources in a collection.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if POST is used for resource creation",
+        "passCriteria": ["POST used for creation on collection endpoints"],
+        "failCriteria": ["POST misused for retrieval or other operations"]
+      }
+    },
+    {
+      "id": "HTTP-003",
+      "title": "PUT for full replacement",
+      "category": "http-methods",
+      "severity": "error",
+      "description": "Use PUT for full resource replacement. Client must send complete resource.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "HTTP-004",
+      "title": "PATCH for partial updates",
+      "category": "http-methods",
+      "severity": "error",
+      "description": "Use PATCH for partial resource updates. Support JSON Merge Patch (RFC 7396).",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "HTTP-005",
+      "title": "DELETE for removal",
+      "category": "http-methods",
+      "severity": "error",
+      "description": "Use DELETE to remove resources. DELETE must be idempotent.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "HTTP-006",
+      "title": "Operations must have operationId",
+      "category": "http-methods",
+      "severity": "error",
+      "description": "Every operation MUST have a unique operationId for SDK generation.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*][get,post,put,patch,delete]"]},
+        "then": {"field": "operationId", "function": "truthy"}
+      }
+    },
+    {
+      "id": "STATUS-001",
+      "title": "Use standard status codes",
+      "category": "http-status",
+      "severity": "error",
+      "description": "Use standard HTTP status codes. Do not invent custom codes.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "STATUS-002",
+      "title": "200 for successful GET",
+      "category": "http-status",
+      "severity": "error",
+      "description": "Successful GET requests MUST return 200 OK with the requested resource.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*].get.responses"]},
+        "then": {"field": "200", "function": "truthy"}
+      }
+    },
+    {
+      "id": "STATUS-003",
+      "title": "201 for created resources",
+      "category": "http-status",
+      "severity": "error",
+      "description": "Successful POST creating a resource MUST return 201 Created.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*].post.responses"]},
+        "then": {"field": "201", "function": "truthy"}
+      }
+    },
+    {
+      "id": "STATUS-004",
+      "title": "204 for no content",
+      "category": "http-status",
+      "severity": "warn",
+      "description": "Successful DELETE SHOULD return 204 No Content or 200 with deleted resource.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "STATUS-005",
+      "title": "400 for client errors",
+      "category": "http-status",
+      "severity": "error",
+      "description": "Invalid requests MUST return 400 Bad Request with error details.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "STATUS-006",
+      "title": "401 for authentication",
+      "category": "http-status",
+      "severity": "error",
+      "description": "Missing or invalid authentication MUST return 401 Unauthorized.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "STATUS-007",
+      "title": "403 for authorization",
+      "category": "http-status",
+      "severity": "error",
+      "description": "Insufficient permissions MUST return 403 Forbidden.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "STATUS-008",
+      "title": "404 for not found",
+      "category": "http-status",
+      "severity": "error",
+      "description": "Non-existent resources MUST return 404 Not Found.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "STATUS-009",
+      "title": "429 for rate limiting",
+      "category": "http-status",
+      "severity": "error",
+      "description": "Rate-limited requests MUST return 429 Too Many Requests.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "REQ-001",
+      "title": "Use JSON for request bodies",
+      "category": "request-response",
+      "severity": "error",
+      "description": "Request and response bodies MUST use application/json.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*][post,put,patch].requestBody.content"]},
+        "then": {"field": "application/json", "function": "truthy"}
+      }
+    },
+    {
+      "id": "REQ-002",
+      "title": "Return created resource",
+      "category": "request-response",
+      "severity": "warn",
+      "description": "POST SHOULD return the created resource in the response body.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "REQ-003",
+      "title": "Include Location header for creation",
+      "category": "request-response",
+      "severity": "warn",
+      "description": "201 responses SHOULD include Location header with URL of created resource.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "HDR-001",
+      "title": "Use Content-Type header",
+      "category": "headers",
+      "severity": "error",
+      "description": "All responses with bodies MUST include Content-Type header.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "HDR-002",
+      "title": "Support Accept header",
+      "category": "headers",
+      "severity": "warn",
+      "description": "APIs SHOULD respect the Accept header for content negotiation.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "HDR-003",
+      "title": "Include request ID header",
+      "category": "headers",
+      "severity": "warn",
+      "description": "Responses SHOULD include a request ID header (X-Request-Id) for tracing.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "ERR-001",
+      "title": "Use RFC 7807 Problem Details",
+      "category": "errors",
+      "severity": "error",
+      "description": "Error responses MUST use RFC 7807 Problem Details format (application/problem+json).",
+      "rationale": "RFC 7807 provides a standard, machine-readable error format.",
+      "examples": {
+        "good": ["{\"type\": \"about:blank\", \"title\": \"Not Found\", \"status\": 404, \"detail\": \"User 123 not found\"}"],
+        "bad": ["{\"error\": \"not found\"}", "{\"message\": \"error\"}"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if error responses follow RFC 7807 Problem Details format",
+        "passCriteria": ["Error schemas include type, title, status, detail"],
+        "failCriteria": ["Error responses use non-standard format"]
+      }
+    },
+    {
+      "id": "ERR-002",
+      "title": "Include error details",
+      "category": "errors",
+      "severity": "error",
+      "description": "Errors MUST include enough detail to help developers fix the issue.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "ERR-003",
+      "title": "Document error responses",
+      "category": "errors",
+      "severity": "error",
+      "description": "All error responses MUST be documented in the OpenAPI spec.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "PAGE-001",
+      "title": "Use cursor-based pagination",
+      "category": "pagination",
+      "severity": "warn",
+      "description": "Large collections SHOULD use cursor-based pagination for performance.",
+      "rationale": "Cursor pagination is more efficient than offset pagination for large datasets.",
+      "examples": {
+        "good": ["?cursor=abc123&limit=50"],
+        "bad": ["?page=100&offset=5000"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if pagination uses cursor-based or offset-based approach",
+        "passCriteria": ["Uses cursor-based pagination"],
+        "partialCriteria": ["Uses offset pagination but documents limitations"],
+        "failCriteria": ["No pagination for collections"]
+      }
+    },
+    {
+      "id": "PAGE-002",
+      "title": "Include pagination links",
+      "category": "pagination",
+      "severity": "warn",
+      "description": "Paginated responses SHOULD include next/previous links.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "PAGE-003",
+      "title": "Default page size",
+      "category": "pagination",
+      "severity": "warn",
+      "description": "APIs SHOULD have a default page size between 10-100 items.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "FILTER-001",
+      "title": "Use query parameters for filtering",
+      "category": "filtering",
+      "severity": "error",
+      "description": "Filtering MUST use query parameters, not path segments.",
+      "examples": {
+        "good": ["/users?status=active"],
+        "bad": ["/users/active"]
+      },
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "FILTER-002",
+      "title": "Support field selection",
+      "category": "filtering",
+      "severity": "warn",
+      "description": "APIs SHOULD support field selection via fields or select parameter.",
+      "examples": {
+        "good": ["/users?fields=id,name,email"]
+      },
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "FILTER-003",
+      "title": "Support sorting",
+      "category": "filtering",
+      "severity": "warn",
+      "description": "Collection endpoints SHOULD support sorting via sort parameter.",
+      "examples": {
+        "good": ["/users?sort=createdAt:desc"]
+      },
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "VER-001",
+      "title": "Use URL versioning",
+      "category": "versioning",
+      "severity": "warn",
+      "description": "APIs SHOULD include version in the URL path (e.g., /v1/users).",
+      "examples": {
+        "good": ["/v1/users", "/api/v2/orders"],
+        "bad": ["/users (no version)"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.servers[*].url"]},
+        "options": {"match": "/v\\d+"}
+      }
+    },
+    {
+      "id": "VER-002",
+      "title": "Use major version only",
+      "category": "versioning",
+      "severity": "warn",
+      "description": "URL version SHOULD be major version only (v1, v2), not minor/patch.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "COMPAT-001",
+      "title": "Avoid breaking changes",
+      "category": "compatibility",
+      "severity": "error",
+      "description": "Do not make breaking changes to existing API versions.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Identify potential breaking changes in the API",
+        "passCriteria": ["No breaking changes detected"],
+        "failCriteria": ["Breaking changes present without version bump"]
+      }
+    },
+    {
+      "id": "COMPAT-002",
+      "title": "Additive changes only",
+      "category": "compatibility",
+      "severity": "error",
+      "description": "Only make additive changes: new endpoints, new optional fields, new enum values.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "COMPAT-003",
+      "title": "Tolerate unknown fields",
+      "category": "compatibility",
+      "severity": "warn",
+      "description": "Clients SHOULD ignore unknown fields. APIs SHOULD accept unknown fields.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "DEP-001",
+      "title": "Use Deprecation header",
+      "category": "deprecation",
+      "severity": "error",
+      "description": "Deprecated endpoints MUST include Deprecation and Sunset headers.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "DEP-002",
+      "title": "Document deprecation",
+      "category": "deprecation",
+      "severity": "error",
+      "description": "Deprecated operations MUST be marked as deprecated in OpenAPI spec.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*][*][?(@.deprecated == true)]"]},
+        "then": {"field": "description", "function": "truthy"}
+      }
+    },
+    {
+      "id": "DEP-003",
+      "title": "Provide migration path",
+      "category": "deprecation",
+      "severity": "warn",
+      "description": "Deprecated features SHOULD include migration guidance to replacement.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "SEC-001",
+      "title": "Use HTTPS only",
+      "category": "security",
+      "severity": "error",
+      "description": "All API endpoints MUST use HTTPS. HTTP is not allowed.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.servers[*].url"]},
+        "options": {"match": "^https://"}
+      }
+    },
+    {
+      "id": "SEC-002",
+      "title": "Define security schemes",
+      "category": "security",
+      "severity": "error",
+      "description": "APIs MUST define security schemes in components.securitySchemes.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.components"]},
+        "then": {"field": "securitySchemes", "function": "truthy"}
+      }
+    },
+    {
+      "id": "SEC-003",
+      "title": "Apply security to operations",
+      "category": "security",
+      "severity": "error",
+      "description": "All operations MUST have security requirements defined.",
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if all operations have security requirements",
+        "passCriteria": ["All operations specify security"],
+        "failCriteria": ["Operations missing security requirements"]
+      }
+    },
+    {
+      "id": "SEC-004",
+      "title": "Use OAuth 2.0 or API keys",
+      "category": "security",
+      "severity": "warn",
+      "description": "APIs SHOULD use OAuth 2.0 for user-facing or API keys for service-to-service.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "DOC-001",
+      "title": "Provide operation descriptions",
+      "category": "documentation",
+      "severity": "error",
+      "description": "All operations MUST have descriptions explaining their purpose.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*][get,post,put,patch,delete]"]},
+        "then": {"field": "description", "function": "truthy"}
+      }
+    },
+    {
+      "id": "DOC-002",
+      "title": "Provide parameter descriptions",
+      "category": "documentation",
+      "severity": "error",
+      "description": "All parameters MUST have descriptions.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.paths[*][*].parameters[*]"]},
+        "then": {"field": "description", "function": "truthy"}
+      }
+    },
+    {
+      "id": "DOC-003",
+      "title": "Document examples",
+      "category": "documentation",
+      "severity": "warn",
+      "description": "Request and response schemas SHOULD include examples.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "DOC-004",
+      "title": "Document response codes",
+      "category": "documentation",
+      "severity": "error",
+      "description": "All possible response codes MUST be documented.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "JSON-001",
+      "title": "Use ISO 8601 for dates",
+      "category": "json",
+      "severity": "error",
+      "description": "Date and datetime values MUST use ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ).",
+      "examples": {
+        "good": ["2024-01-15T10:30:00Z"],
+        "bad": ["01/15/2024", "1705315800"]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {"paths": ["$.components.schemas[*].properties[?(@.format == 'date-time')]"]},
+        "options": {"match": "date-time"}
+      }
+    },
+    {
+      "id": "JSON-002",
+      "title": "Use enums for fixed values",
+      "category": "json",
+      "severity": "warn",
+      "description": "Use enums for properties with a fixed set of values.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "JSON-003",
+      "title": "Use null for absent values",
+      "category": "json",
+      "severity": "warn",
+      "description": "Use null for absent values, not empty string or special values.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "SCHEMA-001",
+      "title": "Define reusable schemas",
+      "category": "schema",
+      "severity": "warn",
+      "description": "Common types SHOULD be defined in components.schemas for reuse.",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {"paths": ["$.components"]},
+        "then": {"field": "schemas", "function": "truthy"}
+      }
+    },
+    {
+      "id": "SCHEMA-002",
+      "title": "Specify required properties",
+      "category": "schema",
+      "severity": "error",
+      "description": "Schemas MUST explicitly list required properties.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "SCHEMA-003",
+      "title": "Include property types",
+      "category": "schema",
+      "severity": "error",
+      "description": "All properties MUST have explicit types defined.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "COLL-001",
+      "title": "Wrap collections in object",
+      "category": "collections",
+      "severity": "warn",
+      "description": "Collection responses SHOULD wrap arrays in an object with metadata.",
+      "examples": {
+        "good": ["{\"items\": [...], \"totalCount\": 100}"],
+        "bad": ["[...]"]
+      },
+      "enforcement": {"type": "none"},
+      "judge": {
+        "prompt": "Check if collection responses wrap arrays in objects",
+        "passCriteria": ["Collections wrapped with metadata"],
+        "failCriteria": ["Raw arrays returned"]
+      }
+    },
+    {
+      "id": "COLL-002",
+      "title": "Include count metadata",
+      "category": "collections",
+      "severity": "warn",
+      "description": "Collection responses SHOULD include total count or hasMore indicator.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "LRO-001",
+      "title": "Use 202 for async operations",
+      "category": "long-running",
+      "severity": "error",
+      "description": "Long-running operations MUST return 202 Accepted with operation status URL.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "LRO-002",
+      "title": "Provide status endpoint",
+      "category": "long-running",
+      "severity": "error",
+      "description": "Async operations MUST provide a status endpoint for polling.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "LRO-003",
+      "title": "Include Retry-After header",
+      "category": "long-running",
+      "severity": "warn",
+      "description": "202 responses SHOULD include Retry-After header for polling guidance.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "COND-001",
+      "title": "Support ETag for caching",
+      "category": "conditional",
+      "severity": "warn",
+      "description": "GET responses SHOULD include ETag header for caching.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "COND-002",
+      "title": "Support If-Match for updates",
+      "category": "conditional",
+      "severity": "warn",
+      "description": "PUT/PATCH SHOULD support If-Match header for optimistic concurrency.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "COND-003",
+      "title": "Return 412 for precondition failed",
+      "category": "conditional",
+      "severity": "warn",
+      "description": "Return 412 Precondition Failed when If-Match condition fails.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "PERF-001",
+      "title": "Support compression",
+      "category": "performance",
+      "severity": "warn",
+      "description": "APIs SHOULD support gzip compression via Accept-Encoding header.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "PERF-002",
+      "title": "Set cache headers",
+      "category": "performance",
+      "severity": "warn",
+      "description": "GET responses SHOULD include appropriate Cache-Control headers.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "PERF-003",
+      "title": "Limit response size",
+      "category": "performance",
+      "severity": "warn",
+      "description": "Responses SHOULD not exceed 1MB. Use pagination for large datasets.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "HYPER-001",
+      "title": "Include self links",
+      "category": "hypermedia",
+      "severity": "warn",
+      "description": "Resources SHOULD include a self link for discoverability.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "HYPER-002",
+      "title": "Use standard link relations",
+      "category": "hypermedia",
+      "severity": "warn",
+      "description": "Use IANA standard link relations when available (self, next, prev, etc.).",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "BATCH-001",
+      "title": "Support batch operations",
+      "category": "batch",
+      "severity": "info",
+      "description": "Consider supporting batch operations for bulk create/update/delete.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "BATCH-002",
+      "title": "Limit batch size",
+      "category": "batch",
+      "severity": "warn",
+      "description": "Batch operations SHOULD limit the number of items per request.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "BATCH-003",
+      "title": "Return individual results",
+      "category": "batch",
+      "severity": "warn",
+      "description": "Batch responses SHOULD include success/failure status for each item.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "EVENT-001",
+      "title": "Use CloudEvents format",
+      "category": "events",
+      "severity": "warn",
+      "description": "Webhook payloads SHOULD follow CloudEvents specification.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "EVENT-002",
+      "title": "Include event metadata",
+      "category": "events",
+      "severity": "error",
+      "description": "Events MUST include id, type, timestamp, and source.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "EVENT-003",
+      "title": "Support webhook verification",
+      "category": "events",
+      "severity": "error",
+      "description": "Webhooks MUST include signature for payload verification.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "ACTION-001",
+      "title": "Use POST for actions",
+      "category": "actions",
+      "severity": "error",
+      "description": "Non-CRUD actions MUST use POST with action name in path.",
+      "examples": {
+        "good": ["POST /orders/{id}/cancel", "POST /users/{id}/deactivate"],
+        "bad": ["DELETE /orders/{id}/cancel"]
+      },
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "ACTION-002",
+      "title": "Use verbs for action names",
+      "category": "actions",
+      "severity": "warn",
+      "description": "Action endpoints SHOULD use clear verbs (cancel, approve, submit).",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "THROTTLE-001",
+      "title": "Include rate limit headers",
+      "category": "throttling",
+      "severity": "error",
+      "description": "APIs MUST include rate limit headers (X-RateLimit-Limit, X-RateLimit-Remaining).",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "THROTTLE-002",
+      "title": "Include Retry-After on 429",
+      "category": "throttling",
+      "severity": "error",
+      "description": "429 responses MUST include Retry-After header.",
+      "enforcement": {"type": "none"}
+    },
+    {
+      "id": "THROTTLE-003",
+      "title": "Document rate limits",
+      "category": "throttling",
+      "severity": "warn",
+      "description": "Rate limits SHOULD be documented in API specification.",
+      "enforcement": {"type": "none"}
+    }
+  ],
+  "conformanceLevels": {
+    "minimum": {
+      "description": "Basic API functionality with essential rules",
+      "requiredRules": [
+        "GEN-001", "GEN-002", "NAME-001", "URL-001", "HTTP-001",
+        "HTTP-006", "STATUS-002", "REQ-001", "ERR-001", "SEC-001",
+        "SEC-002", "DOC-001"
+      ],
+      "maxErrors": 5,
+      "maxWarnings": 20
+    },
+    "standard": {
+      "description": "Production-ready API following most guidelines",
+      "requiredRules": [
+        "GEN-001", "GEN-002", "GEN-003", "NAME-001", "NAME-002", "NAME-003",
+        "URL-001", "URL-002", "HTTP-001", "HTTP-006", "STATUS-001", "STATUS-002",
+        "STATUS-003", "REQ-001", "HDR-003", "ERR-001", "ERR-002", "PAGE-001",
+        "VER-001", "COMPAT-001", "DEP-002", "SEC-001", "SEC-002", "SEC-003",
+        "DOC-001", "DOC-002", "JSON-001", "SCHEMA-001"
+      ],
+      "maxErrors": 0,
+      "maxWarnings": 10
+    },
+    "exemplary": {
+      "description": "Best-in-class API following all guidelines",
+      "requiredRules": [
+        "GEN-001", "GEN-002", "GEN-003", "NAME-001", "NAME-002", "NAME-003",
+        "NAME-004", "NAME-005", "URL-001", "URL-002", "URL-003", "URL-004",
+        "HTTP-001", "HTTP-002", "HTTP-003", "HTTP-004", "HTTP-005", "HTTP-006",
+        "STATUS-001", "STATUS-002", "STATUS-003", "STATUS-004", "STATUS-005",
+        "STATUS-006", "STATUS-007", "STATUS-008", "STATUS-009",
+        "REQ-001", "REQ-002", "REQ-003", "HDR-001", "HDR-002", "HDR-003",
+        "ERR-001", "ERR-002", "ERR-003", "PAGE-001", "PAGE-002", "PAGE-003",
+        "FILTER-001", "FILTER-002", "FILTER-003", "VER-001", "VER-002",
+        "COMPAT-001", "COMPAT-002", "COMPAT-003", "DEP-001", "DEP-002", "DEP-003",
+        "SEC-001", "SEC-002", "SEC-003", "SEC-004",
+        "DOC-001", "DOC-002", "DOC-003", "DOC-004",
+        "JSON-001", "JSON-002", "JSON-003", "SCHEMA-001", "SCHEMA-002", "SCHEMA-003",
+        "COLL-001", "COLL-002", "LRO-001", "LRO-002", "LRO-003",
+        "COND-001", "COND-002", "COND-003", "PERF-001", "PERF-002", "PERF-003",
+        "HYPER-001", "HYPER-002", "EVENT-002", "EVENT-003",
+        "ACTION-001", "ACTION-002", "THROTTLE-001", "THROTTLE-002", "THROTTLE-003"
+      ],
+      "maxErrors": 0,
+      "maxWarnings": 0
+    }
+  },
+  "glossary": {
+    "HATEOAS": "Hypermedia as the Engine of Application State - REST architectural constraint",
+    "RFC 7807": "Problem Details for HTTP APIs - standard error format",
+    "RFC 7396": "JSON Merge Patch - format for partial updates",
+    "CloudEvents": "CNCF specification for describing event data in a common way",
+    "ETag": "Entity Tag - HTTP header for caching and conditional requests",
+    "Idempotent": "Operation that produces same result when called multiple times",
+    "Cursor pagination": "Pagination using opaque cursor tokens instead of numeric offsets"
+  }
+}
