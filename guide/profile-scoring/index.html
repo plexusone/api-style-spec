@@ -10,31 +10,31 @@
       
       
       
-        <link rel="canonical" href="https://api-style-spec.dev/specs/inception/MRD/">
+        <link rel="canonical" href="https://api-style-spec.dev/guide/profile-scoring/">
       
       
-        <link rel="prev" href="../../CONSTITUTION/">
+        <link rel="prev" href="../profile-comparison/">
       
       
-        <link rel="next" href="../PRD/">
+        <link rel="next" href="../documentation-generation/">
       
       
         
       
       
-      <link rel="icon" href="../../../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>MRD - api-style-spec</title>
+        <title>Profile Scoring - api-style-spec</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -55,7 +55,7 @@
     
       <link rel="stylesheet" href="https://plexusone.dev/css/plexusone-mkdocs.css">
     
-    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#market-requirements-document-mrd" class="md-skip">
+        <a href="#profile-scoring-coverage" class="md-skip">
           Skip to content
         </a>
       
@@ -101,7 +101,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="api-style-spec" class="md-header__button md-logo" aria-label="api-style-spec" data-md-component="logo">
+    <a href="../.." title="api-style-spec" class="md-header__button md-logo" aria-label="api-style-spec" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -121,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              MRD
+              Profile Scoring
             
           </span>
         </div>
@@ -238,7 +238,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="api-style-spec" class="md-nav__button md-logo" aria-label="api-style-spec" data-md-component="logo">
+    <a href="../.." title="api-style-spec" class="md-nav__button md-logo" aria-label="api-style-spec" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -268,7 +268,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -292,8 +292,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -304,13 +306,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -331,7 +331,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -349,7 +349,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../guide/getting-started/" class="md-nav__link">
+      <a href="../getting-started/" class="md-nav__link">
         
   
   
@@ -377,7 +377,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../guide/automated-api-governance/" class="md-nav__link">
+      <a href="../automated-api-governance/" class="md-nav__link">
         
   
   
@@ -405,7 +405,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../guide/ci-cd/" class="md-nav__link">
+      <a href="../ci-cd/" class="md-nav__link">
         
   
   
@@ -433,7 +433,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../guide/profiles/" class="md-nav__link">
+      <a href="../profiles/" class="md-nav__link">
         
   
   
@@ -461,7 +461,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../guide/profile-comparison/" class="md-nav__link">
+      <a href="../profile-comparison/" class="md-nav__link">
         
   
   
@@ -486,10 +486,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../guide/profile-scoring/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profile Scoring
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -505,6 +532,192 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scoring-a-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scoring a Profile
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quality-rubric-categories" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quality Rubric Categories
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#coverage-rubric-categories" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coverage Rubric Categories
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scoring-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scoring Levels
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Scoring Levels">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quality-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quality Score
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coverage-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coverage Score
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-profile-scores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current Profile Scores
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#improving-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Improving Coverage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Improving Coverage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-gaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Gaps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adding-missing-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding Missing Coverage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#programmatic-scoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Programmatic Scoring
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rubric-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rubric Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See Also
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -517,7 +730,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../guide/documentation-generation/" class="md-nav__link">
+      <a href="../documentation-generation/" class="md-nav__link">
         
   
   
@@ -545,7 +758,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../guide/custom-rules/" class="md-nav__link">
+      <a href="../custom-rules/" class="md-nav__link">
         
   
   
@@ -573,7 +786,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../guide/mcp-server/" class="md-nav__link">
+      <a href="../mcp-server/" class="md-nav__link">
         
   
   
@@ -662,7 +875,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/cli/" class="md-nav__link">
+      <a href="../../reference/cli/" class="md-nav__link">
         
   
   
@@ -690,7 +903,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/config/" class="md-nav__link">
+      <a href="../../reference/config/" class="md-nav__link">
         
   
   
@@ -718,7 +931,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/schema/" class="md-nav__link">
+      <a href="../../reference/schema/" class="md-nav__link">
         
   
   
@@ -746,7 +959,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/hooks/" class="md-nav__link">
+      <a href="../../reference/hooks/" class="md-nav__link">
         
   
   
@@ -835,7 +1048,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../profiles/default/" class="md-nav__link">
+      <a href="../../profiles/default/" class="md-nav__link">
         
   
   
@@ -863,7 +1076,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../profiles/comprehensive/" class="md-nav__link">
+      <a href="../../profiles/comprehensive/" class="md-nav__link">
         
   
   
@@ -891,7 +1104,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../profiles/minimal/" class="md-nav__link">
+      <a href="../../profiles/minimal/" class="md-nav__link">
         
   
   
@@ -919,7 +1132,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../profiles/azure/" class="md-nav__link">
+      <a href="../../profiles/azure/" class="md-nav__link">
         
   
   
@@ -947,7 +1160,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../profiles/google/" class="md-nav__link">
+      <a href="../../profiles/google/" class="md-nav__link">
         
   
   
@@ -975,7 +1188,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../profiles/microsoft-rest/" class="md-nav__link">
+      <a href="../../profiles/microsoft-rest/" class="md-nav__link">
         
   
   
@@ -1003,7 +1216,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../profiles/microsoft-graph/" class="md-nav__link">
+      <a href="../../profiles/microsoft-graph/" class="md-nav__link">
         
   
   
@@ -1031,7 +1244,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../profiles/zalando/" class="md-nav__link">
+      <a href="../../profiles/zalando/" class="md-nav__link">
         
   
   
@@ -1063,8 +1276,6 @@
       
   
   
-    
-  
   
   
     
@@ -1077,11 +1288,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
@@ -1102,7 +1315,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1120,7 +1333,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../CONSTITUTION/" class="md-nav__link">
+      <a href="../../specs/CONSTITUTION/" class="md-nav__link">
         
   
   
@@ -1145,37 +1358,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    MRD
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../specs/inception/MRD/" class="md-nav__link">
         
   
   
@@ -1191,275 +1377,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#api-style-spec" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        api-style-spec
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#executive-summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Executive Summary
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#market-context" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Market Context
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Market Context">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-problem" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The Problem
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#market-opportunity" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Market Opportunity
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#competitive-landscape" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Competitive Landscape
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#target-users" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Target Users
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Target Users">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#primary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Primary
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#secondary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Secondary
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#market-requirements" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Market Requirements
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Market Requirements">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#mr-1-machine-readable-style-specification" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MR-1: Machine-Readable Style Specification
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mr-2-deterministic-linting" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MR-2: Deterministic Linting
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mr-3-llm-based-evaluation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MR-3: LLM-Based Evaluation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mr-4-human-readable-documentation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MR-4: Human-Readable Documentation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mr-5-ai-agent-integration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MR-5: AI Agent Integration
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mr-6-web-based-analysis" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MR-6: Web-Based Analysis
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mr-7-observability-and-trends" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MR-7: Observability and Trends
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#success-metrics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Success Metrics
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#constraints" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Constraints
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#timeline" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Timeline
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#references" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        References
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1472,7 +1389,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../PRD/" class="md-nav__link">
+      <a href="../../specs/inception/PRD/" class="md-nav__link">
         
   
   
@@ -1500,7 +1417,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../TRD/" class="md-nav__link">
+      <a href="../../specs/inception/TRD/" class="md-nav__link">
         
   
   
@@ -1528,7 +1445,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ROADMAP/" class="md-nav__link">
+      <a href="../../specs/inception/ROADMAP/" class="md-nav__link">
         
   
   
@@ -1617,7 +1534,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../releases/changelog/" class="md-nav__link">
+      <a href="../../releases/changelog/" class="md-nav__link">
         
   
   
@@ -1645,7 +1562,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../releases/v0.3.0/" class="md-nav__link">
+      <a href="../../releases/v0.3.0/" class="md-nav__link">
         
   
   
@@ -1673,7 +1590,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../releases/v0.2.0/" class="md-nav__link">
+      <a href="../../releases/v0.2.0/" class="md-nav__link">
         
   
   
@@ -1701,7 +1618,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../releases/v0.1.0/" class="md-nav__link">
+      <a href="../../releases/v0.1.0/" class="md-nav__link">
         
   
   
@@ -1756,10 +1673,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#api-style-spec" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        api-style-spec
+        Overview
       
     </span>
   </a>
@@ -1767,10 +1684,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#executive-summary" class="md-nav__link">
+  <a href="#scoring-a-profile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Executive Summary
+        Scoring a Profile
       
     </span>
   </a>
@@ -1778,22 +1695,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#market-context" class="md-nav__link">
+  <a href="#quality-rubric-categories" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Market Context
+        Quality Rubric Categories
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Market Context">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#coverage-rubric-categories" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coverage Rubric Categories
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scoring-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scoring Levels
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Scoring Levels">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#the-problem" class="md-nav__link">
+  <a href="#quality-score" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Problem
+        Quality Score
       
     </span>
   </a>
@@ -1801,21 +1740,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#market-opportunity" class="md-nav__link">
+  <a href="#coverage-score" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Market Opportunity
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#competitive-landscape" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Competitive Landscape
+        Coverage Score
       
     </span>
   </a>
@@ -1828,22 +1756,33 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#target-users" class="md-nav__link">
+  <a href="#current-profile-scores" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Target Users
+        Current Profile Scores
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Target Users">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#improving-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Improving Coverage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Improving Coverage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#primary" class="md-nav__link">
+  <a href="#common-gaps" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Primary
+        Common Gaps
       
     </span>
   </a>
@@ -1851,10 +1790,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#secondary" class="md-nav__link">
+  <a href="#adding-missing-coverage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Secondary
+        Adding Missing Coverage
       
     </span>
   </a>
@@ -1867,104 +1806,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#market-requirements" class="md-nav__link">
+  <a href="#programmatic-scoring" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Market Requirements
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Market Requirements">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#mr-1-machine-readable-style-specification" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MR-1: Machine-Readable Style Specification
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mr-2-deterministic-linting" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MR-2: Deterministic Linting
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mr-3-llm-based-evaluation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MR-3: LLM-Based Evaluation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mr-4-human-readable-documentation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MR-4: Human-Readable Documentation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mr-5-ai-agent-integration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MR-5: AI Agent Integration
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mr-6-web-based-analysis" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MR-6: Web-Based Analysis
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mr-7-observability-and-trends" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MR-7: Observability and Trends
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#success-metrics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Success Metrics
+        Programmatic Scoring
       
     </span>
   </a>
@@ -1972,10 +1817,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#constraints" class="md-nav__link">
+  <a href="#rubric-files" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Constraints
+        Rubric Files
       
     </span>
   </a>
@@ -1983,21 +1828,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#timeline" class="md-nav__link">
+  <a href="#see-also" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Timeline
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#references" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        References
+        See Also
       
     </span>
   </a>
@@ -2024,263 +1858,360 @@
   
 
 
-<h1 id="market-requirements-document-mrd">Market Requirements Document (MRD)<a class="headerlink" href="#market-requirements-document-mrd" title="Permanent link">&para;</a></h1>
-<h2 id="api-style-spec">api-style-spec<a class="headerlink" href="#api-style-spec" title="Permanent link">&para;</a></h2>
-<p><strong>Version:</strong> 0.1.0-draft
-<strong>Date:</strong> 2026-06-03
-<strong>Status:</strong> Draft</p>
-<h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">&para;</a></h2>
-<p>API style guides from Microsoft, Google, and Zalando have become industry standards, but they exist only as human-readable documents. Organizations struggle to enforce these guidelines consistently across teams, tools, and AI agents. <strong>api-style-spec</strong> creates a machine-readable specification format that serves as the single source of truth, generating human documentation, linting rules, LLM evaluation rubrics, and agent instructions from one canonical definition.</p>
-<h2 id="market-context">Market Context<a class="headerlink" href="#market-context" title="Permanent link">&para;</a></h2>
-<h3 id="the-problem">The Problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h3>
-<ol>
-<li><strong>Fragmented Enforcement</strong> - Style guides exist as Markdown/HTML documents separate from the Spectral rules that partially enforce them</li>
-<li><strong>Incomplete Coverage</strong> - Spectral can only lint ~40% of typical style guide rules; semantic and architectural guidance requires human review</li>
-<li><strong>AI Agent Gap</strong> - Claude Code, Kiro, Codex, and other AI coding assistants lack structured API design knowledge</li>
-<li><strong>Inconsistent Tooling</strong> - Teams maintain separate configurations for CI linters, IDE hints, and documentation</li>
-<li><strong>No Historical Tracking</strong> - Organizations cannot measure API quality trends over time</li>
-</ol>
-<h3 id="market-opportunity">Market Opportunity<a class="headerlink" href="#market-opportunity" title="Permanent link">&para;</a></h3>
+<h1 id="profile-scoring-coverage">Profile Scoring &amp; Coverage<a class="headerlink" href="#profile-scoring-coverage" title="Permanent link">&para;</a></h1>
+<p>api-style-spec includes tools to evaluate the quality and coverage of API style guides using LLM-as-a-Judge.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>Two rubrics are available for evaluating style guides:</p>
 <table>
 <thead>
 <tr>
-<th>Segment</th>
-<th>Need</th>
-<th>Current Solution</th>
-<th>Gap</th>
+<th>Rubric</th>
+<th>Purpose</th>
+<th>Categories</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Platform Teams</td>
-<td>Enforce API standards</td>
-<td>Spectral + manual review</td>
-<td>No LLM evaluation, no agent integration</td>
+<td><strong>Style Guide Quality</strong></td>
+<td>Evaluates structure, clarity, examples</td>
+<td>9</td>
 </tr>
 <tr>
-<td>API Designers</td>
-<td>Learn and apply guidelines</td>
-<td>Read documentation</td>
-<td>No interactive feedback</td>
-</tr>
-<tr>
-<td>AI Agents</td>
-<td>Design compliant APIs</td>
-<td>None</td>
-<td>No structured knowledge</td>
-</tr>
-<tr>
-<td>Governance</td>
-<td>Track compliance trends</td>
-<td>Manual audits</td>
-<td>No automated reporting</td>
+<td><strong>API Coverage</strong></td>
+<td>Evaluates topic completeness</td>
+<td>8</td>
 </tr>
 </tbody>
 </table>
-<h3 id="competitive-landscape">Competitive Landscape<a class="headerlink" href="#competitive-landscape" title="Permanent link">&para;</a></h3>
+<h2 id="scoring-a-profile">Scoring a Profile<a class="headerlink" href="#scoring-a-profile" title="Permanent link">&para;</a></h2>
+<p>Use the <code>score-profile</code> command to evaluate any profile:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Score a built-in profile</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>api-style<span class="w"> </span>score-profile<span class="w"> </span>comprehensive
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Score with JSON output</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>api-style<span class="w"> </span>score-profile<span class="w"> </span>zalando<span class="w"> </span>--format<span class="w"> </span>json
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Score a custom profile file</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>api-style<span class="w"> </span>score-profile<span class="w"> </span>./my-profile.json
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># Use a specific model</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>api-style<span class="w"> </span>score-profile<span class="w"> </span>microsoft-rest<span class="w"> </span>--model<span class="w"> </span>claude-sonnet-4
+</code></pre></div>
+<h2 id="quality-rubric-categories">Quality Rubric Categories<a class="headerlink" href="#quality-rubric-categories" title="Permanent link">&para;</a></h2>
+<p>The <strong>Style Guide Quality Rubric</strong> evaluates how well a style guide is written:</p>
 <table>
 <thead>
 <tr>
-<th>Solution</th>
-<th>Strengths</th>
-<th>Limitations</th>
+<th>Category</th>
+<th>Weight</th>
+<th>What It Measures</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Spectral</td>
-<td>Industry standard, extensible</td>
-<td>Slow, no LLM, CLI-only</td>
+<td>Content Coverage</td>
+<td>1.0</td>
+<td>Covers 6 essential domains</td>
 </tr>
 <tr>
-<td>vacuum</td>
-<td>Fast, Go library</td>
-<td>No style guide generation</td>
+<td>Rule Quality &amp; Clarity</td>
+<td>1.0</td>
+<td>Clear, actionable rules</td>
 </tr>
 <tr>
-<td>Optic</td>
-<td>API diff/changelog</td>
-<td>No style enforcement</td>
+<td>Structure &amp; Navigation</td>
+<td>0.9</td>
+<td>Organization and findability</td>
 </tr>
 <tr>
-<td>Redocly</td>
-<td>Documentation focus</td>
-<td>Limited linting</td>
+<td>Internal Consistency</td>
+<td>0.9</td>
+<td>No contradictions</td>
 </tr>
 <tr>
-<td><strong>api-style-spec</strong></td>
-<td>Unified spec, LLM+lint, multi-platform</td>
-<td>New entrant</td>
+<td>Completeness &amp; Depth</td>
+<td>0.8</td>
+<td>Edge cases, complex scenarios</td>
+</tr>
+<tr>
+<td>Examples &amp; Code Samples</td>
+<td>0.8</td>
+<td>Good/bad examples</td>
+</tr>
+<tr>
+<td>Enforceability &amp; Tooling</td>
+<td>0.7</td>
+<td>Linting support</td>
+</tr>
+<tr>
+<td>Guide Versioning</td>
+<td>0.6</td>
+<td>Changelog, deprecation</td>
+</tr>
+<tr>
+<td>Accessibility &amp; Tone</td>
+<td>0.5</td>
+<td>Appropriate for audience</td>
 </tr>
 </tbody>
 </table>
-<h2 id="target-users">Target Users<a class="headerlink" href="#target-users" title="Permanent link">&para;</a></h2>
-<h3 id="primary">Primary<a class="headerlink" href="#primary" title="Permanent link">&para;</a></h3>
-<ol>
-<li><strong>Platform Engineers</strong> - Define and enforce API standards across organization</li>
-<li><strong>API Designers</strong> - Learn guidelines, get feedback during design</li>
-<li><strong>AI Agent Developers</strong> - Embed API design knowledge into agents</li>
-</ol>
-<h3 id="secondary">Secondary<a class="headerlink" href="#secondary" title="Permanent link">&para;</a></h3>
-<ol>
-<li><strong>Technical Writers</strong> - Generate consistent API documentation</li>
-<li><strong>Security Teams</strong> - Enforce security-related API patterns</li>
-<li><strong>Compliance Officers</strong> - Audit API conformance for regulatory requirements</li>
-</ol>
-<h2 id="market-requirements">Market Requirements<a class="headerlink" href="#market-requirements" title="Permanent link">&para;</a></h2>
-<h3 id="mr-1-machine-readable-style-specification">MR-1: Machine-Readable Style Specification<a class="headerlink" href="#mr-1-machine-readable-style-specification" title="Permanent link">&para;</a></h3>
-<p><strong>Need:</strong> Organizations need a canonical, version-controlled format for API style rules that machines can consume.</p>
-<p><strong>Acceptance Criteria:</strong></p>
-<ul>
-<li>JSON format with JSON Schema validation</li>
-<li>Covers all rule types: syntax, structural, semantic, architectural</li>
-<li>Supports severity levels, rationale, examples</li>
-<li>Extensible via profiles and custom rules</li>
-</ul>
-<h3 id="mr-2-deterministic-linting">MR-2: Deterministic Linting<a class="headerlink" href="#mr-2-deterministic-linting" title="Permanent link">&para;</a></h3>
-<p><strong>Need:</strong> Fast, consistent, CI-friendly linting that catches objective violations.</p>
-<p><strong>Acceptance Criteria:</strong></p>
-<ul>
-<li>Sub-second linting for typical specs (&lt;1MB)</li>
-<li>Spectral-compatible ruleset format</li>
-<li>CI exit codes (0=pass, 1=violations, 2=error)</li>
-<li>Multiple output formats (JSON, SARIF, text)</li>
-</ul>
-<h3 id="mr-3-llm-based-evaluation">MR-3: LLM-Based Evaluation<a class="headerlink" href="#mr-3-llm-based-evaluation" title="Permanent link">&para;</a></h3>
-<p><strong>Need:</strong> Evaluate semantic and architectural guidance that cannot be linted deterministically.</p>
-<p><strong>Acceptance Criteria:</strong></p>
-<ul>
-<li>Rubric-based evaluation with categorical scoring</li>
-<li>Findings with severity and remediation</li>
-<li>Reproducible results (temperature=0, prompt versioning)</li>
-<li>Cost-effective (target &lt;$0.05 per evaluation)</li>
-</ul>
-<h3 id="mr-4-human-readable-documentation">MR-4: Human-Readable Documentation<a class="headerlink" href="#mr-4-human-readable-documentation" title="Permanent link">&para;</a></h3>
-<p><strong>Need:</strong> Generate clear, well-organized style guides that humans can read and learn from.</p>
-<p><strong>Acceptance Criteria:</strong></p>
-<ul>
-<li>Markdown output with proper structure</li>
-<li>PDF export for offline/print use</li>
-<li>Searchable, categorized rules</li>
-<li>Good/bad examples for each rule</li>
-</ul>
-<h3 id="mr-5-ai-agent-integration">MR-5: AI Agent Integration<a class="headerlink" href="#mr-5-ai-agent-integration" title="Permanent link">&para;</a></h3>
-<p><strong>Need:</strong> Embed API style knowledge into AI coding assistants.</p>
-<p><strong>Acceptance Criteria:</strong></p>
-<ul>
-<li>Claude Code agent definitions</li>
-<li>Kiro CLI agent definitions</li>
-<li>MCP server for IDE integration</li>
-<li>Structured prompts optimized for LLM consumption</li>
-</ul>
-<h3 id="mr-6-web-based-analysis">MR-6: Web-Based Analysis<a class="headerlink" href="#mr-6-web-based-analysis" title="Permanent link">&para;</a></h3>
-<p><strong>Need:</strong> Allow ad-hoc evaluation without CLI installation.</p>
-<p><strong>Acceptance Criteria:</strong></p>
-<ul>
-<li>URL-based spec input</li>
-<li>Interactive results display</li>
-<li>Export to JSON/PDF</li>
-<li>No server-side storage of specs (privacy)</li>
-</ul>
-<h3 id="mr-7-observability-and-trends">MR-7: Observability and Trends<a class="headerlink" href="#mr-7-observability-and-trends" title="Permanent link">&para;</a></h3>
-<p><strong>Need:</strong> Track API quality over time for governance and improvement.</p>
-<p><strong>Acceptance Criteria:</strong></p>
-<ul>
-<li>Historical evaluation storage</li>
-<li>Trend visualization</li>
-<li>DevOps integration (Datadog, etc.)</li>
-<li>Compliance reporting</li>
-</ul>
-<h2 id="success-metrics">Success Metrics<a class="headerlink" href="#success-metrics" title="Permanent link">&para;</a></h2>
+<h2 id="coverage-rubric-categories">Coverage Rubric Categories<a class="headerlink" href="#coverage-rubric-categories" title="Permanent link">&para;</a></h2>
+<p>The <strong>API Coverage Rubric</strong> evaluates what topics are addressed:</p>
 <table>
 <thead>
 <tr>
-<th>Metric</th>
-<th>Target</th>
-<th>Measurement</th>
+<th>Category</th>
+<th>Weight</th>
+<th>Required</th>
+<th>Topics</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Lint Performance</td>
-<td>&lt;500ms for 1MB spec</td>
-<td>Benchmark suite</td>
+<td>Fundamentals</td>
+<td>1.0</td>
+<td>Yes</td>
+<td>general, naming, urls, http-methods, http-status</td>
 </tr>
 <tr>
-<td>Rule Coverage</td>
-<td>80% of Microsoft guidelines</td>
-<td>Rule mapping audit</td>
+<td>Request/Response</td>
+<td>0.9</td>
+<td>Yes</td>
+<td>request-response, headers, errors, json, schema</td>
 </tr>
 <tr>
-<td>LLM Accuracy</td>
-<td>90% agreement with human review</td>
-<td>Calibration study</td>
+<td>Collections &amp; Querying</td>
+<td>0.8</td>
+<td>Yes</td>
+<td>pagination, filtering, collections</td>
 </tr>
 <tr>
-<td>Adoption</td>
-<td>100+ GitHub stars in 6 months</td>
-<td>GitHub metrics</td>
+<td>API Lifecycle</td>
+<td>0.8</td>
+<td>Yes</td>
+<td>versioning, compatibility, deprecation</td>
 </tr>
 <tr>
-<td>Agent Effectiveness</td>
-<td>50% reduction in API review cycles</td>
-<td>User survey</td>
+<td>Security</td>
+<td>1.0</td>
+<td>Yes</td>
+<td>authentication, authorization, HTTPS</td>
+</tr>
+<tr>
+<td>Documentation</td>
+<td>0.7</td>
+<td>No</td>
+<td>OpenAPI requirements, examples</td>
+</tr>
+<tr>
+<td>Advanced Patterns</td>
+<td>0.6</td>
+<td>No</td>
+<td>long-running, conditional, batch, actions</td>
+</tr>
+<tr>
+<td>Ecosystem</td>
+<td>0.5</td>
+<td>No</td>
+<td>events, hypermedia, performance, throttling</td>
 </tr>
 </tbody>
 </table>
-<h2 id="constraints">Constraints<a class="headerlink" href="#constraints" title="Permanent link">&para;</a></h2>
-<ol>
-<li><strong>Open Source</strong> - MIT license, public repository</li>
-<li><strong>Privacy</strong> - No server-side spec storage in web UI</li>
-<li><strong>Cost</strong> - LLM evaluation must be cost-effective (&lt;$0.10/spec)</li>
-<li><strong>Performance</strong> - Deterministic lint &lt;1s, LLM evaluation &lt;30s</li>
-<li><strong>Compatibility</strong> - Must consume existing Spectral rulesets</li>
-</ol>
-<h2 id="timeline">Timeline<a class="headerlink" href="#timeline" title="Permanent link">&para;</a></h2>
+<h2 id="scoring-levels">Scoring Levels<a class="headerlink" href="#scoring-levels" title="Permanent link">&para;</a></h2>
+<h3 id="quality-score">Quality Score<a class="headerlink" href="#quality-score" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>Phase</th>
-<th>Duration</th>
-<th>Focus</th>
+<th>Level</th>
+<th>Score</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Phase 1</td>
-<td>4 weeks</td>
-<td>Core types, vacuum integration, CLI</td>
+<td>Excellent</td>
+<td>4.5+</td>
+<td>Best-in-class guide</td>
 </tr>
 <tr>
-<td>Phase 2</td>
-<td>4 weeks</td>
-<td>LLM evaluation, profiles</td>
+<td>Good</td>
+<td>3.5-4.4</td>
+<td>Production-ready</td>
 </tr>
 <tr>
-<td>Phase 3</td>
-<td>4 weeks</td>
-<td>Web UI, MCP server</td>
+<td>Adequate</td>
+<td>2.5-3.4</td>
+<td>Usable with gaps</td>
 </tr>
 <tr>
-<td>Phase 4</td>
-<td>4 weeks</td>
-<td>Agents, observability</td>
+<td>Minimal</td>
+<td>1.5-2.4</td>
+<td>Basic only</td>
 </tr>
 <tr>
-<td>Phase 5</td>
-<td>Ongoing</td>
-<td>Profiles, community, polish</td>
+<td>Insufficient</td>
+<td>&lt;1.5</td>
+<td>Major gaps</td>
 </tr>
 </tbody>
 </table>
-<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<h3 id="coverage-score">Coverage Score<a class="headerlink" href="#coverage-score" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Score</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Comprehensive</td>
+<td>90%+</td>
+<td>All topics covered</td>
+</tr>
+<tr>
+<td>Strong</td>
+<td>70-89%</td>
+<td>Most topics covered</td>
+</tr>
+<tr>
+<td>Moderate</td>
+<td>50-69%</td>
+<td>Core topics covered</td>
+</tr>
+<tr>
+<td>Limited</td>
+<td>30-49%</td>
+<td>Significant gaps</td>
+</tr>
+<tr>
+<td>Minimal</td>
+<td>&lt;30%</td>
+<td>Major gaps</td>
+</tr>
+</tbody>
+</table>
+<h2 id="current-profile-scores">Current Profile Scores<a class="headerlink" href="#current-profile-scores" title="Permanent link">&para;</a></h2>
+<p>Based on LLM evaluation:</p>
+<table>
+<thead>
+<tr>
+<th>Profile</th>
+<th>Quality</th>
+<th>Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>comprehensive</td>
+<td>4.8</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>default</td>
+<td>4.7</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>zalando</td>
+<td>4.7</td>
+<td>75%</td>
+</tr>
+<tr>
+<td>microsoft-rest</td>
+<td>4.7</td>
+<td>70%</td>
+</tr>
+<tr>
+<td>microsoft-graph</td>
+<td>4.2</td>
+<td>40%</td>
+</tr>
+<tr>
+<td>azure</td>
+<td>3.8</td>
+<td>45%</td>
+</tr>
+<tr>
+<td>google</td>
+<td>3.5</td>
+<td>35%</td>
+</tr>
+<tr>
+<td>minimal</td>
+<td>3.0</td>
+<td>30%</td>
+</tr>
+</tbody>
+</table>
+<h2 id="improving-coverage">Improving Coverage<a class="headerlink" href="#improving-coverage" title="Permanent link">&para;</a></h2>
+<p>To identify gaps in your profile:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Get detailed scoring report</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>api-style<span class="w"> </span>score-profile<span class="w"> </span>my-profile<span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span>&gt;<span class="w"> </span>report.json
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># View categories with low scores</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>jq<span class="w"> </span><span class="s1">&#39;.categories[] | select(.numericScore &lt; 4)&#39;</span><span class="w"> </span>report.json
+</code></pre></div>
+<h3 id="common-gaps">Common Gaps<a class="headerlink" href="#common-gaps" title="Permanent link">&para;</a></h3>
+<p>Most profiles are missing:</p>
+<ol>
+<li><strong>Events/Webhooks</strong> - Only Zalando covers thoroughly</li>
+<li><strong>Deprecation</strong> - Often overlooked</li>
+<li><strong>Conditional Requests</strong> - ETags, optimistic concurrency</li>
+<li><strong>Batch Operations</strong> - Bulk create/update patterns</li>
+<li><strong>Performance</strong> - Caching, compression guidance</li>
+</ol>
+<h3 id="adding-missing-coverage">Adding Missing Coverage<a class="headerlink" href="#adding-missing-coverage" title="Permanent link">&para;</a></h3>
+<p>Extend your profile with custom rules:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># custom-rules.yaml</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">rules</span><span class="p">:</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CUSTOM-EVENT-001</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Use CloudEvents format</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">category</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">events</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warn</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Webhook payloads SHOULD follow CloudEvents spec.</span>
+</code></pre></div>
+<h2 id="programmatic-scoring">Programmatic Scoring<a class="headerlink" href="#programmatic-scoring" title="Permanent link">&para;</a></h2>
+<p>The scoring rubrics are JSON files that can be used programmatically:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span><span class="w"> </span><span class="s">&quot;github.com/plexusone/api-style-spec/pkg/judge&quot;</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1">// Load quality rubric</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nx">rubric</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">judge</span><span class="p">.</span><span class="nx">LoadStyleGuideRubric</span><span class="p">()</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1">// Create evaluator</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="nx">evaluator</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">judge</span><span class="p">.</span><span class="nx">NewStyleGuideEvaluator</span><span class="p">(</span><span class="nx">provider</span><span class="p">)</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c1">// Score a profile</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="nx">report</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">evaluator</span><span class="p">.</span><span class="nx">Evaluate</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">spec</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span><span class="p">)</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Score: %.1f/5.0\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">report</span><span class="p">.</span><span class="nx">OverallScore</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="rubric-files">Rubric Files<a class="headerlink" href="#rubric-files" title="Permanent link">&para;</a></h2>
+<p>The rubric JSON files are located in <code>schema/</code>:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>style-guide-quality.rubric.json</code></td>
+<td>Quality evaluation</td>
+</tr>
+<tr>
+<td><code>api-coverage.rubric.json</code></td>
+<td>Coverage evaluation</td>
+</tr>
+</tbody>
+</table>
+<p>These follow the <a href="https://github.com/grokify/structured-evaluation">structured-evaluation</a> rubric schema.</p>
+<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="https://github.com/microsoft/api-guidelines">Microsoft REST API Guidelines</a></li>
-<li><a href="https://github.com/Azure/azure-api-style-guide">Azure API Style Guide (Spectral)</a></li>
-<li><a href="https://cloud.google.com/apis/design">Google API Design Guide</a></li>
-<li><a href="https://opensource.zalando.com/restful-api-guidelines/">Zalando RESTful API Guidelines</a></li>
-<li><a href="https://github.com/daveshanley/vacuum">vacuum</a></li>
-<li><a href="https://github.com/stoplightio/spectral">Spectral</a></li>
+<li><a href="../profile-comparison/">Profile Comparison</a> - Compare all profiles</li>
+<li><a href="../profiles/">Using Profiles</a> - Basic profile usage</li>
+<li><a href="../custom-rules/">Custom Rules</a> - Extend profiles</li>
 </ul>
 
 
@@ -2353,10 +2284,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
