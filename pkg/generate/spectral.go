@@ -130,23 +130,29 @@ func writeSpectralRule(sb *strings.Builder, rule types.Rule, opts *SpectralOptio
 }
 
 func writeThen(sb *strings.Builder, enf *types.Enforcement) {
-	// Field (if specified in Then)
-	if enf.Then != nil && enf.Then.Field != "" {
-		fmt.Fprintf(sb, "      field: %q\n", enf.Then.Field)
-	}
-
-	// Function
+	// Determine the function
 	function := enf.Function
 	if enf.Then != nil && enf.Then.Function != "" {
 		function = enf.Then.Function
 	}
+
+	// Field (if specified in Then)
+	if enf.Then != nil && enf.Then.Field != "" {
+		fmt.Fprintf(sb, "      field: %q\n", enf.Then.Field)
+	} else if isBooleanFunction(function) && enf.Options != nil && enf.Options.Match != "" {
+		// For truthy/falsy functions, options.match should be output as field
+		// (match is only valid for pattern function)
+		fmt.Fprintf(sb, "      field: %q\n", enf.Options.Match)
+	}
+
+	// Function
 	if function != "" {
 		fmt.Fprintf(sb, "      function: %s\n", function)
 	}
 
-	// Function options
+	// Function options (not for boolean functions that use field)
 	if enf.Options != nil {
-		writeFunctionOptions(sb, enf.Options)
+		writeFunctionOptions(sb, enf.Options, function)
 	} else if enf.Then != nil && enf.Then.FunctionOptions != nil {
 		sb.WriteString("      functionOptions:\n")
 		for k, v := range enf.Then.FunctionOptions {
@@ -155,8 +161,17 @@ func writeThen(sb *strings.Builder, enf *types.Enforcement) {
 	}
 }
 
-func writeFunctionOptions(sb *strings.Builder, opts *types.EnforcementOptions) {
-	hasOptions := opts.Match != "" || opts.NotMatch != "" ||
+// isBooleanFunction returns true for functions that check existence (truthy/falsy)
+// These functions don't use match/notMatch - they use field to specify the target.
+func isBooleanFunction(function string) bool {
+	return function == "truthy" || function == "falsy" || function == "defined" || function == "undefined"
+}
+
+func writeFunctionOptions(sb *strings.Builder, opts *types.EnforcementOptions, function string) {
+	// For boolean functions (truthy/falsy), match is handled as field, not functionOptions
+	skipMatch := isBooleanFunction(function)
+
+	hasOptions := (!skipMatch && opts.Match != "") || opts.NotMatch != "" ||
 		opts.Min != nil || opts.Max != nil ||
 		len(opts.Values) > 0 || opts.Type != ""
 
@@ -166,7 +181,7 @@ func writeFunctionOptions(sb *strings.Builder, opts *types.EnforcementOptions) {
 
 	sb.WriteString("      functionOptions:\n")
 
-	if opts.Match != "" {
+	if opts.Match != "" && !skipMatch {
 		fmt.Fprintf(sb, "        match: %q\n", opts.Match)
 	}
 	if opts.NotMatch != "" {

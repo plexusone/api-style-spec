@@ -256,6 +256,46 @@ func TestSpectral_MultipleGivenPaths(t *testing.T) {
 	}
 }
 
+// TestSpectral_TruthyWithMatch verifies that truthy function uses 'field'
+// instead of 'functionOptions.match' when options.match is set.
+// This is the correct Spectral format per the spec.
+func TestSpectral_TruthyWithMatch(t *testing.T) {
+	spec := &types.APIStyleSpec{
+		Name: "Test",
+		Rules: []types.Rule{
+			{
+				ID:       "INFO-001",
+				Title:    "API must have title",
+				Category: "general",
+				Severity: types.SeverityError,
+				Enforcement: &types.Enforcement{
+					Type:     types.EnforcementSpectral,
+					Function: "truthy",
+					Given:    types.NewGivenPath("$.info"),
+					Options: &types.EnforcementOptions{
+						Match: "title", // This should become field, not functionOptions.match
+					},
+				},
+			},
+		},
+	}
+
+	yaml, err := Spectral(spec, nil)
+	if err != nil {
+		t.Fatalf("Spectral() error = %v", err)
+	}
+
+	// Should have field: "title"
+	if !strings.Contains(yaml, `field: "title"`) {
+		t.Error("truthy function with options.match should output 'field', not 'functionOptions.match'")
+	}
+
+	// Should NOT have functionOptions.match
+	if strings.Contains(yaml, "functionOptions:") && strings.Contains(yaml, `match: "title"`) {
+		t.Error("truthy function should not have functionOptions.match - match should be field")
+	}
+}
+
 func TestGroupRulesByCategory(t *testing.T) {
 	rules := []types.Rule{
 		{ID: "A-001", Category: "cat-a"},
