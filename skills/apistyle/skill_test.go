@@ -397,7 +397,7 @@ func TestExplainRuleTool(t *testing.T) {
 	}
 
 	result, err := explainRuleTool.Call(context.Background(), map[string]any{
-		"rule_id": "URI-001",
+		"rule_id": "PO-001",
 		"profile": "default",
 	})
 
@@ -410,8 +410,8 @@ func TestExplainRuleTool(t *testing.T) {
 		t.Fatal("expected map result")
 	}
 
-	if resultMap["id"] != "URI-001" {
-		t.Errorf("expected id 'URI-001', got %v", resultMap["id"])
+	if resultMap["id"] != "PO-001" {
+		t.Errorf("expected id 'PO-001', got %v", resultMap["id"])
 	}
 
 	if _, ok := resultMap["title"]; !ok {

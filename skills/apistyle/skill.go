@@ -95,7 +95,7 @@ func (s *Skill) lintTool() skill.Tool {
 			},
 			"profile": {
 				Type:        "string",
-				Description: "Style profile to use (default, azure, google, zalando)",
+				Description: "Style profile to use (default, minimal, comprehensive, azure, google, microsoft-rest, microsoft-graph, zalando)",
 				Required:    false,
 				Default:     "default",
 			},
@@ -142,7 +142,7 @@ func (s *Skill) evaluateTool() skill.Tool {
 			},
 			"profile": {
 				Type:        "string",
-				Description: "Style profile to use (default, azure, google, zalando)",
+				Description: "Style profile to use (default, minimal, comprehensive, azure, google, microsoft-rest, microsoft-graph, zalando)",
 				Required:    false,
 				Default:     "default",
 			},
@@ -211,7 +211,7 @@ func (s *Skill) analyzeTool() skill.Tool {
 			},
 			"profile": {
 				Type:        "string",
-				Description: "Style profile to use (default, azure, google, zalando)",
+				Description: "Style profile to use (default, minimal, comprehensive, azure, google, microsoft-rest, microsoft-graph, zalando)",
 				Required:    false,
 				Default:     "default",
 			},
@@ -271,7 +271,7 @@ func (s *Skill) listRulesTool() skill.Tool {
 		map[string]skill.Parameter{
 			"profile": {
 				Type:        "string",
-				Description: "Style profile to use (default, azure, google, zalando)",
+				Description: "Style profile to use (default, minimal, comprehensive, azure, google, microsoft-rest, microsoft-graph, zalando)",
 				Required:    false,
 				Default:     "default",
 			},
@@ -369,12 +369,12 @@ func (s *Skill) explainRuleTool() skill.Tool {
 		map[string]skill.Parameter{
 			"rule_id": {
 				Type:        "string",
-				Description: "The rule ID to explain (e.g., URI-001)",
+				Description: "The rule ID to explain (e.g., PO-001)",
 				Required:    true,
 			},
 			"profile": {
 				Type:        "string",
-				Description: "Style profile to use (default, azure, google, zalando)",
+				Description: "Style profile to use (default, minimal, comprehensive, azure, google, microsoft-rest, microsoft-graph, zalando)",
 				Required:    false,
 				Default:     "default",
 			},
