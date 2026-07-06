@@ -1,0 +1,379 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grokify/structured-evaluation/main/schema/rubric.schema.json",
+  "name": "API Style Guide Quality Rubric",
+  "description": "LLM-as-a-Judge rubric for evaluating the quality, completeness, and usability of API style guides. Based on industry best practices from Stoplight, Zalando, Microsoft, Google, and PayPal.",
+  "version": "1.0.0",
+  "metadata": {
+    "author": "api-style-spec",
+    "source": "https://blog.stoplight.io/api-style-guides-we-love-and-why-you-will-too"
+  },
+  "categories": [
+    {
+      "id": "content-coverage",
+      "name": "Content Coverage",
+      "description": "Evaluates whether the style guide covers the six essential domains that every API style guide should address.",
+      "weight": 1.0,
+      "required": true,
+      "evaluationPrompt": "Evaluate whether this API style guide covers the essential content domains. Check for presence and depth of coverage in each area.",
+      "passCriteria": [
+        "Covers architectural style (REST, GraphQL, gRPC, etc.)",
+        "Specifies API description format requirements (OpenAPI, AsyncAPI, etc.)",
+        "Defines naming conventions for resources, fields, and parameters",
+        "Standardizes error handling (status codes, error format, messages)",
+        "Addresses authentication and authorization patterns",
+        "Clarifies versioning strategy (URI, header, semantic versioning)"
+      ],
+      "partialCriteria": [
+        "Covers 4-5 of the 6 essential domains",
+        "Some domains are mentioned but lack depth",
+        "Missing coverage for security or versioning"
+      ],
+      "failCriteria": [
+        "Covers fewer than 4 essential domains",
+        "Major gaps in naming or error handling",
+        "No mention of API description format"
+      ],
+      "examples": {
+        "pass": {
+          "excerpt": "The guide includes dedicated sections for: REST principles (Chapter 1), OpenAPI specification requirements (Chapter 2), Naming conventions with snake_case for fields and kebab-case for URLs (Chapter 3), RFC 7807 Problem+JSON error format (Chapter 4), OAuth 2.0 and API key authentication (Chapter 5), and URL-based versioning with deprecation policy (Chapter 6).",
+          "reasoning": "All six essential domains are covered with dedicated sections providing detailed guidance."
+        },
+        "partial": {
+          "excerpt": "The guide covers REST principles, naming conventions, and error handling, but authentication is only briefly mentioned and versioning strategy is not defined.",
+          "reasoning": "Good coverage of core topics but missing depth in security and versioning domains."
+        },
+        "fail": {
+          "excerpt": "The guide only discusses naming conventions and provides some examples of endpoints. No mention of error handling, authentication, or versioning.",
+          "reasoning": "Covers only 1-2 domains, missing critical guidance for production APIs."
+        }
+      }
+    },
+    {
+      "id": "structure-navigation",
+      "name": "Structure & Navigation",
+      "description": "Evaluates the organizational quality and navigability of the style guide.",
+      "weight": 0.9,
+      "required": true,
+      "evaluationPrompt": "Evaluate the structure and navigability of this API style guide. Consider whether users can quickly find relevant guidance.",
+      "passCriteria": [
+        "Has clear table of contents or navigation structure",
+        "Uses consistent heading hierarchy",
+        "Groups related rules into logical sections/categories",
+        "Provides cross-references between related rules",
+        "Includes search or index capability (for digital guides)"
+      ],
+      "partialCriteria": [
+        "Has table of contents but inconsistent section organization",
+        "Some cross-references but not comprehensive",
+        "Logical grouping exists but could be improved"
+      ],
+      "failCriteria": [
+        "No table of contents or navigation aids",
+        "Rules are presented as a flat, unorganized list",
+        "Difficult to locate specific guidance",
+        "Inconsistent or confusing structure"
+      ],
+      "examples": {
+        "pass": {
+          "excerpt": "The guide features a comprehensive table of contents, numbered rules (e.g., RULE-001), categories (Naming, HTTP Methods, Errors, etc.), and hyperlinks between related rules. Each section starts with an overview and lists its rules.",
+          "reasoning": "Excellent navigability with multiple ways to find and navigate to relevant content."
+        },
+        "partial": {
+          "excerpt": "The guide has sections but no table of contents. Rules are grouped but lack consistent numbering or identifiers.",
+          "reasoning": "Basic organization exists but navigation could be significantly improved."
+        },
+        "fail": {
+          "excerpt": "All rules are listed sequentially in a single document with no headings, categories, or identifiers.",
+          "reasoning": "No structural organization makes finding specific guidance very difficult."
+        }
+      }
+    },
+    {
+      "id": "rule-quality",
+      "name": "Rule Quality & Clarity",
+      "description": "Evaluates whether individual rules are clear, actionable, and well-explained.",
+      "weight": 1.0,
+      "required": true,
+      "evaluationPrompt": "Evaluate the quality of individual rules in this API style guide. Consider clarity, actionability, and completeness.",
+      "passCriteria": [
+        "Each rule has a clear, concise title",
+        "Rules provide rationale explaining WHY the rule exists",
+        "Rules are actionable with specific guidance on HOW to comply",
+        "Uses RFC 2119 keywords (MUST, SHOULD, MAY) consistently",
+        "Rules include severity/priority levels",
+        "Each rule has a unique identifier for reference"
+      ],
+      "partialCriteria": [
+        "Rules are clear but lack rationale",
+        "Inconsistent use of RFC 2119 keywords",
+        "Some rules are vague or lack specific guidance",
+        "Missing rule identifiers or severity levels"
+      ],
+      "failCriteria": [
+        "Rules are ambiguous or contradictory",
+        "No rationale provided for rules",
+        "Rules are not actionable (what vs. how)",
+        "Inconsistent or missing severity indicators"
+      ],
+      "examples": {
+        "pass": {
+          "excerpt": "RULE-118: Use snake_case for JSON property names. Severity: Error. Rationale: Consistent naming improves API usability and enables automated tooling. Property names MUST use lowercase letters and underscores only. Example: customer_id, billing_address.",
+          "reasoning": "Rule has ID, title, severity, rationale, RFC 2119 keyword, and example."
+        },
+        "partial": {
+          "excerpt": "Use snake_case for properties. This helps with consistency.",
+          "reasoning": "Guidance is clear but lacks ID, severity, detailed rationale, and examples."
+        },
+        "fail": {
+          "excerpt": "Property names should be consistent.",
+          "reasoning": "Vague guidance without specific format, rationale, or actionable instruction."
+        }
+      }
+    },
+    {
+      "id": "examples",
+      "name": "Examples & Code Samples",
+      "description": "Evaluates whether the guide provides sufficient good and bad examples to illustrate rules.",
+      "weight": 0.8,
+      "required": false,
+      "evaluationPrompt": "Evaluate the quality and coverage of examples in this API style guide.",
+      "passCriteria": [
+        "Provides both good (correct) and bad (incorrect) examples",
+        "Examples are realistic and representative of actual API usage",
+        "Code samples are properly formatted and syntax-highlighted",
+        "Examples cover common use cases and edge cases",
+        "Examples show before/after for migration guidance"
+      ],
+      "partialCriteria": [
+        "Has examples but only shows correct patterns (no anti-patterns)",
+        "Examples are too simplistic or toy examples",
+        "Inconsistent formatting of code samples",
+        "Limited coverage of edge cases"
+      ],
+      "failCriteria": [
+        "No examples provided",
+        "Examples are incorrect or misleading",
+        "Examples contradict the stated rules"
+      ],
+      "examples": {
+        "pass": {
+          "excerpt": "Good: { \"customer_id\": \"123\", \"order_date\": \"2024-01-15\" }\nBad: { \"customerId\": \"123\", \"OrderDate\": \"2024-01-15\" }\nThe bad example uses camelCase and PascalCase which violates the snake_case requirement.",
+          "reasoning": "Clear good/bad contrast with explanation of what makes the bad example incorrect."
+        },
+        "partial": {
+          "excerpt": "Example: { \"customer_id\": \"123\" }",
+          "reasoning": "Only shows correct pattern without contrasting incorrect patterns."
+        },
+        "fail": {
+          "excerpt": "The guide states to use snake_case but all examples show camelCase.",
+          "reasoning": "Examples contradict the stated rules, creating confusion."
+        }
+      }
+    },
+    {
+      "id": "enforceability",
+      "name": "Enforceability & Tooling",
+      "description": "Evaluates whether rules can be automatically enforced or checked.",
+      "weight": 0.7,
+      "required": false,
+      "evaluationPrompt": "Evaluate whether the rules in this style guide are enforceable through automated tooling.",
+      "passCriteria": [
+        "Rules indicate whether they are lintable or require manual review",
+        "Provides Spectral/OpenAPI ruleset or equivalent",
+        "References specific tool configurations for enforcement",
+        "Distinguishes between deterministic checks and judgment calls",
+        "Includes CI/CD integration guidance"
+      ],
+      "partialCriteria": [
+        "Some rules are clearly lintable but no tooling provided",
+        "Mentions tooling but doesn't provide configuration",
+        "Inconsistent classification of rule enforceability"
+      ],
+      "failCriteria": [
+        "No consideration of automated enforcement",
+        "Rules are entirely subjective with no linting possibility",
+        "No tooling guidance or recommendations"
+      ],
+      "examples": {
+        "pass": {
+          "excerpt": "This rule is enforced by Spectral rule 'operation-operationId'. Add to your .spectral.yaml: extends: ['@zalando/zally-rules']",
+          "reasoning": "Clear indication of enforcement mechanism with specific tool configuration."
+        },
+        "partial": {
+          "excerpt": "This rule can be checked with a linter. [No specific tool mentioned]",
+          "reasoning": "Acknowledges linting possibility but doesn't provide actionable configuration."
+        },
+        "fail": {
+          "excerpt": "All rules require human review during code review.",
+          "reasoning": "No automated enforcement, entirely manual compliance."
+        }
+      }
+    },
+    {
+      "id": "versioning-evolution",
+      "name": "Guide Versioning & Evolution",
+      "description": "Evaluates whether the style guide itself is versioned and designed for evolution.",
+      "weight": 0.6,
+      "required": false,
+      "evaluationPrompt": "Evaluate whether this style guide is versioned and designed to evolve over time.",
+      "passCriteria": [
+        "Guide has explicit version number",
+        "Includes changelog or history of changes",
+        "Has deprecation policy for rules",
+        "Provides migration guidance for rule changes",
+        "Single source of truth (no multiple outdated versions)"
+      ],
+      "partialCriteria": [
+        "Has version number but no changelog",
+        "Deprecation mentioned but not systematically applied",
+        "Some historical context but incomplete"
+      ],
+      "failCriteria": [
+        "No versioning of the guide",
+        "Multiple conflicting versions exist",
+        "No process for updating or deprecating rules"
+      ],
+      "examples": {
+        "pass": {
+          "excerpt": "Version 2.0.0 (2024-01-15). See CHANGELOG.md for history. Rule Z-123 deprecated in v1.8, replaced by Z-456. Migration: Change from PUT to PATCH for partial updates.",
+          "reasoning": "Clear version, changelog reference, deprecation info, and migration guidance."
+        },
+        "partial": {
+          "excerpt": "Version 1.0. Last updated: January 2024.",
+          "reasoning": "Has version but no changelog or deprecation process."
+        },
+        "fail": {
+          "excerpt": "API Guidelines (no version). Note: This is one of three guideline documents.",
+          "reasoning": "No version and multiple documents suggest inconsistency."
+        }
+      }
+    },
+    {
+      "id": "completeness-depth",
+      "name": "Completeness & Depth",
+      "description": "Evaluates whether the guide provides sufficient depth for complex topics.",
+      "weight": 0.8,
+      "required": true,
+      "evaluationPrompt": "Evaluate the depth and completeness of guidance provided for complex API design topics.",
+      "passCriteria": [
+        "Addresses common edge cases and exceptions",
+        "Provides decision trees or flowcharts for complex decisions",
+        "Includes guidance for API evolution and breaking changes",
+        "Covers both happy path and error scenarios",
+        "Addresses internationalization and localization"
+      ],
+      "partialCriteria": [
+        "Covers main scenarios but limited edge case guidance",
+        "Some complex topics are oversimplified",
+        "Evolution guidance exists but incomplete"
+      ],
+      "failCriteria": [
+        "Only covers trivial cases",
+        "Complex topics are ignored or deferred",
+        "No guidance for API evolution or breaking changes"
+      ],
+      "examples": {
+        "pass": {
+          "excerpt": "For pagination, use cursor-based pagination for large datasets (see decision tree). For collections < 1000 items, offset pagination is acceptable. For breaking changes, follow the deprecation timeline: announce 6 months before, add Sunset header, maintain deprecated endpoint for 12 months.",
+          "reasoning": "Provides nuanced guidance with decision criteria and detailed process for complex scenarios."
+        },
+        "partial": {
+          "excerpt": "Use pagination for large collections. Avoid breaking changes when possible.",
+          "reasoning": "Mentions topics but lacks specific guidance or decision criteria."
+        },
+        "fail": {
+          "excerpt": "All GET requests should return data.",
+          "reasoning": "Trivial guidance that doesn't address real API design challenges."
+        }
+      }
+    },
+    {
+      "id": "consistency",
+      "name": "Internal Consistency",
+      "description": "Evaluates whether the guide is internally consistent and free of contradictions.",
+      "weight": 0.9,
+      "required": true,
+      "evaluationPrompt": "Check for internal consistency within the API style guide. Look for contradictions, conflicting advice, or inconsistent terminology.",
+      "passCriteria": [
+        "No contradictory rules",
+        "Consistent terminology throughout",
+        "Consistent use of RFC 2119 keywords",
+        "Examples align with stated rules",
+        "Cross-references are accurate"
+      ],
+      "partialCriteria": [
+        "Minor inconsistencies in terminology",
+        "Some examples don't perfectly match rules",
+        "Mostly consistent but with a few conflicts"
+      ],
+      "failCriteria": [
+        "Rules contradict each other",
+        "Examples violate stated rules",
+        "Inconsistent use of terms (e.g., endpoint vs. resource vs. URI)",
+        "Conflicting severity levels for similar rules"
+      ],
+      "examples": {
+        "pass": {
+          "excerpt": "The guide consistently uses 'resource' for REST nouns, 'endpoint' for URL paths, and 'operation' for HTTP method + path combinations. All examples follow stated naming conventions.",
+          "reasoning": "Consistent terminology and alignment between rules and examples."
+        },
+        "partial": {
+          "excerpt": "Most examples use snake_case as required, but the error handling section uses camelCase in its examples.",
+          "reasoning": "Mostly consistent but with isolated inconsistencies."
+        },
+        "fail": {
+          "excerpt": "Rule 5 says 'always use plural nouns for collections' but Rule 23 says 'singleton resources use singular nouns for collections when semantically appropriate'.",
+          "reasoning": "Contradictory rules create confusion about correct approach."
+        }
+      }
+    },
+    {
+      "id": "accessibility-tone",
+      "name": "Accessibility & Tone",
+      "description": "Evaluates whether the guide is accessible to its intended audience and uses appropriate tone.",
+      "weight": 0.5,
+      "required": false,
+      "evaluationPrompt": "Evaluate the accessibility and tone of this API style guide. Consider whether it is appropriate for its audience.",
+      "passCriteria": [
+        "Written at appropriate technical level for audience",
+        "Tone matches organizational culture (formal/informal as appropriate)",
+        "Avoids unnecessary jargon without sacrificing precision",
+        "Includes glossary for technical terms",
+        "Available in accessible formats"
+      ],
+      "partialCriteria": [
+        "Generally accessible but some sections too technical",
+        "Tone is inconsistent across sections",
+        "Missing glossary for some terms"
+      ],
+      "failCriteria": [
+        "Overly academic or inaccessible",
+        "Condescending or unprofessional tone",
+        "Assumes too much prior knowledge",
+        "Full of undefined jargon"
+      ],
+      "examples": {
+        "pass": {
+          "excerpt": "Use PATCH for partial updates. (See Glossary: PATCH). This allows clients to modify specific fields without sending the entire resource, reducing bandwidth and avoiding conflicts. Example: PATCH /users/123 with {\"email\": \"new@example.com\"}.",
+          "reasoning": "Clear explanation with glossary reference, rationale, and example."
+        },
+        "partial": {
+          "excerpt": "Implement proper HATEOAS with HAL+JSON hypermedia controls for level 3 REST compliance.",
+          "reasoning": "Technically correct but assumes significant prior knowledge of REST maturity models."
+        },
+        "fail": {
+          "excerpt": "You obviously need to use idempotent methods correctly. Any competent developer knows this.",
+          "reasoning": "Condescending tone and assumes knowledge without explaining."
+        }
+      }
+    }
+  ],
+  "passCriteria": {
+    "minCategoriesPassing": "all_required",
+    "maxFindings": {
+      "critical": 0,
+      "high": 2,
+      "medium": 5
+    }
+  }
+}

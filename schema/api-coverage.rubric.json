@@ -1,0 +1,393 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grokify/structured-evaluation/main/schema/rubric.schema.json",
+  "name": "REST API Style Guide Coverage Rubric",
+  "description": "Evaluates the topic coverage of an API style guide. Checks whether all essential REST API design topics are addressed with sufficient depth.",
+  "version": "1.0.0",
+  "metadata": {
+    "author": "api-style-spec",
+    "purpose": "Assess completeness of API style guides across 26 REST API design categories"
+  },
+  "categories": [
+    {
+      "id": "fundamentals",
+      "name": "Fundamentals Coverage",
+      "description": "Core REST API design fundamentals that every style guide must address.",
+      "weight": 1.0,
+      "required": true,
+      "evaluationPrompt": "Evaluate whether this API style guide covers the fundamental REST API design topics.",
+      "topics": [
+        {
+          "id": "general",
+          "name": "General Guidelines",
+          "description": "API-first principles, design philosophy, fundamental requirements",
+          "importance": "critical"
+        },
+        {
+          "id": "naming",
+          "name": "Naming Conventions",
+          "description": "Property naming (camelCase/snake_case), resource naming, identifier format",
+          "importance": "critical"
+        },
+        {
+          "id": "urls",
+          "name": "URL Design",
+          "description": "Path structure, query parameters, URL casing, resource hierarchy",
+          "importance": "critical"
+        },
+        {
+          "id": "http-methods",
+          "name": "HTTP Methods",
+          "description": "GET, POST, PUT, PATCH, DELETE semantics and idempotency",
+          "importance": "critical"
+        },
+        {
+          "id": "http-status",
+          "name": "HTTP Status Codes",
+          "description": "Status code selection, success vs error codes, standard codes",
+          "importance": "critical"
+        }
+      ],
+      "passCriteria": [
+        "Covers all 5 fundamental topics with at least 2 rules each",
+        "Clear guidance on naming conventions",
+        "HTTP method semantics explained",
+        "Status code usage documented"
+      ],
+      "partialCriteria": [
+        "Covers 3-4 fundamental topics",
+        "Some topics have minimal depth",
+        "Missing either naming or HTTP method guidance"
+      ],
+      "failCriteria": [
+        "Covers fewer than 3 fundamental topics",
+        "Missing critical topics like naming or HTTP methods",
+        "No URL design guidance"
+      ]
+    },
+    {
+      "id": "request-response",
+      "name": "Request/Response Coverage",
+      "description": "How requests and responses are structured and handled.",
+      "weight": 0.9,
+      "required": true,
+      "evaluationPrompt": "Evaluate coverage of request and response handling patterns.",
+      "topics": [
+        {
+          "id": "request-response",
+          "name": "Request & Response Bodies",
+          "description": "Content types, body structure, required fields",
+          "importance": "critical"
+        },
+        {
+          "id": "headers",
+          "name": "HTTP Headers",
+          "description": "Standard headers, custom headers, content negotiation",
+          "importance": "high"
+        },
+        {
+          "id": "errors",
+          "name": "Error Handling",
+          "description": "Error format (RFC 7807), error codes, error messages",
+          "importance": "critical"
+        },
+        {
+          "id": "json",
+          "name": "JSON Conventions",
+          "description": "Date formats, null handling, enums, nested objects",
+          "importance": "high"
+        },
+        {
+          "id": "schema",
+          "name": "Schema Design",
+          "description": "Type definitions, required properties, validation",
+          "importance": "medium"
+        }
+      ],
+      "passCriteria": [
+        "Error handling format clearly defined",
+        "Request/response structure documented",
+        "JSON conventions specified",
+        "Header usage guidance provided"
+      ],
+      "partialCriteria": [
+        "Error handling covered but format not specified",
+        "Missing header guidance",
+        "JSON conventions incomplete"
+      ],
+      "failCriteria": [
+        "No error handling guidance",
+        "Request/response structure undefined",
+        "Missing critical topics"
+      ]
+    },
+    {
+      "id": "collections",
+      "name": "Collections & Querying",
+      "description": "How to handle collections, pagination, filtering, and sorting.",
+      "weight": 0.8,
+      "required": true,
+      "evaluationPrompt": "Evaluate coverage of collection operations and querying.",
+      "topics": [
+        {
+          "id": "pagination",
+          "name": "Pagination",
+          "description": "Cursor vs offset, page size, next/prev links",
+          "importance": "critical"
+        },
+        {
+          "id": "filtering",
+          "name": "Filtering & Sorting",
+          "description": "Filter syntax, sort parameters, field selection",
+          "importance": "high"
+        },
+        {
+          "id": "collections",
+          "name": "Collection Resources",
+          "description": "Collection response format, metadata, bulk operations",
+          "importance": "high"
+        }
+      ],
+      "passCriteria": [
+        "Pagination strategy clearly defined",
+        "Filtering and sorting syntax documented",
+        "Collection response format specified"
+      ],
+      "partialCriteria": [
+        "Pagination covered but approach not specified",
+        "Missing filtering guidance",
+        "Collection format undefined"
+      ],
+      "failCriteria": [
+        "No pagination guidance",
+        "Collections not addressed"
+      ]
+    },
+    {
+      "id": "lifecycle",
+      "name": "API Lifecycle",
+      "description": "How APIs evolve, version, deprecate, and maintain compatibility.",
+      "weight": 0.8,
+      "required": true,
+      "evaluationPrompt": "Evaluate coverage of API lifecycle management.",
+      "topics": [
+        {
+          "id": "versioning",
+          "name": "Versioning",
+          "description": "Version format, version location (URL/header), version policy",
+          "importance": "critical"
+        },
+        {
+          "id": "compatibility",
+          "name": "Backward Compatibility",
+          "description": "Breaking vs non-breaking changes, additive changes",
+          "importance": "critical"
+        },
+        {
+          "id": "deprecation",
+          "name": "Deprecation",
+          "description": "Deprecation process, sunset headers, migration guidance",
+          "importance": "high"
+        }
+      ],
+      "passCriteria": [
+        "Versioning strategy clearly defined",
+        "Breaking change rules documented",
+        "Deprecation process specified"
+      ],
+      "partialCriteria": [
+        "Versioning covered but strategy unclear",
+        "Missing deprecation guidance",
+        "Compatibility rules incomplete"
+      ],
+      "failCriteria": [
+        "No versioning guidance",
+        "Compatibility not addressed"
+      ]
+    },
+    {
+      "id": "security",
+      "name": "Security Coverage",
+      "description": "Authentication, authorization, and security best practices.",
+      "weight": 1.0,
+      "required": true,
+      "evaluationPrompt": "Evaluate security guidance coverage.",
+      "topics": [
+        {
+          "id": "security",
+          "name": "Security",
+          "description": "Authentication methods, authorization, HTTPS, security headers",
+          "importance": "critical"
+        }
+      ],
+      "passCriteria": [
+        "Authentication methods specified",
+        "HTTPS requirement stated",
+        "Authorization patterns documented",
+        "Security headers addressed"
+      ],
+      "partialCriteria": [
+        "Authentication mentioned but not detailed",
+        "Missing authorization guidance",
+        "Security headers not addressed"
+      ],
+      "failCriteria": [
+        "No security guidance",
+        "Authentication not specified"
+      ]
+    },
+    {
+      "id": "documentation",
+      "name": "Documentation Requirements",
+      "description": "What must be documented in API specifications.",
+      "weight": 0.7,
+      "required": false,
+      "evaluationPrompt": "Evaluate documentation requirements coverage.",
+      "topics": [
+        {
+          "id": "documentation",
+          "name": "Documentation",
+          "description": "Required descriptions, examples, OpenAPI requirements",
+          "importance": "high"
+        }
+      ],
+      "passCriteria": [
+        "OpenAPI specification requirements defined",
+        "Required fields documented",
+        "Example requirements specified"
+      ],
+      "partialCriteria": [
+        "Basic documentation requirements",
+        "Missing example guidance"
+      ],
+      "failCriteria": [
+        "No documentation requirements"
+      ]
+    },
+    {
+      "id": "advanced-patterns",
+      "name": "Advanced Patterns",
+      "description": "Advanced API patterns beyond basic CRUD operations.",
+      "weight": 0.6,
+      "required": false,
+      "evaluationPrompt": "Evaluate coverage of advanced API patterns.",
+      "topics": [
+        {
+          "id": "long-running",
+          "name": "Long-Running Operations",
+          "description": "Async operations, polling, status endpoints",
+          "importance": "medium"
+        },
+        {
+          "id": "conditional",
+          "name": "Conditional Requests",
+          "description": "ETags, If-Match, optimistic concurrency",
+          "importance": "medium"
+        },
+        {
+          "id": "batch",
+          "name": "Batch Operations",
+          "description": "Bulk create/update/delete, batch request format",
+          "importance": "low"
+        },
+        {
+          "id": "actions",
+          "name": "Actions & Functions",
+          "description": "Non-CRUD operations, custom actions",
+          "importance": "medium"
+        }
+      ],
+      "passCriteria": [
+        "Long-running operations documented",
+        "Conditional request support specified",
+        "Custom actions pattern defined"
+      ],
+      "partialCriteria": [
+        "Some advanced patterns covered",
+        "Missing async operation guidance"
+      ],
+      "failCriteria": [
+        "No advanced patterns covered"
+      ]
+    },
+    {
+      "id": "ecosystem",
+      "name": "Ecosystem Integration",
+      "description": "Event-driven, hypermedia, and performance patterns.",
+      "weight": 0.5,
+      "required": false,
+      "evaluationPrompt": "Evaluate coverage of ecosystem and integration patterns.",
+      "topics": [
+        {
+          "id": "events",
+          "name": "Events & Webhooks",
+          "description": "Event format, webhook delivery, CloudEvents",
+          "importance": "medium"
+        },
+        {
+          "id": "hypermedia",
+          "name": "Hypermedia/HATEOAS",
+          "description": "Link relations, discoverability, self links",
+          "importance": "low"
+        },
+        {
+          "id": "performance",
+          "name": "Performance",
+          "description": "Caching, compression, rate limiting",
+          "importance": "medium"
+        },
+        {
+          "id": "throttling",
+          "name": "Rate Limiting",
+          "description": "Rate limit headers, 429 handling, quotas",
+          "importance": "medium"
+        }
+      ],
+      "passCriteria": [
+        "Event/webhook patterns documented",
+        "Caching guidance provided",
+        "Rate limiting specified"
+      ],
+      "partialCriteria": [
+        "Some ecosystem patterns covered",
+        "Performance guidance limited"
+      ],
+      "failCriteria": [
+        "No ecosystem patterns covered"
+      ]
+    }
+  ],
+  "scoring": {
+    "method": "weighted_average",
+    "levels": {
+      "excellent": {
+        "minScore": 4.5,
+        "description": "Comprehensive coverage across all categories"
+      },
+      "good": {
+        "minScore": 3.5,
+        "description": "Strong coverage with minor gaps"
+      },
+      "adequate": {
+        "minScore": 2.5,
+        "description": "Covers essentials but missing advanced topics"
+      },
+      "minimal": {
+        "minScore": 1.5,
+        "description": "Basic coverage only"
+      },
+      "insufficient": {
+        "minScore": 0,
+        "description": "Major gaps in essential topics"
+      }
+    }
+  },
+  "passCriteria": {
+    "minCategoriesPassing": "all_required",
+    "minOverallScore": 3.0,
+    "maxFindings": {
+      "critical": 0,
+      "high": 3,
+      "medium": 10
+    }
+  }
+}
