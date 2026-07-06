@@ -1,0 +1,733 @@
+openapi: 3.1.0
+info:
+  title: Compliant API Example
+  description: |
+    Example API that follows all api-style-spec default profile rules.
+    This demonstrates best practices for SDK generation with ogen.
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+
+servers:
+  - url: https://api.example.com
+    description: Production
+
+tags:
+  - name: users
+    description: User management
+  - name: pets
+    description: Pet management
+
+paths:
+  /v1/tenants/{tenantId}/users:
+    get:
+      operationId: listUsers
+      summary: List users
+      description: Returns a paginated list of users for the tenant.
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: List of users
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    post:
+      operationId: createUser
+      summary: Create a user
+      description: Creates a new user in the tenant.
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: User created
+          headers:
+            Location:
+              schema:
+                type: string
+              description: URL of the created user
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /v1/tenants/{tenantId}/users/{userId}:
+    get:
+      operationId: getUser
+      summary: Get a user
+      description: Returns a single user by ID.
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/UserId'
+        - name: expand
+          in: query
+          description: Expand related resources (e.g., expand=pets)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User details
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      operationId: updateUser
+      summary: Update a user
+      description: Partially updates a user.
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: User updated
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+
+    delete:
+      operationId: deleteUser
+      summary: Delete a user
+      description: Deletes a user by ID.
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '204':
+          description: User deleted
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /v1/tenants/{tenantId}/pets:
+    get:
+      operationId: listPets
+      summary: List pets
+      description: Returns a paginated list of pets.
+      tags:
+        - pets
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+        - name: status
+          in: query
+          description: Filter by status
+          schema:
+            $ref: '#/components/schemas/PetStatus'
+      responses:
+        '200':
+          description: List of pets
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PetList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    post:
+      operationId: createPet
+      summary: Create a pet
+      description: Creates a new pet. Supports polymorphic pet types.
+      tags:
+        - pets
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePetRequest'
+      responses:
+        '201':
+          description: Pet created
+          headers:
+            Location:
+              schema:
+                type: string
+              description: URL of the created pet
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT Bearer token authentication
+
+  parameters:
+    TenantId:
+      name: tenantId
+      in: path
+      required: true
+      description: Tenant ID (use ~ for current tenant from token)
+      schema:
+        type: string
+        pattern: '^(~|tenant_[a-zA-Z0-9]+)$'
+        example: tenant_abc123
+
+    UserId:
+      name: userId
+      in: path
+      required: true
+      description: User ID
+      schema:
+        type: string
+        pattern: '^user_[a-zA-Z0-9]+$'
+        example: user_xyz789
+
+    Limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return (default 20, max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+    Cursor:
+      name: cursor
+      in: query
+      description: Cursor for pagination (from nextCursor in previous response)
+      schema:
+        type: string
+
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      description: Unique key for idempotent requests
+      schema:
+        type: string
+        format: uuid
+
+    IfMatch:
+      name: If-Match
+      in: header
+      description: ETag for optimistic concurrency control
+      schema:
+        type: string
+
+  headers:
+    X-Request-ID:
+      description: Unique request identifier for tracing
+      schema:
+        type: string
+        format: uuid
+
+    ETag:
+      description: Entity tag for caching and concurrency
+      schema:
+        type: string
+
+  responses:
+    BadRequest:
+      description: Invalid request
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/X-Request-ID'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    Unauthorized:
+      description: Authentication required
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/X-Request-ID'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    Forbidden:
+      description: Access denied
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/X-Request-ID'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    NotFound:
+      description: Resource not found
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/X-Request-ID'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    Conflict:
+      description: Resource conflict
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/X-Request-ID'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    PreconditionFailed:
+      description: Precondition failed (ETag mismatch)
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/X-Request-ID'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+  schemas:
+    # RFC 9457 Problem Details
+    ProblemDetails:
+      type: object
+      description: RFC 9457 Problem Details for HTTP APIs
+      required:
+        - type
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          format: uri
+          description: URI identifying the problem type
+          example: https://api.example.com/problems/validation-error
+        title:
+          type: string
+          description: Short human-readable summary
+          example: Validation Error
+        status:
+          type: integer
+          description: HTTP status code
+          example: 400
+        detail:
+          type: string
+          description: Human-readable explanation
+          example: The email field is invalid
+        instance:
+          type: string
+          format: uri
+          description: URI identifying this specific occurrence
+          example: /v1/tenants/tenant_abc/users/user_xyz
+        errors:
+          type: array
+          description: Field-level validation errors
+          items:
+            $ref: '#/components/schemas/FieldError'
+
+    FieldError:
+      type: object
+      description: Field-level validation error
+      required:
+        - field
+        - code
+        - message
+      properties:
+        field:
+          type: string
+          description: JSON path to the invalid field
+          example: email
+        code:
+          type: string
+          description: Machine-readable error code
+          example: INVALID_FORMAT
+        message:
+          type: string
+          description: Human-readable error message
+          example: Must be a valid email address
+
+    # User schemas
+    User:
+      type: object
+      description: A user in the system
+      required:
+        - id
+        - email
+        - status
+        - createdAt
+      properties:
+        id:
+          type: string
+          description: Unique user identifier
+          example: user_xyz789
+        email:
+          type: string
+          format: email
+          description: User email address
+          example: alice@example.com
+        name:
+          type: string
+          description: Display name
+          example: Alice Smith
+        status:
+          $ref: '#/components/schemas/UserStatus'
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp (ISO 8601)
+          example: '2024-01-15T09:30:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Last update timestamp
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: Custom metadata key-value pairs
+        links:
+          $ref: '#/components/schemas/UserLinks'
+
+    UserLinks:
+      type: object
+      description: HATEOAS links for user
+      properties:
+        self:
+          type: string
+          format: uri
+          description: Link to this user
+          example: /v1/tenants/tenant_abc/users/user_xyz
+        pets:
+          type: string
+          format: uri
+          description: Link to user's pets
+          example: /v1/tenants/tenant_abc/users/user_xyz/pets
+
+    UserStatus:
+      type: string
+      description: User account status
+      enum:
+        - ACTIVE
+        - INACTIVE
+        - SUSPENDED
+        - DELETED
+
+    CreateUserRequest:
+      type: object
+      description: Request to create a new user
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email address
+        name:
+          type: string
+          description: Display name
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: Custom metadata
+
+    UpdateUserRequest:
+      type: object
+      description: Request to update a user (partial update)
+      properties:
+        name:
+          type: string
+          description: Display name
+        status:
+          $ref: '#/components/schemas/UserStatus'
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: Custom metadata (merged with existing)
+
+    UserList:
+      type: object
+      description: Paginated list of users
+      required:
+        - items
+        - hasMore
+      properties:
+        items:
+          type: array
+          description: List of users
+          items:
+            $ref: '#/components/schemas/User'
+        nextCursor:
+          type: string
+          nullable: true
+          description: Cursor for next page (null if no more pages)
+        hasMore:
+          type: boolean
+          description: Whether more items exist
+
+    # Pet schemas with polymorphism
+    Pet:
+      type: object
+      description: A pet (polymorphic - Dog or Cat)
+      oneOf:
+        - $ref: '#/components/schemas/Dog'
+        - $ref: '#/components/schemas/Cat'
+      discriminator:
+        propertyName: petType
+        mapping:
+          dog: '#/components/schemas/Dog'
+          cat: '#/components/schemas/Cat'
+
+    PetBase:
+      type: object
+      description: Base properties for all pets
+      required:
+        - id
+        - name
+        - petType
+        - status
+        - createdAt
+      properties:
+        id:
+          type: string
+          description: Unique pet identifier
+          example: pet_abc123
+        name:
+          type: string
+          description: Pet name
+          example: Buddy
+        petType:
+          type: string
+          description: Discriminator for pet type
+        ownerId:
+          type: string
+          description: Owner user ID
+          example: user_xyz789
+        status:
+          $ref: '#/components/schemas/PetStatus'
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+
+    Dog:
+      allOf:
+        - $ref: '#/components/schemas/PetBase'
+        - type: object
+          required:
+            - breed
+          properties:
+            petType:
+              type: string
+              enum:
+                - dog
+            breed:
+              type: string
+              description: Dog breed
+              example: Golden Retriever
+            isGoodBoy:
+              type: boolean
+              description: Is this a good boy?
+              default: true
+
+    Cat:
+      allOf:
+        - $ref: '#/components/schemas/PetBase'
+        - type: object
+          required:
+            - color
+          properties:
+            petType:
+              type: string
+              enum:
+                - cat
+            color:
+              type: string
+              description: Cat color
+              example: orange
+            livesRemaining:
+              type: integer
+              minimum: 0
+              maximum: 9
+              default: 9
+
+    PetStatus:
+      type: string
+      description: Pet status
+      enum:
+        - AVAILABLE
+        - ADOPTED
+        - PENDING
+
+    CreatePetRequest:
+      type: object
+      description: Request to create a pet (polymorphic)
+      oneOf:
+        - $ref: '#/components/schemas/CreateDogRequest'
+        - $ref: '#/components/schemas/CreateCatRequest'
+      discriminator:
+        propertyName: petType
+        mapping:
+          dog: '#/components/schemas/CreateDogRequest'
+          cat: '#/components/schemas/CreateCatRequest'
+
+    CreateDogRequest:
+      type: object
+      required:
+        - name
+        - petType
+        - breed
+      properties:
+        name:
+          type: string
+        petType:
+          type: string
+          enum:
+            - dog
+        breed:
+          type: string
+        ownerId:
+          type: string
+
+    CreateCatRequest:
+      type: object
+      required:
+        - name
+        - petType
+        - color
+      properties:
+        name:
+          type: string
+        petType:
+          type: string
+          enum:
+            - cat
+        color:
+          type: string
+        ownerId:
+          type: string
+
+    PetList:
+      type: object
+      description: Paginated list of pets
+      required:
+        - items
+        - hasMore
+      properties:
+        items:
+          type: array
+          description: List of pets
+          items:
+            $ref: '#/components/schemas/Pet'
+        nextCursor:
+          type: string
+          nullable: true
+          description: Cursor for next page
+        hasMore:
+          type: boolean
+          description: Whether more items exist
+
+security:
+  - bearerAuth: []
