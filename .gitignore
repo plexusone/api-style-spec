@@ -69,3 +69,4 @@ web/packages/*/dist/
 *.db
 *.sqlite
 *.sqlite3
+.archive/
