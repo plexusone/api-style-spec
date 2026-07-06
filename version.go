@@ -2,4 +2,4 @@
 package apistylespec
 
 // Version is the current version of api-style-spec.
-const Version = "0.1.0-dev"
+const Version = "0.3.0"
