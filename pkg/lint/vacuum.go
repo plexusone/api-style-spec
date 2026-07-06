@@ -3,23 +3,50 @@ package lint
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"time"
 
 	vacuumModel "github.com/daveshanley/vacuum/model"
 	"github.com/daveshanley/vacuum/motor"
 	"github.com/daveshanley/vacuum/rulesets"
 
+	"github.com/plexusone/api-style-spec/pkg/profile"
 	"github.com/plexusone/api-style-spec/pkg/types"
 )
 
 // VacuumLinter implements Linter using the vacuum library.
 type VacuumLinter struct {
-	spec *types.APIStyleSpec
+	spec           *types.APIStyleSpec
+	validationDone bool
+	skippedRules   []string
 }
 
 // NewVacuumLinter creates a new linter from an APIStyleSpec.
+// It validates the profile and disables any rules with invalid JSONPath
+// expressions, logging warnings for skipped rules.
 func NewVacuumLinter(spec *types.APIStyleSpec) *VacuumLinter {
-	return &VacuumLinter{spec: spec}
+	linter := &VacuumLinter{spec: spec}
+
+	// Validate and disable invalid rules
+	result := profile.DisableInvalidRules(spec)
+	linter.validationDone = true
+
+	// Log warnings for skipped rules
+	for _, w := range result.Warnings {
+		slog.Warn("rule disabled due to invalid JSONPath",
+			"rule", w.RuleID,
+			"detail", w.Detail,
+		)
+		linter.skippedRules = append(linter.skippedRules, w.RuleID)
+	}
+
+	return linter
+}
+
+// SkippedRules returns the list of rules that were skipped due to
+// invalid JSONPath expressions.
+func (l *VacuumLinter) SkippedRules() []string {
+	return l.skippedRules
 }
 
 // Lint analyzes an OpenAPI specification and returns violations.
