@@ -4,12 +4,16 @@ Profiles are collections of API style rules. api-style-spec includes profiles ba
 
 ## Built-in Profiles
 
-| Profile | Based On | Rules | Focus |
-|---------|----------|-------|-------|
-| `default` | Common best practices | ~30 | General REST API design |
-| `azure` | Microsoft/Azure guidelines | 76 | Enterprise cloud APIs |
-| `google` | Google API Design Guide | ~20 | Resource-oriented design |
-| `zalando` | Zalando RESTful Guidelines | 55 | E-commerce APIs |
+| Profile | Based On | Rules | Categories | Focus |
+|---------|----------|-------|------------|-------|
+| `default` | Microsoft, Zalando, Google, PayPal | 79 | 26 | Full coverage, recommended |
+| `comprehensive` | All major guides | 88 | 26 | Maximum coverage |
+| `zalando` | Zalando RESTful Guidelines | 147 | 13 | E-commerce, events |
+| `microsoft-rest` | Microsoft REST Guidelines | 123 | 15 | Enterprise REST APIs |
+| `microsoft-graph` | Microsoft Graph Guidelines | 82 | 12 | OData/Graph APIs |
+| `minimal` | Core essentials | 29 | 7 | Basic API hygiene |
+| `azure` | Azure REST Guidelines | 23 | 9 | Azure cloud services |
+| `google` | Google API Design Guide | 20 | 7 | Resource-oriented design |
 
 ## Selecting a Profile
 
@@ -30,13 +34,20 @@ api-style generate guide --profile zalando
 
 ### Default Profile
 
-The default profile covers fundamental REST API best practices:
+The default profile provides complete REST API coverage synthesized from Microsoft, Zalando, Google, and PayPal guidelines:
 
-- **URI Design** - Plural resources, lowercase, hyphens
-- **HTTP Methods** - Proper verb usage
-- **Status Codes** - Appropriate response codes
-- **Versioning** - API version strategies
-- **Documentation** - Required descriptions
+- **URI Design** - kebab-case, plural resources, version prefix
+- **HTTP Methods** - Proper verb usage and idempotency
+- **Status Codes** - Complete response code coverage
+- **Request/Response** - JSON conventions, ISO 8601 dates
+- **Headers** - Content-Type, Accept, request tracing
+- **Errors** - RFC 9457 Problem Details format
+- **Pagination** - Cursor-based with collection envelopes
+- **Versioning** - URL versioning with deprecation lifecycle
+- **Security** - Bearer tokens, HTTPS, OAuth 2.0
+- **Performance** - Caching, compression, rate limiting
+- **Events** - CloudEvents format, webhook signatures
+- **Long-Running** - 202 Accepted with status polling
 
 ```bash
 api-style lint openapi.yaml --profile default
@@ -103,29 +114,47 @@ api-style list-rules --profile azure --severity error
 
 Different profiles may have different opinions on the same topic:
 
-| Topic | Default | Azure | Google | Zalando |
-|-------|---------|-------|--------|---------|
-| Resource names | Plural | Plural | Plural | Plural |
-| Case style | kebab-case | camelCase | snake_case | kebab-case |
-| Versioning | URL path | URL path | URL path | URL/Header |
-| Date format | ISO 8601 | ISO 8601 | RFC 3339 | ISO 8601 |
+| Topic | Default | Zalando | Microsoft | Azure | Google |
+|-------|---------|---------|-----------|-------|--------|
+| Property case | camelCase | snake_case | camelCase | camelCase | snake_case |
+| URL case | kebab-case | kebab-case | - | - | - |
+| Versioning | URL path | URL/Header | URL path | Date-based | URL path |
+| Date format | ISO 8601 | ISO 8601 | ISO 8601 | ISO 8601 | RFC 3339 |
+| Error format | RFC 9457 | RFC 9457 | Custom | Azure format | Google format |
+| Pagination | Cursor | Cursor | Offset | OData | Token |
+
+For detailed coverage comparison, see [Profile Comparison](profile-comparison.md).
 
 ## Conformance Levels
 
 Profiles support graduated compliance levels:
 
-| Level | Description |
-|-------|-------------|
-| Bronze | Minimum viable API quality |
-| Silver | Production-ready APIs |
-| Gold | Best-in-class API design |
+| Level | Description | Errors Allowed | Warnings Allowed |
+|-------|-------------|----------------|------------------|
+| Minimum | Basic API functionality | 5 | 20 |
+| Standard | Production-ready APIs | 0 | 10 |
+| Exemplary | Best-in-class design | 0 | 0 |
 
 ```bash
-# Check against silver level
-api-style lint openapi.yaml --profile azure --level silver
+# Check against standard level
+api-style lint openapi.yaml --profile comprehensive --level standard
 ```
 
 Rules are tagged with minimum conformance levels. Higher levels include all rules from lower levels.
+
+## Scoring Profiles
+
+Evaluate profile quality and coverage:
+
+```bash
+# Score a profile against quality rubric
+api-style score-profile comprehensive
+
+# JSON output for analysis
+api-style score-profile zalando --format json
+```
+
+See [Profile Scoring](profile-scoring.md) for details.
 
 ## Generating Documentation
 
@@ -143,6 +172,7 @@ See [Documentation Generation](documentation-generation.md) for details.
 
 ## Next Steps
 
+- [Profile Comparison](profile-comparison.md) - Detailed coverage analysis
+- [Profile Scoring](profile-scoring.md) - Evaluate profile quality
 - [Documentation Generation](documentation-generation.md) - Generate Markdown and MkDocs docs
 - [Custom Rules](custom-rules.md) - Create your own rules
-- [Profile Reference](../profiles/default.md) - Detailed rule documentation
