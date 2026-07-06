@@ -1,555 +1,4368 @@
 {
-  "$schema": "https://api-style-spec.dev/schema/v1/api-style-spec.schema.json",
-  "version": "1.0.0",
+  "$schema": "https://raw.githubusercontent.com/plexusone/api-style-spec/main/schema/api-style-spec.schema.json",
   "name": "default",
-  "description": "Default API style rules based on common REST best practices",
-
-  "categories": [
-    {"id": "uri-design", "title": "URI Design", "description": "Rules for URL structure and naming", "order": 1},
-    {"id": "http-methods", "title": "HTTP Methods", "description": "Rules for proper HTTP method usage", "order": 2},
-    {"id": "naming", "title": "Naming Conventions", "description": "Rules for property and parameter naming", "order": 3},
-    {"id": "errors", "title": "Error Handling", "description": "Rules for error response format", "order": 4},
-    {"id": "responses", "title": "Responses", "description": "Rules for response structure", "order": 5},
-    {"id": "documentation", "title": "Documentation", "description": "Rules for API documentation", "order": 6},
-    {"id": "security", "title": "Security", "description": "Rules for API security", "order": 7}
-  ],
-
-  "rules": [
+  "version": "2.3.0",
+  "description": "Industry-leading API style guide optimized for SDK generation (ogen, openapi-generator). Synthesized from Stripe, GitHub, Microsoft, and Zalando patterns. Enforces discriminated unions, named schemas, explicit nullability, and consistent operationIds for clean generated code.",
+  "metadata": {
+    "author": "PlexusOne",
+    "license": "Apache-2.0",
+    "repository": "https://github.com/plexusone/api-style-spec",
+    "lastUpdated": "2025-07-01",
+    "sources": [
+      "Microsoft REST API Guidelines",
+      "Zalando RESTful API Guidelines",
+      "Google Cloud API Design Guide",
+      "PayPal REST API Guidelines",
+      "Stripe API Guidelines",
+      "ogen SDK generator requirements"
+    ]
+  },
+  "designPrinciples": [
     {
-      "id": "URI-001",
-      "title": "Use plural resource names",
-      "category": "uri-design",
-      "severity": "error",
-      "rationale": "Plural resource names provide consistency and clearly indicate collections. Use /users instead of /user.",
-      "examples": {
-        "good": ["/users", "/orders", "/products/{productId}/reviews"],
-        "bad": ["/user", "/order", "/product/{productId}/review"]
-      },
-      "enforcement": {
-        "type": "spectral",
-        "function": "pattern",
-        "given": {"paths": ["$.paths[*]~"]},
-        "options": {"match": "^/[a-z]+s(/|$|\\{)"}
-      },
-      "judge": {
-        "prompt": "Check if all top-level resource names in paths use plural form (e.g., /users not /user).",
-        "weight": 1.0
-      },
-      "tags": ["rest", "resources"],
-      "recommended": true
+      "id": "api-first",
+      "title": "API First",
+      "description": "Design and document APIs before implementation. The OpenAPI specification is the contract between teams."
     },
     {
-      "id": "URI-002",
-      "title": "Use kebab-case for path segments",
-      "category": "uri-design",
-      "severity": "error",
-      "rationale": "Kebab-case (lowercase with hyphens) is the standard for URLs. Avoid camelCase or snake_case in paths.",
-      "examples": {
-        "good": ["/user-profiles", "/order-items", "/api-keys"],
-        "bad": ["/userProfiles", "/order_items", "/ApiKeys"]
-      },
-      "enforcement": {
-        "type": "spectral",
-        "function": "pattern",
-        "given": {"paths": ["$.paths[*]~"]},
-        "options": {"match": "^(/[a-z][a-z0-9-]*|/\\{[a-zA-Z][a-zA-Z0-9]*\\})+$"}
-      },
-      "tags": ["rest", "naming"],
-      "recommended": true
+      "id": "consumer-centric",
+      "title": "Consumer-Centric Design",
+      "description": "Design APIs from the consumer's perspective. Optimize for the common use cases, not internal implementation."
     },
     {
-      "id": "URI-003",
-      "title": "Avoid verbs in paths",
-      "category": "uri-design",
-      "severity": "warn",
-      "rationale": "REST uses HTTP methods to indicate actions. Avoid verbs like /getUsers or /createOrder in paths.",
-      "examples": {
-        "good": ["/users", "/orders"],
-        "bad": ["/getUsers", "/createOrder", "/deleteProduct"]
-      },
-      "enforcement": {
-        "type": "spectral",
-        "function": "pattern",
-        "given": {"paths": ["$.paths[*]~"]},
-        "options": {"notMatch": "/(get|create|update|delete|fetch|add|remove|set|list|find)[A-Z]"}
-      },
-      "tags": ["rest"],
-      "recommended": true
+      "id": "consistency",
+      "title": "Consistency Over Cleverness",
+      "description": "Consistent patterns across endpoints reduce cognitive load. Predictable APIs are easier to learn and use."
     },
     {
-      "id": "URI-004",
-      "title": "Use path parameters for resource identifiers",
-      "category": "uri-design",
-      "severity": "warn",
-      "rationale": "Resource identifiers should be path parameters, not query parameters. Use /users/{id} not /users?id=123.",
-      "examples": {
-        "good": ["/users/{userId}", "/orders/{orderId}/items/{itemId}"],
-        "bad": ["/users?id={userId}", "/getUser?userId={userId}"]
-      },
-      "enforcement": {
-        "type": "none"
-      },
-      "judge": {
-        "prompt": "Check if resource identifiers are properly placed in path parameters rather than query parameters.",
-        "weight": 0.8
-      },
-      "tags": ["rest"],
-      "recommended": true
+      "id": "evolvability",
+      "title": "Design for Evolution",
+      "description": "APIs will change. Design for backward compatibility from day one. Never break existing clients."
     },
     {
-      "id": "URI-005",
-      "title": "Limit path nesting depth",
-      "category": "uri-design",
-      "severity": "warn",
-      "rationale": "Deeply nested paths are hard to read and maintain. Limit nesting to 3 levels (e.g., /a/{id}/b/{id}/c).",
-      "examples": {
-        "good": ["/users/{userId}/orders", "/orders/{orderId}/items"],
-        "bad": ["/users/{userId}/orders/{orderId}/items/{itemId}/reviews/{reviewId}/comments"]
-      },
-      "enforcement": {
-        "type": "spectral",
-        "function": "pattern",
-        "given": {"paths": ["$.paths[*]~"]},
-        "options": {"notMatch": "^(/[^/]+){8,}$"}
-      },
-      "tags": ["rest", "complexity"],
-      "recommended": false
-    },
-
-    {
-      "id": "HTTP-001",
-      "title": "GET requests must not have request body",
-      "category": "http-methods",
-      "severity": "error",
-      "rationale": "GET requests should be safe and idempotent. Request bodies are not semantically defined for GET.",
-      "examples": {
-        "good": ["GET /users with query parameters"],
-        "bad": ["GET /users with JSON body"]
-      },
-      "enforcement": {
-        "type": "spectral",
-        "function": "falsy",
-        "given": {"paths": ["$.paths[*].get.requestBody"]}
-      },
-      "tags": ["http", "methods"],
-      "recommended": true
+      "id": "simplicity",
+      "title": "Simplicity",
+      "description": "Keep APIs simple. Avoid unnecessary complexity. When in doubt, leave it out."
     },
     {
-      "id": "HTTP-002",
-      "title": "DELETE requests should not have request body",
-      "category": "http-methods",
-      "severity": "warn",
-      "rationale": "DELETE requests typically don't need a body. The resource to delete is identified by the URL.",
-      "examples": {
-        "good": ["DELETE /users/{id}"],
-        "bad": ["DELETE /users with body containing ID"]
-      },
-      "enforcement": {
-        "type": "spectral",
-        "function": "falsy",
-        "given": {"paths": ["$.paths[*].delete.requestBody"]}
-      },
-      "tags": ["http", "methods"],
-      "recommended": true
-    },
-    {
-      "id": "HTTP-003",
-      "title": "POST should return 201 for resource creation",
-      "category": "http-methods",
-      "severity": "warn",
-      "rationale": "When POST creates a new resource, return 201 Created with a Location header, not 200 OK.",
-      "examples": {
-        "good": ["POST /users returns 201 with Location header"],
-        "bad": ["POST /users returns 200"]
-      },
-      "enforcement": {
-        "type": "spectral",
-        "function": "truthy",
-        "given": {"paths": ["$.paths[*].post.responses['201']"]}
-      },
-      "tags": ["http", "methods", "responses"],
-      "recommended": true
-    },
-    {
-      "id": "HTTP-004",
-      "title": "Use PATCH for partial updates",
-      "category": "http-methods",
-      "severity": "info",
-      "rationale": "PATCH is for partial updates, PUT is for full replacement. Use PATCH when updating specific fields.",
-      "examples": {
-        "good": ["PATCH /users/{id} with partial fields"],
-        "bad": ["PUT /users/{id} with only changed fields"]
-      },
-      "enforcement": {
-        "type": "none"
-      },
-      "judge": {
-        "prompt": "Check if the API properly distinguishes between PATCH (partial update) and PUT (full replacement).",
-        "weight": 0.6
-      },
-      "tags": ["http", "methods"],
-      "recommended": false
-    },
-    {
-      "id": "HTTP-005",
-      "title": "Operations must have unique operationId",
-      "category": "http-methods",
-      "severity": "error",
-      "rationale": "Each operation needs a unique operationId for code generation and documentation.",
-      "enforcement": {
-        "type": "spectral",
-        "function": "truthy",
-        "given": {"paths": ["$.paths[*][get,post,put,patch,delete].operationId"]}
-      },
-      "tags": ["openapi"],
-      "recommended": true
-    },
-
-    {
-      "id": "NAMING-001",
-      "title": "Use camelCase for JSON properties",
-      "category": "naming",
-      "severity": "error",
-      "rationale": "camelCase is the JavaScript/JSON convention. Use firstName, not first_name or FirstName.",
-      "examples": {
-        "good": ["firstName", "lastName", "emailAddress", "createdAt"],
-        "bad": ["first_name", "FirstName", "FIRST_NAME"]
-      },
-      "enforcement": {
-        "type": "spectral",
-        "function": "casing",
-        "given": {"paths": ["$.components.schemas[*].properties[*]~"]},
-        "options": {"type": "camel"}
-      },
-      "tags": ["naming", "json"],
-      "recommended": true
-    },
-    {
-      "id": "NAMING-002",
-      "title": "Use camelCase for query parameters",
-      "category": "naming",
-      "severity": "warn",
-      "rationale": "Query parameters should follow the same camelCase convention as JSON properties.",
-      "examples": {
-        "good": ["?sortBy=name", "?pageSize=10", "?includeDeleted=true"],
-        "bad": ["?sort_by=name", "?page-size=10"]
-      },
-      "enforcement": {
-        "type": "spectral",
-        "function": "casing",
-        "given": {"paths": ["$.paths[*][*].parameters[?(@.in=='query')].name"]},
-        "options": {"type": "camel"}
-      },
-      "tags": ["naming", "parameters"],
-      "recommended": true
-    },
-    {
-      "id": "NAMING-003",
-      "title": "Boolean properties should use is/has/can prefix",
-      "category": "naming",
-      "severity": "info",
-      "rationale": "Boolean properties are clearer with prefixes like isActive, hasPermission, canEdit.",
-      "examples": {
-        "good": ["isActive", "hasAccess", "canDelete", "isEnabled"],
-        "bad": ["active", "access", "deleted", "enabled"]
-      },
-      "enforcement": {
-        "type": "none"
-      },
-      "judge": {
-        "prompt": "Check if boolean schema properties use appropriate prefixes (is, has, can, should, will).",
-        "weight": 0.5
-      },
-      "tags": ["naming", "boolean"],
-      "recommended": false
-    },
-    {
-      "id": "NAMING-004",
-      "title": "Use consistent date/time property naming",
-      "category": "naming",
-      "severity": "info",
-      "rationale": "Use consistent suffixes for timestamps: createdAt, updatedAt, deletedAt, expiresAt.",
-      "examples": {
-        "good": ["createdAt", "updatedAt", "expiresAt"],
-        "bad": ["created", "creation_date", "updated_timestamp"]
-      },
-      "enforcement": {
-        "type": "none"
-      },
-      "judge": {
-        "prompt": "Check if date/time properties use consistent naming like createdAt, updatedAt with At suffix.",
-        "weight": 0.5
-      },
-      "tags": ["naming", "datetime"],
-      "recommended": false
-    },
-
-    {
-      "id": "ERR-001",
-      "title": "Define error responses for operations",
-      "category": "errors",
-      "severity": "warn",
-      "rationale": "Operations should define expected error responses (4xx, 5xx) for proper client handling.",
-      "enforcement": {
-        "type": "none"
-      },
-      "judge": {
-        "prompt": "Check if operations define appropriate error responses (400, 401, 403, 404, 500).",
-        "weight": 0.8
-      },
-      "tags": ["errors", "responses"],
-      "recommended": true
-    },
-    {
-      "id": "ERR-002",
-      "title": "Use consistent error response schema",
-      "category": "errors",
-      "severity": "warn",
-      "rationale": "Error responses should follow a consistent format, preferably RFC 7807 Problem Details.",
-      "examples": {
-        "good": ["{\"type\": \"...\", \"title\": \"...\", \"status\": 400, \"detail\": \"...\"}"],
-        "bad": ["{\"error\": \"something went wrong\"}", "{\"message\": \"error\"}"]
-      },
-      "enforcement": {
-        "type": "none"
-      },
-      "judge": {
-        "prompt": "Check if error responses follow RFC 7807 Problem Details format with type, title, status, detail fields.",
-        "weight": 1.0
-      },
-      "tags": ["errors", "rfc7807"],
-      "recommended": true
-    },
-    {
-      "id": "ERR-003",
-      "title": "Include 401 response for authenticated endpoints",
-      "category": "errors",
-      "severity": "warn",
-      "rationale": "Endpoints requiring authentication should document the 401 Unauthorized response.",
-      "enforcement": {
-        "type": "none"
-      },
-      "judge": {
-        "prompt": "Check if endpoints with security requirements define a 401 response.",
-        "weight": 0.7
-      },
-      "tags": ["errors", "security"],
-      "recommended": true
-    },
-
-    {
-      "id": "RESP-001",
-      "title": "Responses must have descriptions",
-      "category": "responses",
-      "severity": "error",
-      "rationale": "Each response should have a description explaining what it represents.",
-      "enforcement": {
-        "type": "spectral",
-        "function": "truthy",
-        "given": {"paths": ["$.paths[*][*].responses[*].description"]}
-      },
-      "tags": ["documentation", "responses"],
-      "recommended": true
-    },
-    {
-      "id": "RESP-002",
-      "title": "Success responses should define content schema",
-      "category": "responses",
-      "severity": "warn",
-      "rationale": "Success responses (2xx) should define the response body schema for code generation.",
-      "enforcement": {
-        "type": "spectral",
-        "function": "truthy",
-        "given": {"paths": ["$.paths[*][*].responses['200'].content", "$.paths[*][*].responses['201'].content"]}
-      },
-      "tags": ["responses", "schema"],
-      "recommended": true
-    },
-    {
-      "id": "RESP-003",
-      "title": "Use consistent pagination format",
-      "category": "responses",
-      "severity": "info",
-      "rationale": "List endpoints should use consistent pagination with standard fields like items, totalCount, nextCursor.",
-      "examples": {
-        "good": ["{\"items\": [...], \"totalCount\": 100, \"nextCursor\": \"...\"}"],
-        "bad": ["{\"data\": [...], \"total\": 100}", "{\"results\": [...], \"count\": 100}"]
-      },
-      "enforcement": {
-        "type": "none"
-      },
-      "judge": {
-        "prompt": "Check if list/collection responses use consistent pagination format across the API.",
-        "weight": 0.7
-      },
-      "tags": ["responses", "pagination"],
-      "recommended": false
-    },
-
-    {
-      "id": "DOC-001",
-      "title": "API must have info description",
-      "category": "documentation",
-      "severity": "error",
-      "rationale": "The info section should have a description explaining the API's purpose.",
-      "enforcement": {
-        "type": "spectral",
-        "function": "truthy",
-        "given": {"paths": ["$.info.description"]}
-      },
-      "tags": ["documentation", "info"],
-      "recommended": true
-    },
-    {
-      "id": "DOC-002",
-      "title": "Operations must have summary or description",
-      "category": "documentation",
-      "severity": "warn",
-      "rationale": "Each operation should have a summary or description explaining what it does.",
-      "enforcement": {
-        "type": "spectral",
-        "function": "truthy",
-        "given": {"paths": ["$.paths[*][get,post,put,patch,delete].summary"]}
-      },
-      "tags": ["documentation", "operations"],
-      "recommended": true
-    },
-    {
-      "id": "DOC-003",
-      "title": "Parameters must have descriptions",
-      "category": "documentation",
-      "severity": "warn",
-      "rationale": "Parameters should have descriptions explaining their purpose and valid values.",
-      "enforcement": {
-        "type": "spectral",
-        "function": "truthy",
-        "given": {"paths": ["$.paths[*][*].parameters[*].description"]}
-      },
-      "tags": ["documentation", "parameters"],
-      "recommended": true
-    },
-    {
-      "id": "DOC-004",
-      "title": "Schema properties should have descriptions",
-      "category": "documentation",
-      "severity": "info",
-      "rationale": "Schema properties benefit from descriptions, especially for complex or non-obvious fields.",
-      "enforcement": {
-        "type": "none"
-      },
-      "judge": {
-        "prompt": "Check if schema properties have descriptions, especially for non-obvious fields.",
-        "weight": 0.5
-      },
-      "tags": ["documentation", "schemas"],
-      "recommended": false
-    },
-    {
-      "id": "DOC-005",
-      "title": "Provide examples for schemas",
-      "category": "documentation",
-      "severity": "info",
-      "rationale": "Examples help consumers understand expected data formats and valid values.",
-      "enforcement": {
-        "type": "none"
-      },
-      "judge": {
-        "prompt": "Check if schemas provide examples for key types and properties.",
-        "weight": 0.5
-      },
-      "tags": ["documentation", "examples"],
-      "recommended": false
-    },
-
-    {
-      "id": "SEC-001",
-      "title": "Define security schemes",
-      "category": "security",
-      "severity": "warn",
-      "rationale": "APIs should define security schemes in components.securitySchemes.",
-      "enforcement": {
-        "type": "spectral",
-        "function": "truthy",
-        "given": {"paths": ["$.components.securitySchemes"]}
-      },
-      "tags": ["security"],
-      "recommended": true
-    },
-    {
-      "id": "SEC-002",
-      "title": "Apply security to operations",
-      "category": "security",
-      "severity": "warn",
-      "rationale": "Operations should specify security requirements either globally or per-operation.",
-      "enforcement": {
-        "type": "spectral",
-        "function": "truthy",
-        "given": {"paths": ["$.security"]}
-      },
-      "judge": {
-        "prompt": "Check if operations have security requirements defined globally or per-operation.",
-        "weight": 0.7
-      },
-      "tags": ["security"],
-      "recommended": true
-    },
-    {
-      "id": "SEC-003",
-      "title": "Avoid API keys in URL",
-      "category": "security",
-      "severity": "error",
-      "rationale": "API keys in URLs are logged and cached. Use headers instead.",
-      "enforcement": {
-        "type": "spectral",
-        "function": "falsy",
-        "given": {"paths": ["$.components.securitySchemes[?(@.type=='apiKey' && @.in=='query')]"]}
-      },
-      "tags": ["security", "apikey"],
-      "recommended": true
-    },
-    {
-      "id": "SEC-004",
-      "title": "Use HTTPS for server URLs",
-      "category": "security",
-      "severity": "error",
-      "rationale": "All API server URLs should use HTTPS for secure communication.",
-      "enforcement": {
-        "type": "spectral",
-        "function": "pattern",
-        "given": {"paths": ["$.servers[*].url"]},
-        "options": {"match": "^https://"}
-      },
-      "tags": ["security", "https"],
-      "recommended": true
+      "id": "self-descriptive",
+      "title": "Self-Descriptive",
+      "description": "APIs should be discoverable and self-documenting. Good naming reduces the need for documentation."
     }
   ],
-
+  "categories": [
+    {
+      "id": "general",
+      "title": "General Guidelines",
+      "description": "Fundamental requirements for all APIs"
+    },
+    {
+      "id": "naming",
+      "title": "Naming Conventions",
+      "description": "Consistent naming for resources, properties, and URLs"
+    },
+    {
+      "id": "urls",
+      "title": "URL Design",
+      "description": "Resource-oriented URL patterns"
+    },
+    {
+      "id": "http-methods",
+      "title": "HTTP Methods",
+      "description": "Proper use of HTTP verbs and semantics"
+    },
+    {
+      "id": "http-status",
+      "title": "HTTP Status Codes",
+      "description": "Appropriate status code usage"
+    },
+    {
+      "id": "request-response",
+      "title": "Request & Response",
+      "description": "JSON payload structure and conventions"
+    },
+    {
+      "id": "headers",
+      "title": "HTTP Headers",
+      "description": "Standard and custom header usage"
+    },
+    {
+      "id": "errors",
+      "title": "Error Handling",
+      "description": "Consistent error responses using RFC 9457 Problem Details"
+    },
+    {
+      "id": "pagination",
+      "title": "Pagination",
+      "description": "Cursor-based pagination patterns"
+    },
+    {
+      "id": "filtering",
+      "title": "Filtering & Sorting",
+      "description": "Query parameter conventions"
+    },
+    {
+      "id": "versioning",
+      "title": "Versioning",
+      "description": "API versioning and deprecation"
+    },
+    {
+      "id": "compatibility",
+      "title": "Compatibility",
+      "description": "Backward compatibility and breaking changes"
+    },
+    {
+      "id": "deprecation",
+      "title": "Deprecation",
+      "description": "Deprecation policies and sunset procedures"
+    },
+    {
+      "id": "security",
+      "title": "Security",
+      "description": "Authentication, authorization, and security headers"
+    },
+    {
+      "id": "documentation",
+      "title": "Documentation",
+      "description": "OpenAPI specification requirements"
+    },
+    {
+      "id": "json",
+      "title": "JSON Conventions",
+      "description": "JSON formatting and data type conventions"
+    },
+    {
+      "id": "schema",
+      "title": "Schema Design",
+      "description": "Schema structure, types, and validation"
+    },
+    {
+      "id": "collections",
+      "title": "Collections",
+      "description": "Collection resource patterns and operations"
+    },
+    {
+      "id": "long-running",
+      "title": "Long-Running Operations",
+      "description": "Async operations and polling patterns"
+    },
+    {
+      "id": "conditional",
+      "title": "Conditional Requests",
+      "description": "ETags, If-Match, and conditional operations"
+    },
+    {
+      "id": "performance",
+      "title": "Performance",
+      "description": "Caching, compression, and optimization"
+    },
+    {
+      "id": "hypermedia",
+      "title": "Hypermedia",
+      "description": "HATEOAS and link relations"
+    },
+    {
+      "id": "batch",
+      "title": "Batch Operations",
+      "description": "Batch request and response patterns"
+    },
+    {
+      "id": "events",
+      "title": "Events & Webhooks",
+      "description": "Event-driven patterns and webhook design"
+    },
+    {
+      "id": "actions",
+      "title": "Actions & Functions",
+      "description": "Non-CRUD operations and custom actions"
+    },
+    {
+      "id": "multi-tenancy",
+      "title": "Multi-Tenancy",
+      "description": "Tenant isolation and scoping patterns"
+    },
+    {
+      "id": "throttling",
+      "title": "Rate Limiting",
+      "description": "Throttling and rate limit headers"
+    }
+  ],
+  "rules": [
+    {
+      "id": "PO-001",
+      "title": "Provide OpenAPI 3.1 specification",
+      "category": "general",
+      "severity": "error",
+      "description": "All APIs MUST have an OpenAPI 3.1 specification. The spec is the source of truth and MUST be maintained alongside code.",
+      "rationale": "OpenAPI enables tooling, documentation generation, client SDK generation, and contract testing. Version 3.1 aligns with JSON Schema draft 2020-12.",
+      "source": "Zalando Z-101, Microsoft MS-001",
+      "examples": {
+        "good": [
+          "openapi: 3.1.0"
+        ],
+        "bad": [
+          "swagger: 2.0",
+          "No specification provided"
+        ]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {
+          "paths": [
+            "$.openapi"
+          ]
+        },
+        "options": {
+          "match": "^3\\.1\\."
+        }
+      },
+      "judge": {
+        "prompt": "Check if the OpenAPI specification uses version 3.1.x",
+        "passCriteria": [
+          "OpenAPI version is 3.1.x",
+          "openapi field is present at root",
+          "Version string starts with 3.1"
+        ],
+        "failCriteria": [
+          "Uses Swagger 2.0",
+          "Uses OpenAPI 3.0.x or earlier",
+          "No openapi field present",
+          "Invalid version format"
+        ]
+      }
+    },
+    {
+      "id": "PO-002",
+      "title": "Use camelCase for property names",
+      "category": "naming",
+      "severity": "error",
+      "description": "All JSON property names MUST use camelCase (e.g., firstName, createdAt, userId).",
+      "rationale": "camelCase is native to JavaScript/JSON and aligns with OpenAPI conventions. It is the standard for Google, Microsoft, and GitHub APIs, and matches the PlexusOne codebase.",
+      "source": "Microsoft REST Guidelines, Google JSON Style Guide",
+      "examples": {
+        "good": [
+          "firstName",
+          "lastName",
+          "createdAt",
+          "userId",
+          "isActive"
+        ],
+        "bad": [
+          "first_name (snake_case)",
+          "FirstName (PascalCase)",
+          "FIRST_NAME (SCREAMING_SNAKE)"
+        ]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {
+          "paths": [
+            "$.components.schemas[*].properties[*]~"
+          ]
+        },
+        "options": {
+          "match": "^[a-z][a-zA-Z0-9]*$"
+        }
+      },
+      "judge": {
+        "prompt": "Check if all JSON property names use camelCase",
+        "passCriteria": [
+          "All properties use camelCase (e.g., firstName, createdAt)",
+          "First letter lowercase",
+          "No underscores or hyphens in property names"
+        ],
+        "failCriteria": [
+          "Properties use snake_case",
+          "Properties use PascalCase",
+          "Properties use kebab-case",
+          "Inconsistent casing"
+        ]
+      }
+    },
+    {
+      "id": "PO-003",
+      "title": "Use kebab-case for URL paths",
+      "category": "urls",
+      "severity": "error",
+      "description": "URL path segments MUST use kebab-case (lowercase with hyphens).",
+      "rationale": "Kebab-case is the standard for URLs. It's readable and avoids issues with case sensitivity in different systems.",
+      "source": "Zalando Z-129, Microsoft MS-020",
+      "examples": {
+        "good": [
+          "/api/v1/user-accounts",
+          "/api/v1/order-items/{orderId}"
+        ],
+        "bad": [
+          "/api/v1/userAccounts",
+          "/api/v1/user_accounts",
+          "/api/v1/UserAccounts"
+        ]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {
+          "paths": [
+            "$.paths[*]~"
+          ]
+        },
+        "options": {
+          "match": "^/[a-z0-9-/{}]+$"
+        }
+      },
+      "judge": {
+        "prompt": "Check if all URL path segments use kebab-case (lowercase with hyphens)",
+        "passCriteria": [
+          "All paths use kebab-case",
+          "Path parameters use camelCase in braces"
+        ],
+        "failCriteria": [
+          "Paths use camelCase",
+          "Paths use snake_case",
+          "Paths use uppercase"
+        ]
+      }
+    },
+    {
+      "id": "PO-004",
+      "title": "Use plural nouns for collection resources",
+      "category": "urls",
+      "severity": "error",
+      "description": "Collection resource names MUST be plural nouns. Use /users not /user, /orders not /order.",
+      "rationale": "Plural nouns make it clear you're dealing with a collection. GET /users returns multiple users, POST /users creates one user in the collection.",
+      "source": "Zalando Z-134, Microsoft MS-021",
+      "examples": {
+        "good": [
+          "/users",
+          "/orders",
+          "/products",
+          "/user-accounts"
+        ],
+        "bad": [
+          "/user",
+          "/order",
+          "/product",
+          "/userAccount"
+        ]
+      },
+      "judge": {
+        "prompt": "Check if collection resource endpoints use plural nouns",
+        "passCriteria": [
+          "All collection paths use plural nouns (users, orders, products)",
+          "Consistent pluralization",
+          "Sub-resources also plural"
+        ],
+        "failCriteria": [
+          "Collection paths use singular nouns",
+          "Inconsistent singular/plural",
+          "Verbs in collection paths"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      }
+    },
+    {
+      "id": "PO-005",
+      "title": "Version APIs with URI prefix",
+      "category": "versioning",
+      "severity": "error",
+      "description": "APIs MUST be versioned using a URI prefix: /v1/, /v2/, etc. Major version only.",
+      "rationale": "URI versioning is simple, explicit, and cacheable. Including version in the URL makes it obvious which version a client is using. Only major versions need to be in the URL since minor/patch changes are backward compatible.",
+      "source": "PayPal PP-050, Industry best practice",
+      "examples": {
+        "good": [
+          "/v1/users",
+          "/v2/orders"
+        ],
+        "bad": [
+          "/users?version=1",
+          "/users with Accept header versioning"
+        ]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {
+          "paths": [
+            "$.paths[*]~"
+          ]
+        },
+        "options": {
+          "match": "^/v[0-9]+/"
+        }
+      },
+      "judge": {
+        "prompt": "Check if API uses URI versioning with /v1/, /v2/ prefix pattern",
+        "passCriteria": [
+          "All paths start with version prefix like /v1/",
+          "Version is major only"
+        ],
+        "failCriteria": [
+          "No version in URL",
+          "Version in query parameter",
+          "Version in header only"
+        ]
+      }
+    },
+    {
+      "id": "PO-006",
+      "title": "Use RFC 9457 Problem Details for errors",
+      "category": "errors",
+      "severity": "error",
+      "description": "Error responses MUST use the RFC 9457 Problem Details format with Content-Type: application/problem+json. RFC 9457 obsoletes RFC 9457 and adds the IANA Problem Type Registry.",
+      "rationale": "RFC 9457 is the IETF standard for HTTP API error responses (obsoletes RFC 9457). It provides a consistent structure with type, title, status, detail, and instance fields that clients can parse programmatically. The Problem Type Registry enables reuse of common error types across APIs.",
+      "source": "RFC 9457, Zalando Z-176",
+      "examples": {
+        "good": [
+          "{\"type\": \"https://api.example.com/problems/insufficient-funds\", \"title\": \"Insufficient Funds\", \"status\": 422, \"detail\": \"Account balance is $10.00, but transaction requires $25.00\", \"instance\": \"/accounts/12345/transactions/67890\"}"
+        ],
+        "bad": [
+          "{\"error\": \"Something went wrong\"}",
+          "{\"code\": 500, \"message\": \"Internal error\"}"
+        ]
+      },
+      "enforcement": {
+        "type": "none",
+        "reason": "JSONPath filter expressions not supported by parser"
+      },
+      "judge": {
+        "prompt": "Check if error responses use RFC 9457 Problem Details format",
+        "passCriteria": [
+          "Error responses use application/problem+json",
+          "Error schema has type, title, status, detail fields",
+          "Type URIs are meaningful (not about:blank for custom errors)"
+        ],
+        "failCriteria": [
+          "Custom error format without Problem Details fields",
+          "Error responses lack structured format",
+          "Missing Content-Type: application/problem+json"
+        ]
+      }
+    },
+    {
+      "id": "PO-007",
+      "title": "Use cursor-based pagination",
+      "category": "pagination",
+      "severity": "error",
+      "description": "Collection endpoints SHOULD use cursor-based pagination with `cursor` and `limit` parameters, returning `nextCursor` in the response.",
+      "rationale": "Cursor-based pagination is more scalable than offset-based. It handles real-time data changes gracefully and performs well on large datasets.",
+      "source": "Zalando Z-160, Industry best practice",
+      "examples": {
+        "good": [
+          "GET /v1/users?limit=20&cursor=eyJpZCI6MTIzfQ",
+          "{\"items\": [...], \"nextCursor\": \"eyJpZCI6MTQzfQ\", \"hasMore\": true}"
+        ],
+        "bad": [
+          "GET /v1/users?page=5&per_page=20",
+          "{\"items\": [...], \"page\": 5, \"total_pages\": 100}"
+        ]
+      },
+      "judge": {
+        "prompt": "Check if collection endpoints use cursor-based pagination",
+        "passCriteria": [
+          "Uses cursor parameter",
+          "Returns nextCursor in response"
+        ],
+        "partialCriteria": [
+          "Uses offset/limit but not cursor"
+        ],
+        "failCriteria": [
+          "No pagination on large collections"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      }
+    },
+    {
+      "id": "PO-008",
+      "title": "Use standard HTTP methods correctly",
+      "category": "http-methods",
+      "severity": "error",
+      "description": "Use HTTP methods according to their semantics: GET (read), POST (create), PUT (replace), PATCH (partial update), DELETE (remove).",
+      "rationale": "Correct HTTP method usage enables caching, idempotency guarantees, and predictable behavior.",
+      "source": "Zalando Z-148, Microsoft MS-030, PayPal PP-020",
+      "examples": {
+        "good": [
+          "GET /v1/users/{id} - retrieve user",
+          "POST /v1/users - create user",
+          "PATCH /v1/users/{id} - update user fields",
+          "DELETE /v1/users/{id} - delete user"
+        ],
+        "bad": [
+          "POST /v1/users/{id}/delete",
+          "GET /v1/users/create?name=John"
+        ]
+      },
+      "judge": {
+        "prompt": "Verify HTTP methods are used according to REST semantics",
+        "passCriteria": [
+          "GET for reads",
+          "POST for creates",
+          "PATCH for updates",
+          "DELETE for removals"
+        ],
+        "failCriteria": [
+          "Actions in URL with wrong method",
+          "GET with side effects"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      }
+    },
+    {
+      "id": "PO-009",
+      "title": "GET and DELETE must be idempotent",
+      "category": "http-methods",
+      "severity": "error",
+      "description": "GET, PUT, and DELETE operations MUST be idempotent. Multiple identical requests must have the same effect as a single request.",
+      "rationale": "Idempotency enables safe retries and improves reliability. Clients can retry failed requests without causing duplicate operations.",
+      "source": "Zalando Z-149, Microsoft MS-031",
+      "judge": {
+        "prompt": "Check if GET, PUT, DELETE operations are idempotent",
+        "passCriteria": [
+          "Repeated requests have same effect",
+          "No side effects on GET"
+        ],
+        "failCriteria": [
+          "GET creates resources",
+          "DELETE is not idempotent"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "examples": {
+        "good": [
+          "GET /users - always returns same data",
+          "DELETE /users/123 - second call returns 404 or 204"
+        ],
+        "bad": [
+          "GET /users increments view count",
+          "DELETE /users/123 throws error on second call"
+        ]
+      }
+    },
+    {
+      "id": "PO-010",
+      "title": "Return 201 Created with Location header for POST",
+      "category": "http-status",
+      "severity": "error",
+      "description": "Successful POST requests that create resources MUST return 201 Created with a Location header pointing to the new resource.",
+      "rationale": "201 explicitly indicates creation. The Location header enables clients to fetch the created resource without parsing the response body.",
+      "source": "Zalando Z-152, Microsoft MS-040",
+      "examples": {
+        "good": [
+          "HTTP/1.1 201 Created\\nLocation: /v1/users/12345"
+        ],
+        "bad": [
+          "HTTP/1.1 200 OK (for creation)"
+        ]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.paths[*].post.responses['201']"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if POST endpoints return 201 Created with Location header for resource creation",
+        "passCriteria": [
+          "POST responses include 201 status",
+          "201 response documents Location header"
+        ],
+        "failCriteria": [
+          "POST returns 200 for creation",
+          "No 201 response defined",
+          "Missing Location header"
+        ]
+      }
+    },
+    {
+      "id": "PO-011",
+      "title": "Use 204 No Content for successful DELETE",
+      "category": "http-status",
+      "severity": "warn",
+      "description": "Successful DELETE requests SHOULD return 204 No Content with an empty body.",
+      "rationale": "The resource no longer exists, so there's nothing to return. 204 clearly indicates success without a body.",
+      "source": "Zalando Z-154",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.paths[*].delete.responses['204']"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if DELETE endpoints return 204 No Content for successful deletion",
+        "passCriteria": [
+          "DELETE responses include 204 status",
+          "204 response has no body"
+        ],
+        "failCriteria": [
+          "DELETE returns 200 with body",
+          "No 204 response defined"
+        ]
+      },
+      "examples": {
+        "good": [
+          "HTTP/1.1 204 No Content",
+          "HTTP/1.1 200 OK with deleted resource body"
+        ],
+        "bad": [
+          "HTTP/1.1 200 OK with {\"success\": true}"
+        ]
+      }
+    },
+    {
+      "id": "PO-012",
+      "title": "Use 400 Bad Request for validation errors",
+      "category": "http-status",
+      "severity": "error",
+      "description": "Use 400 Bad Request for client errors: malformed syntax, invalid parameters, validation failures.",
+      "rationale": "400 is the generic client error. It tells the client the request was wrong and should not be retried without modification.",
+      "source": "Zalando Z-155, PayPal PP-030",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.paths[*][*].responses['400']"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if 400 Bad Request is documented for validation errors",
+        "passCriteria": [
+          "400 response defined for endpoints accepting input",
+          "400 response has error schema"
+        ],
+        "failCriteria": [
+          "No 400 response defined",
+          "Missing error details in 400 response"
+        ]
+      },
+      "examples": {
+        "good": [
+          "400 response with RFC 9457 body explaining invalid field"
+        ],
+        "bad": [
+          "500 error for client validation failures"
+        ]
+      }
+    },
+    {
+      "id": "PO-013",
+      "title": "Use 401 Unauthorized for missing/invalid authentication",
+      "category": "http-status",
+      "severity": "error",
+      "description": "Use 401 Unauthorized when authentication is required but not provided or invalid.",
+      "rationale": "401 specifically indicates an authentication problem. The client should authenticate and retry.",
+      "source": "Zalando Z-156",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.paths[*][*].responses['401']"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if 401 Unauthorized is documented for authentication failures",
+        "passCriteria": [
+          "401 response defined for secured endpoints",
+          "401 response explains authentication requirement"
+        ],
+        "failCriteria": [
+          "No 401 response for secured endpoints",
+          "Missing WWW-Authenticate guidance"
+        ]
+      },
+      "examples": {
+        "good": [
+          "401 Unauthorized with WWW-Authenticate header"
+        ],
+        "bad": [
+          "403 for missing authentication"
+        ]
+      }
+    },
+    {
+      "id": "PO-014",
+      "title": "Use 403 Forbidden for authorization failures",
+      "category": "http-status",
+      "severity": "error",
+      "description": "Use 403 Forbidden when the user is authenticated but not authorized to perform the action.",
+      "rationale": "403 distinguishes authorization from authentication. The user is known but not permitted.",
+      "source": "Zalando Z-157",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.paths[*][*].responses['403']"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if 403 Forbidden is documented for authorization failures",
+        "passCriteria": [
+          "403 response defined for endpoints with authorization",
+          "403 distinct from 401"
+        ],
+        "failCriteria": [
+          "No 403 response defined",
+          "403 used interchangeably with 401"
+        ]
+      },
+      "examples": {
+        "good": [
+          "403 Forbidden when user lacks permission"
+        ],
+        "bad": [
+          "401 for authenticated user without permission"
+        ]
+      }
+    },
+    {
+      "id": "PO-015",
+      "title": "Use 404 Not Found for missing resources",
+      "category": "http-status",
+      "severity": "error",
+      "description": "Use 404 Not Found when the requested resource does not exist.",
+      "rationale": "404 is clear and well-understood. Don't use 200 with an empty body or error message.",
+      "source": "Zalando Z-158, Microsoft MS-045",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.paths[*][*].responses['404']"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if 404 Not Found is documented for missing resources",
+        "passCriteria": [
+          "404 response defined for endpoints with path parameters",
+          "404 response has error details"
+        ],
+        "failCriteria": [
+          "No 404 response for resource endpoints",
+          "Returns 200 with null for missing resources"
+        ]
+      },
+      "examples": {
+        "good": [
+          "404 Not Found for /users/nonexistent"
+        ],
+        "bad": [
+          "200 OK with null body for missing resource"
+        ]
+      }
+    },
+    {
+      "id": "PO-016",
+      "title": "Use 409 Conflict for state conflicts",
+      "category": "http-status",
+      "severity": "warn",
+      "description": "Use 409 Conflict when the request conflicts with current resource state (e.g., duplicate creation, invalid state transition).",
+      "rationale": "409 indicates a conflict that the client might resolve. Useful for optimistic locking and state machines.",
+      "source": "Zalando Z-159",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.paths[*][*].responses['409']"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if 409 Conflict is documented for state conflicts",
+        "passCriteria": [
+          "409 response defined where conflicts possible",
+          "409 explains conflict resolution"
+        ],
+        "failCriteria": [
+          "No 409 for endpoints with unique constraints",
+          "Uses 400 for conflicts"
+        ]
+      },
+      "examples": {
+        "good": [
+          "409 Conflict when creating duplicate resource"
+        ],
+        "bad": [
+          "400 Bad Request for uniqueness violations"
+        ]
+      }
+    },
+    {
+      "id": "PO-017",
+      "title": "Use 422 Unprocessable Entity for semantic errors",
+      "category": "http-status",
+      "severity": "warn",
+      "description": "Use 422 Unprocessable Entity when the request is syntactically correct but semantically invalid (business rule violations).",
+      "rationale": "422 distinguishes semantic errors from syntax errors (400). The request was understood but cannot be processed.",
+      "source": "Zalando Z-160, PayPal PP-032",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.paths[*][*].responses['422']"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if 422 Unprocessable Entity is documented for semantic errors",
+        "passCriteria": [
+          "422 response defined for business rule violations",
+          "422 distinct from 400"
+        ],
+        "failCriteria": [
+          "No 422 response defined",
+          "Uses 400 for all validation errors"
+        ]
+      },
+      "examples": {
+        "good": [
+          "422 Unprocessable Entity for business rule violation"
+        ],
+        "bad": [
+          "400 Bad Request for semantic errors"
+        ]
+      }
+    },
+    {
+      "id": "PO-018",
+      "title": "Use 429 Too Many Requests for rate limiting",
+      "category": "http-status",
+      "severity": "error",
+      "description": "Use 429 Too Many Requests when rate limiting is applied. Include Retry-After header.",
+      "rationale": "429 tells clients they're being throttled. Retry-After helps them back off appropriately.",
+      "source": "Zalando Z-161, Microsoft MS-050",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.paths[*][*].responses['429']"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if 429 Too Many Requests is documented for rate limiting",
+        "passCriteria": [
+          "429 response defined",
+          "Retry-After header documented"
+        ],
+        "failCriteria": [
+          "No 429 response defined",
+          "No rate limiting documentation"
+        ]
+      },
+      "examples": {
+        "good": [
+          "429 Too Many Requests with Retry-After: 60"
+        ],
+        "bad": [
+          "503 Service Unavailable for rate limiting"
+        ]
+      }
+    },
+    {
+      "id": "PO-019",
+      "title": "Never expose internal errors to clients",
+      "category": "errors",
+      "severity": "error",
+      "description": "5xx responses MUST NOT expose internal details (stack traces, database errors, internal paths). Use generic messages.",
+      "rationale": "Internal details are security risks and not useful to clients. Log details server-side, return generic messages to clients.",
+      "source": "Microsoft MS-055, Security best practice",
+      "judge": {
+        "prompt": "Check that error schemas don't expose internal implementation details",
+        "passCriteria": [
+          "Generic error messages",
+          "No stack traces in schema",
+          "No internal paths"
+        ],
+        "failCriteria": [
+          "Stack traces in examples",
+          "Internal paths exposed",
+          "Database errors exposed"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "examples": {
+        "good": [
+          "500 Internal Server Error with generic message and request ID"
+        ],
+        "bad": [
+          "500 with stack trace or SQL error details"
+        ]
+      }
+    },
+    {
+      "id": "PO-020",
+      "title": "Use ISO 8601 for dates and times",
+      "category": "request-response",
+      "severity": "error",
+      "description": "All date and time values MUST use ISO 8601 format: YYYY-MM-DDTHH:mm:ssZ for timestamps, YYYY-MM-DD for dates.",
+      "rationale": "ISO 8601 is unambiguous and sortable. Always use UTC (Z suffix) for timestamps to avoid timezone confusion.",
+      "source": "Zalando Z-126, PayPal PP-015",
+      "examples": {
+        "good": [
+          "2024-01-15T14:30:00Z",
+          "2024-01-15"
+        ],
+        "bad": [
+          "01/15/2024",
+          "1705329000",
+          "Jan 15, 2024"
+        ]
+      },
+      "enforcement": {
+        "type": "none",
+        "reason": "JSONPath filter expressions not supported by parser"
+      },
+      "judge": {
+        "prompt": "Check if date/time properties use ISO 8601 format",
+        "passCriteria": [
+          "DateTime properties use format: date-time",
+          "Date properties use format: date",
+          "Examples show ISO 8601 format"
+        ],
+        "failCriteria": [
+          "Unix timestamps used",
+          "Custom date formats",
+          "No format specified for date fields"
+        ]
+      }
+    },
+    {
+      "id": "PO-021",
+      "title": "Use string for IDs",
+      "category": "request-response",
+      "severity": "error",
+      "description": "Resource identifiers MUST be strings, not integers. Use UUIDs or prefixed IDs (e.g., userAbc123).",
+      "rationale": "String IDs are more flexible than integers. They support UUIDs, prefixed IDs, and don't have integer overflow issues. Prefixed IDs (userAbc123) are self-documenting.",
+      "source": "Industry best practice (Stripe, GitHub)",
+      "examples": {
+        "good": [
+          "userAbc123",
+          "550e8400-e29b-41d4-a716-446655440000",
+          "ord_xyz789"
+        ],
+        "bad": [
+          "12345",
+          "9007199254740993"
+        ]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {
+          "paths": [
+            "$.components.schemas[*].properties.id.type"
+          ]
+        },
+        "options": {
+          "match": "^string$"
+        }
+      },
+      "judge": {
+        "prompt": "Check if resource identifiers use string type",
+        "passCriteria": [
+          "All ID properties are type: string",
+          "Path parameters for IDs are strings",
+          "No integer IDs that could overflow"
+        ],
+        "failCriteria": [
+          "ID properties use integer type",
+          "Mixed string and integer IDs",
+          "Numeric IDs without string wrapper"
+        ]
+      }
+    },
+    {
+      "id": "PO-022",
+      "title": "Use Bearer token authentication",
+      "category": "security",
+      "severity": "error",
+      "description": "Collection endpoints SHOULD use cursor-based pagination with `cursor` and `limit` parameters, returning `nextCursor` in the response.",
+      "rationale": "Bearer tokens are the standard for API authentication. They work with OAuth 2.0, JWT, and API keys.",
+      "source": "Zalando Z-220, Microsoft MS-100, PayPal PP-060",
+      "examples": {
+        "good": [
+          "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..."
+        ],
+        "bad": [
+          "X-API-Key: secret123",
+          "?api_key=secret123"
+        ]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "enumeration",
+        "given": {
+          "paths": [
+            "$.components.securitySchemes[*]"
+          ]
+        },
+        "options": {
+          "values": [
+            "http",
+            "oauth2",
+            "openIdConnect"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if API uses Bearer token authentication",
+        "passCriteria": [
+          "Security scheme uses http bearer or oauth2",
+          "Authorization header documented"
+        ],
+        "failCriteria": [
+          "API key in query parameter",
+          "Custom authentication header",
+          "No security scheme defined"
+        ]
+      }
+    },
+    {
+      "id": "PO-023",
+      "title": "Document security requirements per endpoint",
+      "category": "security",
+      "severity": "error",
+      "description": "Every endpoint MUST document its security requirements in the OpenAPI spec.",
+      "rationale": "Explicit security documentation prevents accidental exposure and enables security testing.",
+      "source": "Zalando Z-221",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.paths[*][*]"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if security requirements are documented per endpoint",
+        "passCriteria": [
+          "Each operation has security requirement",
+          "Public endpoints explicitly marked"
+        ],
+        "failCriteria": [
+          "Operations missing security",
+          "Only global security defined without overrides"
+        ]
+      },
+      "examples": {
+        "good": [
+          "security:\\n  - bearerAuth: []",
+          "security: [] for public endpoints"
+        ],
+        "bad": [
+          "No security defined on protected endpoints"
+        ]
+      }
+    },
+    {
+      "id": "PO-024",
+      "title": "Support CORS for browser clients",
+      "category": "security",
+      "severity": "warn",
+      "description": "APIs consumed by browsers SHOULD support CORS with appropriate Access-Control-Allow-* headers.",
+      "rationale": "CORS enables secure cross-origin requests from web applications.",
+      "source": "Microsoft MS-110",
+      "judge": {
+        "prompt": "Check if the API documents CORS support",
+        "passCriteria": [
+          "CORS headers documented",
+          "Appropriate origins configured"
+        ],
+        "partialCriteria": [
+          "CORS mentioned but not fully documented"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "examples": {
+        "good": [
+          "Access-Control-Allow-Origin documented",
+          "CORS preflight handled"
+        ],
+        "bad": [
+          "No CORS documentation for browser API"
+        ]
+      }
+    },
+    {
+      "id": "PO-025",
+      "title": "Include request ID in responses",
+      "category": "request-response",
+      "severity": "warn",
+      "description": "All responses SHOULD include a unique request ID header (X-Request-ID) for tracing and debugging.",
+      "rationale": "Request IDs enable correlation between client and server logs, essential for debugging distributed systems.",
+      "source": "Zalando Z-225, Microsoft MS-120",
+      "examples": {
+        "good": [
+          "X-Request-ID: 550e8400-e29b-41d4-a716-446655440000"
+        ]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.components.headers['X-Request-ID']"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if responses include request ID header for tracing",
+        "passCriteria": [
+          "X-Request-ID header documented in responses",
+          "Header described in components",
+          "Consistent across endpoints"
+        ],
+        "failCriteria": [
+          "No request ID header",
+          "Inconsistent header naming",
+          "Missing from error responses"
+        ]
+      }
+    },
+    {
+      "id": "PO-026",
+      "title": "Use standard filtering syntax",
+      "category": "filtering",
+      "severity": "warn",
+      "description": "Use query parameters for filtering: ?status=active&created_after=2024-01-01. Avoid complex query languages.",
+      "rationale": "Simple query parameters are easy to understand and implement. Complex filters can use POST with a body.",
+      "source": "Zalando Z-137",
+      "examples": {
+        "good": [
+          "GET /v1/orders?status=pending&created_after=2024-01-01",
+          "GET /v1/users?role=admin&sort=createdAt"
+        ],
+        "bad": [
+          "GET /v1/orders?filter=status eq 'pending'",
+          "GET /v1/users?q={\"role\":\"admin\"}"
+        ]
+      },
+      "judge": {
+        "prompt": "Check if filtering uses simple query parameters",
+        "passCriteria": [
+          "Simple key=value parameters",
+          "Clear parameter names"
+        ],
+        "failCriteria": [
+          "Complex query DSL",
+          "JSON in query string"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      }
+    },
+    {
+      "id": "PO-027",
+      "title": "Use sort parameter with field and direction",
+      "category": "filtering",
+      "severity": "info",
+      "description": "Use ?sort=field or ?sort=-field for sorting. Prefix with - for descending order.",
+      "rationale": "This pattern is common and concise. Multiple fields can be comma-separated: ?sort=-createdAt,name",
+      "source": "Industry best practice",
+      "examples": {
+        "good": [
+          "GET /v1/users?sort=createdAt",
+          "GET /v1/users?sort=-createdAt",
+          "GET /v1/users?sort=-createdAt,name"
+        ],
+        "bad": [
+          "GET /v1/users?sort=createdAt&order=desc",
+          "GET /v1/users?orderBy=createdAt&sortDir=DESC"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if sorting uses ?sort=field or ?sort=-field pattern",
+        "passCriteria": [
+          "Sort parameter uses field name",
+          "Descending indicated by - prefix",
+          "Multiple fields comma-separated"
+        ],
+        "failCriteria": [
+          "Separate sortBy and sortOrder parameters",
+          "Uses orderBy parameter",
+          "No sort documentation"
+        ]
+      }
+    },
+    {
+      "id": "PO-028",
+      "title": "Document all endpoints with summary and description",
+      "category": "documentation",
+      "severity": "error",
+      "description": "Every endpoint MUST have a summary (one line) and description (detailed explanation) in the OpenAPI spec.",
+      "rationale": "Good documentation reduces support burden and improves developer experience. Summary appears in tooling, description provides detail.",
+      "source": "Zalando Z-101, Industry best practice",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.paths[*][*]"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if all endpoints have summary and description",
+        "passCriteria": [
+          "Every operation has summary",
+          "Every operation has description",
+          "Descriptions are meaningful"
+        ],
+        "failCriteria": [
+          "Operations missing summary",
+          "Operations missing description",
+          "Placeholder descriptions"
+        ]
+      },
+      "examples": {
+        "good": [
+          "summary: Create a new user\\ndescription: Creates a user account with the provided details..."
+        ],
+        "bad": [
+          "summary: Post user",
+          "No description provided"
+        ]
+      }
+    },
+    {
+      "id": "PO-029",
+      "title": "Provide examples for all schemas",
+      "category": "documentation",
+      "severity": "warn",
+      "description": "All request/response schemas SHOULD include realistic examples.",
+      "rationale": "Examples help developers understand expected data formats. They're used in documentation and testing.",
+      "source": "Zalando Z-102",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.components.schemas[*]"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if schemas include realistic examples",
+        "passCriteria": [
+          "Request schemas have examples",
+          "Response schemas have examples",
+          "Examples are realistic"
+        ],
+        "failCriteria": [
+          "Missing examples",
+          "Examples are placeholders like 'string'",
+          "Examples don't match schema"
+        ]
+      },
+      "examples": {
+        "good": [
+          "example:\\n  id: user_abc123\\n  email: alice@example.com\\n  createdAt: 2024-01-15T10:30:00Z"
+        ],
+        "bad": [
+          "example:\\n  id: string\\n  email: string"
+        ]
+      }
+    },
+    {
+      "id": "PO-030",
+      "title": "Deprecate before removing",
+      "category": "versioning",
+      "severity": "error",
+      "description": "Endpoints MUST be deprecated for at least 6 months before removal. Use Sunset header to communicate removal date.",
+      "rationale": "Graceful deprecation gives clients time to migrate. Sudden removal breaks integrations.",
+      "source": "Zalando Z-185, PayPal PP-055",
+      "examples": {
+        "good": [
+          "Deprecation: true",
+          "Sunset: Sat, 01 Jan 2025 00:00:00 GMT"
+        ]
+      },
+      "judge": {
+        "prompt": "Check if deprecated endpoints have Sunset headers and sufficient notice period",
+        "passCriteria": [
+          "Sunset header present",
+          "At least 6 months notice"
+        ],
+        "failCriteria": [
+          "No deprecation notice",
+          "Immediate removal"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      }
+    },
+    {
+      "id": "PO-031",
+      "title": "Never remove fields, only add",
+      "category": "versioning",
+      "severity": "error",
+      "description": "Collection responses MUST use a consistent envelope: {\"items\": [...], \"nextCursor\": \"...\", \"hasMore\": true}",
+      "rationale": "Removing fields breaks existing clients. Add new fields and deprecate old ones if needed.",
+      "source": "Zalando Z-107",
+      "judge": {
+        "prompt": "Check that schema changes are additive only",
+        "passCriteria": [
+          "Only new fields added",
+          "No removed fields",
+          "No renamed fields"
+        ],
+        "failCriteria": [
+          "Fields removed",
+          "Fields renamed",
+          "Types changed"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "examples": {
+        "good": [
+          "Adding new optional field 'middleName' to User schema"
+        ],
+        "bad": [
+          "Removing 'lastName' field",
+          "Renaming 'email' to 'emailAddress'"
+        ]
+      }
+    },
+    {
+      "id": "PO-032",
+      "title": "Use ETag for caching and concurrency",
+      "category": "request-response",
+      "severity": "warn",
+      "description": "GET responses SHOULD include ETag header. PUT/PATCH SHOULD support If-Match for optimistic locking.",
+      "rationale": "ETags enable efficient caching and prevent lost updates in concurrent modifications.",
+      "source": "Zalando Z-182, Microsoft MS-130",
+      "examples": {
+        "good": [
+          "ETag: \"abc123\"",
+          "If-Match: \"abc123\""
+        ]
+      },
+      "judge": {
+        "prompt": "Check if ETag headers are used for caching and concurrency",
+        "passCriteria": [
+          "ETag in GET responses",
+          "If-Match supported for updates"
+        ],
+        "partialCriteria": [
+          "Only ETag or only If-Match present"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      }
+    },
+    {
+      "id": "PO-033",
+      "title": "Limit response size",
+      "category": "pagination",
+      "severity": "warn",
+      "description": "Collection endpoints MUST limit response size. Default to 20-50 items, max 100.",
+      "rationale": "Unbounded responses cause performance issues and timeout errors. Always paginate.",
+      "source": "Zalando Z-163",
+      "examples": {
+        "good": [
+          "?limit=20 (default)",
+          "?limit=100 (max)"
+        ],
+        "bad": [
+          "Returning 10000 items in one response"
+        ]
+      },
+      "judge": {
+        "prompt": "Check if collection endpoints have reasonable size limits",
+        "passCriteria": [
+          "Default limit specified",
+          "Maximum limit enforced"
+        ],
+        "failCriteria": [
+          "No pagination",
+          "Unlimited response size"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      }
+    },
+    {
+      "id": "PO-034",
+      "title": "Use consistent envelope for collections",
+      "category": "request-response",
+      "severity": "error",
+      "description": "Collection responses MUST use a consistent envelope: {\"items\": [...], \"nextCursor\": \"...\", \"hasMore\": true}",
+      "rationale": "A consistent envelope enables generic client handling and clearly separates data from metadata.",
+      "source": "Zalando Z-164",
+      "examples": {
+        "good": [
+          "{\"items\": [{\"id\": \"userAbc\", \"name\": \"Alice\"}], \"nextCursor\": \"eyJpZCI6MTIzfQ\", \"hasMore\": true}"
+        ],
+        "bad": [
+          "Raw array without envelope",
+          "{\"users\": [...], \"meta\": {...}}"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if collection responses use consistent envelope with items property",
+        "passCriteria": [
+          "Collection responses wrap array in object",
+          "Uses 'items' property for array",
+          "Includes pagination metadata"
+        ],
+        "failCriteria": [
+          "Returns raw array",
+          "Inconsistent property names for arrays",
+          "No pagination metadata"
+        ]
+      }
+    },
+    {
+      "id": "PO-035",
+      "title": "Support partial responses with fields parameter",
+      "category": "filtering",
+      "severity": "info",
+      "description": "Endpoints MAY support ?fields=id,name,email to return only specified fields.",
+      "rationale": "Partial responses reduce bandwidth and improve performance for mobile clients.",
+      "source": "Google API Guidelines",
+      "examples": {
+        "good": [
+          "GET /v1/users/123?fields=id,name,email"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if API supports field selection via ?fields parameter",
+        "passCriteria": [
+          "Fields parameter documented",
+          "Comma-separated field names supported"
+        ],
+        "partialCriteria": [
+          "Some endpoints support field selection"
+        ],
+        "failCriteria": [
+          "No field selection support documented"
+        ]
+      }
+    },
+    {
+      "id": "PO-036",
+      "title": "Use HTTPS only",
+      "category": "security",
+      "severity": "error",
+      "description": "All API endpoints MUST be served over HTTPS. HTTP MUST redirect to HTTPS or return 400.",
+      "rationale": "HTTPS protects data in transit. There's no reason to use HTTP for production APIs.",
+      "source": "Industry standard",
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {
+          "paths": [
+            "$.servers[*].url"
+          ]
+        },
+        "options": {
+          "match": "^https://"
+        }
+      },
+      "judge": {
+        "prompt": "Check if all server URLs use HTTPS",
+        "passCriteria": [
+          "All server URLs start with https://",
+          "No http:// URLs present"
+        ],
+        "failCriteria": [
+          "Server URLs use http://",
+          "Mixed http and https"
+        ]
+      },
+      "examples": {
+        "good": [
+          "servers:\\n  - url: https://api.example.com"
+        ],
+        "bad": [
+          "servers:\\n  - url: http://api.example.com"
+        ]
+      }
+    },
+    {
+      "id": "PO-037",
+      "title": "Document rate limits",
+      "category": "documentation",
+      "severity": "warn",
+      "description": "API documentation SHOULD specify rate limits and include RateLimit-* headers in responses.",
+      "rationale": "Clients need to know limits to implement proper backoff. Headers enable dynamic adjustment.",
+      "source": "Draft IETF RateLimit Headers",
+      "examples": {
+        "good": [
+          "RateLimit-Limit: 100",
+          "RateLimit-Remaining: 95",
+          "RateLimit-Reset: 1640000000"
+        ]
+      },
+      "judge": {
+        "prompt": "Check if rate limits are documented",
+        "passCriteria": [
+          "Rate limits documented",
+          "RateLimit headers present"
+        ],
+        "partialCriteria": [
+          "Rate limits mentioned but not specified"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      }
+    },
+    {
+      "id": "PO-038",
+      "title": "Use PATCH for partial updates",
+      "category": "http-methods",
+      "severity": "error",
+      "description": "Use PATCH (not PUT) for partial resource updates. Only send changed fields.",
+      "rationale": "PATCH is designed for partial updates. PUT replaces the entire resource and requires the client to send all fields.",
+      "source": "Zalando Z-151",
+      "examples": {
+        "good": [
+          "PATCH /v1/users/123 with {\"name\": \"New Name\"}"
+        ],
+        "bad": [
+          "PUT /v1/users/123 with all fields for a name change"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if PATCH is used for partial updates instead of PUT",
+        "passCriteria": [
+          "PATCH endpoints exist for updates",
+          "PATCH accepts partial payloads",
+          "PUT used only for full replacement"
+        ],
+        "failCriteria": [
+          "PUT used for partial updates",
+          "No PATCH endpoints defined"
+        ]
+      }
+    },
+    {
+      "id": "PO-039",
+      "title": "Return created/updated resource in response",
+      "category": "request-response",
+      "severity": "warn",
+      "description": "POST and PATCH SHOULD return the created/updated resource in the response body.",
+      "rationale": "Returning the resource saves a round-trip GET and shows server-computed fields (id, timestamps).",
+      "source": "Industry best practice",
+      "judge": {
+        "prompt": "Check if POST and PATCH return the resource",
+        "passCriteria": [
+          "201 response includes created resource",
+          "200 response includes updated resource"
+        ],
+        "partialCriteria": [
+          "Only ID returned, not full resource"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "examples": {
+        "good": [
+          "201 Created response includes full created resource",
+          "200 OK response includes updated resource"
+        ],
+        "bad": [
+          "201 Created with only {\"id\": \"123\"}",
+          "204 No Content for POST"
+        ]
+      }
+    },
+    {
+      "id": "PO-040",
+      "title": "Require operationId for all operations",
+      "category": "documentation",
+      "severity": "error",
+      "description": "Every operation MUST have a unique operationId. SDK generators use this for method names. Without it, generated code is unusable.",
+      "rationale": "operationId becomes the method name in generated SDKs (e.g., listUsers, createOrder). Missing operationIds cause SDK generation to fail or produce unusable code.",
+      "source": "Industry best practice",
+      "examples": {
+        "good": [
+          "getUser",
+          "createOrder",
+          "listUsers",
+          "updateUserProfile",
+          "deleteOrder"
+        ],
+        "bad": [
+          "user_get",
+          "order-create",
+          "UsersGET"
+        ]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {
+          "paths": [
+            "$.paths[*][*].operationId"
+          ]
+        },
+        "options": {
+          "match": "^[a-z]+[A-Z][a-zA-Z]+$"
+        }
+      },
+      "judge": {
+        "prompt": "Check if operationIds follow verbResource pattern (e.g., getUser, createOrder)",
+        "passCriteria": [
+          "OperationIds use camelCase",
+          "OperationIds start with verb",
+          "Consistent naming pattern"
+        ],
+        "failCriteria": [
+          "OperationIds use snake_case",
+          "OperationIds use kebab-case",
+          "No operationIds defined"
+        ]
+      }
+    },
+    {
+      "id": "PO-041",
+      "title": "Use Content-Type header",
+      "category": "headers",
+      "severity": "error",
+      "description": "All responses with bodies MUST include Content-Type header.",
+      "rationale": "Clients need to know the content type to parse responses correctly.",
+      "source": "Microsoft MS-070, HTTP/1.1 Spec",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.paths[*][*].responses['200'].content",
+            "$.paths[*][*].responses['201'].content"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if Content-Type header is documented for responses with bodies",
+        "passCriteria": [
+          "Response content types specified",
+          "Uses application/json for JSON responses"
+        ],
+        "failCriteria": [
+          "Missing content type definitions",
+          "Inconsistent content types"
+        ]
+      },
+      "examples": {
+        "good": [
+          "content:\\n  application/json:\\n    schema: ..."
+        ],
+        "bad": [
+          "No content type specified"
+        ]
+      }
+    },
+    {
+      "id": "PO-042",
+      "title": "Support Accept header",
+      "category": "headers",
+      "severity": "warn",
+      "description": "APIs SHOULD respect the Accept header for content negotiation.",
+      "rationale": "Content negotiation enables clients to request preferred formats.",
+      "source": "Microsoft MS-071",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if Accept header content negotiation is supported",
+        "passCriteria": [
+          "Multiple response content types where appropriate",
+          "Accept header documented"
+        ],
+        "partialCriteria": [
+          "Single content type but documented"
+        ],
+        "failCriteria": [
+          "No content type documentation"
+        ]
+      },
+      "examples": {
+        "good": [
+          "Supports application/json and application/xml based on Accept header"
+        ],
+        "bad": [
+          "Ignores Accept header"
+        ]
+      }
+    },
+    {
+      "id": "PO-043",
+      "title": "Use standard headers only",
+      "category": "headers",
+      "severity": "warn",
+      "description": "Prefer standard HTTP headers over custom X- headers. Custom headers SHOULD use organization prefix (e.g., PlexusOne-Request-Id).",
+      "rationale": "Standard headers are widely supported. If custom headers are needed, a clear prefix prevents collisions.",
+      "source": "RFC 6648",
+      "examples": {
+        "good": [
+          "Content-Type",
+          "Authorization",
+          "X-Request-ID",
+          "PlexusOne-Trace-Id"
+        ],
+        "bad": [
+          "X-My-Custom-Header"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if custom headers use standard or organization-prefixed names",
+        "passCriteria": [
+          "Standard headers preferred",
+          "Custom headers use consistent prefix",
+          "X- headers avoided for new APIs"
+        ],
+        "failCriteria": [
+          "Random custom header names",
+          "Inconsistent header naming"
+        ]
+      }
+    },
+    {
+      "id": "PO-044",
+      "title": "Use enums for fixed values",
+      "category": "json",
+      "severity": "error",
+      "description": "Use enums for properties with a fixed set of values. Enum values SHOULD be uppercase with underscores.",
+      "rationale": "Enums provide type safety and documentation for allowed values.",
+      "source": "Zalando Z-125",
+      "examples": {
+        "good": [
+          "enum: [PENDING, ACTIVE, CANCELLED]"
+        ],
+        "bad": [
+          "type: string with no constraints"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if enums are used for properties with fixed values",
+        "passCriteria": [
+          "Status fields use enum",
+          "Type fields use enum",
+          "Enum values are documented"
+        ],
+        "failCriteria": [
+          "String type without constraints for fixed values",
+          "Magic strings in examples"
+        ]
+      }
+    },
+    {
+      "id": "PO-045",
+      "title": "Use null for absent values",
+      "category": "json",
+      "severity": "warn",
+      "description": "Use null for absent optional values, not empty string or special values like 'N/A'.",
+      "rationale": "null is semantically correct for absent values. Empty strings and special values are ambiguous.",
+      "source": "Zalando Z-123",
+      "examples": {
+        "good": [
+          "{\"middleName\": null}"
+        ],
+        "bad": [
+          "{\"middleName\": \"\"}",
+          "{\"middleName\": \"N/A\"}"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if null is used for absent optional values",
+        "passCriteria": [
+          "Nullable properties marked as nullable",
+          "No empty string for absent values"
+        ],
+        "failCriteria": [
+          "Empty string used for absent values",
+          "Special values like N/A used"
+        ]
+      }
+    },
+    {
+      "id": "PO-046",
+      "title": "Use arrays for multi-valued properties",
+      "category": "json",
+      "severity": "error",
+      "description": "Multi-valued properties MUST be arrays, even if they typically contain one item.",
+      "rationale": "Consistent use of arrays prevents breaking changes when cardinality increases.",
+      "source": "Zalando Z-124",
+      "examples": {
+        "good": [
+          "{\"emails\": [\"user@example.com\"]}"
+        ],
+        "bad": [
+          "{\"email\": \"user@example.com\", \"email2\": \"alt@example.com\"}"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if multi-valued properties use arrays",
+        "passCriteria": [
+          "Multi-valued properties are arrays",
+          "No numbered properties like email1, email2"
+        ],
+        "failCriteria": [
+          "Numbered properties for multiple values",
+          "Comma-separated strings instead of arrays"
+        ]
+      }
+    },
+    {
+      "id": "PO-047",
+      "title": "Define reusable schemas",
+      "category": "schema",
+      "severity": "error",
+      "description": "Common types SHOULD be defined in components.schemas for reuse.",
+      "rationale": "Reusable schemas reduce duplication and ensure consistency.",
+      "source": "OpenAPI Best Practice",
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.components"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if common types are defined in components.schemas",
+        "passCriteria": [
+          "Reusable schemas in components.schemas",
+          "References used via $ref",
+          "No inline duplicate schemas"
+        ],
+        "failCriteria": [
+          "All schemas inline",
+          "Duplicate schema definitions",
+          "No components.schemas section"
+        ]
+      },
+      "examples": {
+        "good": [
+          "$ref: '#/components/schemas/User'",
+          "Shared Error schema"
+        ],
+        "bad": [
+          "Inline schema duplicated across endpoints"
+        ]
+      }
+    },
+    {
+      "id": "PO-048",
+      "title": "Specify required properties",
+      "category": "schema",
+      "severity": "error",
+      "description": "Schemas MUST explicitly list required properties using the 'required' array.",
+      "rationale": "Explicit required properties enable validation and code generation.",
+      "source": "JSON Schema, OpenAPI",
+      "enforcement": {
+        "type": "none",
+        "reason": "JSONPath filter expressions not supported by parser"
+      },
+      "judge": {
+        "prompt": "Check if schemas specify required properties",
+        "passCriteria": [
+          "Schemas have required array",
+          "Required array lists mandatory fields",
+          "Required fields match expected minimums (id, etc.)"
+        ],
+        "failCriteria": [
+          "No required properties specified",
+          "Empty required array",
+          "Optional fields that should be required"
+        ]
+      },
+      "examples": {
+        "good": [
+          "required:\\n  - id\\n  - email"
+        ],
+        "bad": [
+          "No required array defined"
+        ]
+      }
+    },
+    {
+      "id": "PO-049",
+      "title": "Include property types and formats",
+      "category": "schema",
+      "severity": "error",
+      "description": "All properties MUST have explicit types. Use format for semantic types (date-time, email, uri).",
+      "rationale": "Explicit types enable validation, code generation, and documentation.",
+      "source": "JSON Schema, OpenAPI",
+      "examples": {
+        "good": [
+          "{\"createdAt\": {\"type\": \"string\", \"format\": \"date-time\"}}"
+        ],
+        "bad": [
+          "{\"createdAt\": {}}"
+        ]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.components.schemas[*].properties[*].type"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if all properties have explicit types and formats",
+        "passCriteria": [
+          "All properties have type defined",
+          "Semantic types use format (date-time, email, uri)",
+          "No untyped properties"
+        ],
+        "failCriteria": [
+          "Properties missing type",
+          "Date fields without format: date-time",
+          "Email fields without format: email"
+        ]
+      }
+    },
+    {
+      "id": "PO-050",
+      "title": "Wrap collections in object",
+      "category": "collections",
+      "severity": "error",
+      "description": "Collection responses MUST wrap arrays in an object with 'items' property and metadata.",
+      "rationale": "Object wrappers enable adding metadata without breaking changes. Raw arrays cannot be extended.",
+      "source": "Zalando Z-164, Microsoft MS-090",
+      "examples": {
+        "good": [
+          "{\"items\": [...], \"nextCursor\": \"...\", \"hasMore\": true}"
+        ],
+        "bad": [
+          "[{\"id\": \"1\"}, {\"id\": \"2\"}]"
+        ]
+      },
+      "enforcement": {
+        "type": "none",
+        "reason": "JSONPath quoted keys with slashes not supported by parser"
+      },
+      "judge": {
+        "prompt": "Check if collection responses wrap arrays in objects",
+        "passCriteria": [
+          "Collections wrapped with items property",
+          "Response is object not array",
+          "Metadata fields alongside items"
+        ],
+        "failCriteria": [
+          "Raw arrays returned",
+          "Inconsistent wrapper names",
+          "No room for pagination metadata"
+        ]
+      }
+    },
+    {
+      "id": "PO-051",
+      "title": "Include collection metadata",
+      "category": "collections",
+      "severity": "warn",
+      "description": "Collection responses SHOULD include totalCount or hasMore indicator for client pagination.",
+      "rationale": "Clients need to know total size or if more data exists for UI pagination.",
+      "source": "Microsoft MS-091",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if collection responses include count or hasMore metadata",
+        "passCriteria": [
+          "Collections include totalCount or hasMore",
+          "Pagination state is clear"
+        ],
+        "partialCriteria": [
+          "Some collections have metadata"
+        ],
+        "failCriteria": [
+          "No collection metadata",
+          "No way to know if more results exist"
+        ]
+      },
+      "examples": {
+        "good": [
+          "{\"items\": [...], \"totalCount\": 142, \"hasMore\": true}"
+        ],
+        "bad": [
+          "{\"items\": [...]} with no count or hasMore"
+        ]
+      }
+    },
+    {
+      "id": "PO-052",
+      "title": "Use 202 Accepted for async operations",
+      "category": "long-running",
+      "severity": "error",
+      "description": "Long-running operations MUST return 202 Accepted with Location header pointing to status endpoint.",
+      "rationale": "202 indicates the request was accepted but processing is not complete. Clients can poll the status endpoint.",
+      "source": "Microsoft MS-095, Azure LRO Pattern",
+      "examples": {
+        "good": [
+          "HTTP/1.1 202 Accepted\\nLocation: /operations/op123"
+        ],
+        "bad": [
+          "Blocking until operation completes"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if long-running operations return 202 Accepted",
+        "passCriteria": [
+          "Async operations return 202",
+          "Location header points to status endpoint",
+          "202 response documented"
+        ],
+        "partialCriteria": [
+          "Some async operations documented"
+        ],
+        "failCriteria": [
+          "Async operations return 200",
+          "No 202 responses defined for long operations"
+        ]
+      }
+    },
+    {
+      "id": "PO-053",
+      "title": "Provide operation status endpoint",
+      "category": "long-running",
+      "severity": "error",
+      "description": "Async operations MUST provide a GET endpoint for polling operation status.",
+      "rationale": "Clients need to check if the operation completed successfully or failed.",
+      "source": "Microsoft MS-096",
+      "examples": {
+        "good": [
+          "GET /operations/{operationId} returning {\"status\": \"running|succeeded|failed\", \"result\": {...}}"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if async operations provide status polling endpoint",
+        "passCriteria": [
+          "Operations resource/endpoint exists",
+          "Status includes running/succeeded/failed states",
+          "Result available on completion"
+        ],
+        "failCriteria": [
+          "No status endpoint for async operations",
+          "No way to poll operation status"
+        ]
+      }
+    },
+    {
+      "id": "PO-054",
+      "title": "Include Retry-After for 202 responses",
+      "category": "long-running",
+      "severity": "warn",
+      "description": "202 responses SHOULD include Retry-After header to guide polling frequency.",
+      "rationale": "Retry-After prevents excessive polling and helps clients implement appropriate backoff.",
+      "source": "Microsoft MS-097",
+      "examples": {
+        "good": [
+          "Retry-After: 30"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if 202 responses include Retry-After header",
+        "passCriteria": [
+          "Retry-After header documented for 202",
+          "Polling guidance provided"
+        ],
+        "partialCriteria": [
+          "Retry-After mentioned in description"
+        ],
+        "failCriteria": [
+          "No Retry-After for 202 responses",
+          "No polling guidance"
+        ]
+      }
+    },
+    {
+      "id": "PO-055",
+      "title": "Support ETag for caching",
+      "category": "conditional",
+      "severity": "warn",
+      "description": "GET responses SHOULD include ETag header for efficient caching and conditional requests.",
+      "rationale": "ETags enable 304 Not Modified responses, reducing bandwidth and server load.",
+      "source": "Zalando Z-182, HTTP/1.1 Spec",
+      "examples": {
+        "good": [
+          "ETag: \"abc123def456\""
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if GET responses support ETag header for caching",
+        "passCriteria": [
+          "ETag header documented in responses",
+          "ETag format specified"
+        ],
+        "partialCriteria": [
+          "ETag mentioned but not fully documented"
+        ],
+        "failCriteria": [
+          "No ETag support documented"
+        ]
+      }
+    },
+    {
+      "id": "PO-056",
+      "title": "Support If-Match for updates",
+      "category": "conditional",
+      "severity": "warn",
+      "description": "PUT and PATCH SHOULD support If-Match header for optimistic concurrency control.",
+      "rationale": "If-Match prevents lost updates when multiple clients modify the same resource.",
+      "source": "Zalando Z-183, Microsoft MS-130",
+      "examples": {
+        "good": [
+          "If-Match: \"abc123def456\""
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if PUT/PATCH support If-Match header for optimistic concurrency",
+        "passCriteria": [
+          "If-Match header documented for updates",
+          "412 response defined for mismatch"
+        ],
+        "partialCriteria": [
+          "If-Match mentioned but incomplete"
+        ],
+        "failCriteria": [
+          "No If-Match support",
+          "No optimistic concurrency control"
+        ]
+      }
+    },
+    {
+      "id": "PO-057",
+      "title": "Return 412 for precondition failures",
+      "category": "conditional",
+      "severity": "error",
+      "description": "Return 412 Precondition Failed when If-Match or If-Unmodified-Since conditions fail.",
+      "rationale": "412 tells clients their conditional request failed and they should refresh data.",
+      "source": "HTTP/1.1 Spec",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if 412 Precondition Failed is documented for conditional request failures",
+        "passCriteria": [
+          "412 response defined for conditional endpoints",
+          "Explains when 412 is returned"
+        ],
+        "failCriteria": [
+          "No 412 response defined",
+          "Uses 409 for precondition failures"
+        ]
+      },
+      "examples": {
+        "good": [
+          "412 Precondition Failed when If-Match header doesn't match ETag"
+        ],
+        "bad": [
+          "200 OK ignoring If-Match mismatch"
+        ]
+      }
+    },
+    {
+      "id": "PO-058",
+      "title": "Support gzip compression",
+      "category": "performance",
+      "severity": "warn",
+      "description": "APIs SHOULD support gzip compression via Accept-Encoding header.",
+      "rationale": "Compression significantly reduces bandwidth for JSON responses.",
+      "source": "Industry best practice",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if gzip compression is supported via Accept-Encoding",
+        "passCriteria": [
+          "Compression support documented",
+          "Accept-Encoding header mentioned"
+        ],
+        "partialCriteria": [
+          "Compression mentioned in description"
+        ],
+        "failCriteria": [
+          "No compression documentation"
+        ]
+      },
+      "examples": {
+        "good": [
+          "Accept-Encoding: gzip supported",
+          "Content-Encoding: gzip in response"
+        ],
+        "bad": [
+          "No compression support"
+        ]
+      }
+    },
+    {
+      "id": "PO-059",
+      "title": "Set Cache-Control headers",
+      "category": "performance",
+      "severity": "warn",
+      "description": "GET responses SHOULD include appropriate Cache-Control headers.",
+      "rationale": "Proper caching reduces server load and improves client performance.",
+      "source": "HTTP/1.1 Spec, Zalando Z-180",
+      "examples": {
+        "good": [
+          "Cache-Control: max-age=3600, private",
+          "Cache-Control: no-store"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if Cache-Control headers are documented for GET responses",
+        "passCriteria": [
+          "Cache-Control header documented",
+          "Caching strategy specified per endpoint"
+        ],
+        "partialCriteria": [
+          "Some caching documentation"
+        ],
+        "failCriteria": [
+          "No caching headers documented"
+        ]
+      }
+    },
+    {
+      "id": "PO-060",
+      "title": "Limit response payload size",
+      "category": "performance",
+      "severity": "warn",
+      "description": "Individual responses SHOULD not exceed 1MB. Use pagination and field selection for large data.",
+      "rationale": "Large payloads cause memory issues, timeout errors, and poor UX.",
+      "source": "Industry best practice",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if response payload size limits are documented",
+        "passCriteria": [
+          "Max response size documented",
+          "Pagination used for large collections"
+        ],
+        "partialCriteria": [
+          "Pagination exists but limits not documented"
+        ],
+        "failCriteria": [
+          "No size limits",
+          "Unbounded collections possible"
+        ]
+      },
+      "examples": {
+        "good": [
+          "Response limited to 100 items per page",
+          "Large payloads paginated"
+        ],
+        "bad": [
+          "Returns all 10000 items in single response"
+        ]
+      }
+    },
+    {
+      "id": "PO-061",
+      "title": "Include self link",
+      "category": "hypermedia",
+      "severity": "info",
+      "description": "Resources MAY include a 'self' link for discoverability.",
+      "rationale": "Self links enable clients to refresh resources and support HATEOAS patterns.",
+      "source": "Zalando Z-217",
+      "examples": {
+        "good": [
+          "{\"id\": \"user123\", \"_links\": {\"self\": {\"href\": \"/v1/users/user123\"}}}"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if resources include self links for discoverability",
+        "passCriteria": [
+          "Resources include _links.self or self property",
+          "Self links are valid URLs"
+        ],
+        "partialCriteria": [
+          "Some resources have self links"
+        ],
+        "failCriteria": [
+          "No self links in responses"
+        ]
+      }
+    },
+    {
+      "id": "PO-062",
+      "title": "Use standard link relations",
+      "category": "hypermedia",
+      "severity": "info",
+      "description": "Use IANA standard link relations when available (self, next, prev, first, last).",
+      "rationale": "Standard relations are widely understood and enable generic client handling.",
+      "source": "IANA Link Relations, RFC 8288",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if link relations use IANA standard names",
+        "passCriteria": [
+          "Uses standard relations: self, next, prev, first, last",
+          "Custom relations are documented"
+        ],
+        "failCriteria": [
+          "Non-standard relation names",
+          "Inconsistent link naming"
+        ]
+      },
+      "examples": {
+        "good": [
+          "_links: {self: {...}, next: {...}, prev: {...}}"
+        ],
+        "bad": [
+          "_links: {getNext: {...}, goBack: {...}}"
+        ]
+      }
+    },
+    {
+      "id": "PO-063",
+      "title": "Support batch operations",
+      "category": "batch",
+      "severity": "info",
+      "description": "Consider supporting batch endpoints for bulk create/update/delete to reduce round trips.",
+      "rationale": "Batch operations improve performance for clients processing many items.",
+      "source": "Microsoft Graph, PayPal PP-045",
+      "examples": {
+        "good": [
+          "POST /v1/users/batch with {\"operations\": [{\"method\": \"create\", \"data\": {...}}]}"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if batch operations are supported for bulk operations",
+        "passCriteria": [
+          "Batch endpoint exists",
+          "Accepts array of operations",
+          "Documents batch semantics"
+        ],
+        "partialCriteria": [
+          "Batch mentioned but not implemented"
+        ],
+        "failCriteria": [
+          "No batch support for high-volume operations"
+        ]
+      }
+    },
+    {
+      "id": "PO-064",
+      "title": "Limit batch size",
+      "category": "batch",
+      "severity": "warn",
+      "description": "Batch operations SHOULD limit the number of items per request (typically 100-1000).",
+      "rationale": "Unbounded batches can cause timeouts and memory issues.",
+      "source": "Microsoft Graph",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if batch operations have size limits",
+        "passCriteria": [
+          "Max batch size documented",
+          "Limit is reasonable (100-1000)"
+        ],
+        "failCriteria": [
+          "No batch size limit",
+          "Unbounded batch operations"
+        ]
+      },
+      "examples": {
+        "good": [
+          "Batch limited to 100 operations per request"
+        ],
+        "bad": [
+          "No batch size limit documented"
+        ]
+      }
+    },
+    {
+      "id": "PO-065",
+      "title": "Return individual batch results",
+      "category": "batch",
+      "severity": "warn",
+      "description": "Batch responses SHOULD include success/failure status for each item, allowing partial success.",
+      "rationale": "Clients need to know which operations succeeded and which failed.",
+      "source": "Microsoft Graph",
+      "examples": {
+        "good": [
+          "{\"results\": [{\"status\": 201, \"data\": {...}}, {\"status\": 400, \"error\": {...}}]}"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if batch responses include individual operation results",
+        "passCriteria": [
+          "Each item has status code",
+          "Partial success supported",
+          "Failed items have error details"
+        ],
+        "failCriteria": [
+          "All-or-nothing batch operations",
+          "No per-item status"
+        ]
+      }
+    },
+    {
+      "id": "PO-066",
+      "title": "Use CloudEvents format for events",
+      "category": "events",
+      "severity": "warn",
+      "description": "Webhook payloads SHOULD follow CloudEvents specification for interoperability.",
+      "rationale": "CloudEvents is a CNCF standard that enables consistent event handling across systems.",
+      "source": "Zalando Z-250, CloudEvents Spec",
+      "examples": {
+        "good": [
+          "{\"specversion\": \"1.0\", \"type\": \"com.example.order.created\", \"source\": \"/orders\", \"id\": \"evt123\", \"data\": {...}}"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if webhook payloads follow CloudEvents format",
+        "passCriteria": [
+          "Events have specversion, type, source, id fields",
+          "CloudEvents content type used"
+        ],
+        "partialCriteria": [
+          "Event structure exists but not CloudEvents"
+        ],
+        "failCriteria": [
+          "No standard event format",
+          "Missing event metadata"
+        ]
+      }
+    },
+    {
+      "id": "PO-067",
+      "title": "Include event metadata",
+      "category": "events",
+      "severity": "error",
+      "description": "Events MUST include id, type, timestamp, and source fields.",
+      "rationale": "Event metadata enables idempotent processing, debugging, and event routing.",
+      "source": "Zalando Z-251",
+      "examples": {
+        "good": [
+          "{\"id\": \"evt123\", \"type\": \"order.created\", \"timestamp\": \"2024-01-15T10:30:00Z\", \"source\": \"orders-service\"}"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if events include required metadata (id, type, timestamp, source)",
+        "passCriteria": [
+          "Event schema has id field",
+          "Event schema has type field",
+          "Event schema has timestamp",
+          "Event schema has source"
+        ],
+        "failCriteria": [
+          "Missing event id",
+          "Missing event type",
+          "Missing timestamp"
+        ]
+      }
+    },
+    {
+      "id": "PO-068",
+      "title": "Sign webhook payloads",
+      "category": "events",
+      "severity": "error",
+      "description": "Webhooks MUST include signature header for payload verification (e.g., X-Signature-256).",
+      "rationale": "Signatures prevent webhook forgery and ensure payload integrity.",
+      "source": "Zalando Z-252, GitHub Webhooks",
+      "examples": {
+        "good": [
+          "X-Signature-256: sha256=abc123..."
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if webhooks include signature header for verification",
+        "passCriteria": [
+          "Signature header documented (X-Signature-256 or similar)",
+          "Signature algorithm specified",
+          "Verification process documented"
+        ],
+        "failCriteria": [
+          "No webhook signature",
+          "No way to verify payload authenticity"
+        ]
+      }
+    },
+    {
+      "id": "PO-069",
+      "title": "Use POST for custom actions",
+      "category": "actions",
+      "severity": "error",
+      "description": "Non-CRUD actions MUST use POST with action name in path segment.",
+      "rationale": "POST with action name clearly indicates a non-idempotent operation that isn't standard CRUD.",
+      "source": "Microsoft MS-035, Google AIP-136",
+      "examples": {
+        "good": [
+          "POST /v1/orders/{id}/cancel",
+          "POST /v1/users/{id}/deactivate"
+        ],
+        "bad": [
+          "DELETE /v1/orders/{id}/cancel",
+          "GET /v1/orders/{id}?action=cancel"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if non-CRUD actions use POST with action name in path",
+        "passCriteria": [
+          "Actions use POST method",
+          "Action name is in URL path",
+          "Pattern like /resources/{id}/action"
+        ],
+        "failCriteria": [
+          "Actions use GET with side effects",
+          "Action in query parameter",
+          "DELETE for non-deletion actions"
+        ]
+      }
+    },
+    {
+      "id": "PO-070",
+      "title": "Use clear action verbs",
+      "category": "actions",
+      "severity": "warn",
+      "description": "Action endpoints SHOULD use clear verbs (cancel, approve, submit, archive, publish).",
+      "rationale": "Clear verbs make the action's intent obvious without reading documentation.",
+      "source": "Industry best practice",
+      "examples": {
+        "good": [
+          "/orders/{id}/cancel",
+          "/documents/{id}/publish"
+        ],
+        "bad": [
+          "/orders/{id}/action",
+          "/documents/{id}/do"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if action endpoints use clear verb names",
+        "passCriteria": [
+          "Action names are verbs",
+          "Names are clear: cancel, approve, submit, publish"
+        ],
+        "failCriteria": [
+          "Vague action names like 'process' or 'do'",
+          "Noun-based action names"
+        ]
+      }
+    },
+    {
+      "id": "PO-071",
+      "title": "Include rate limit headers",
+      "category": "throttling",
+      "severity": "error",
+      "description": "APIs MUST include rate limit headers: X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset.",
+      "rationale": "Rate limit headers help clients implement proper backoff and avoid hitting limits.",
+      "source": "IETF Draft RateLimit Headers, GitHub API",
+      "examples": {
+        "good": [
+          "X-RateLimit-Limit: 1000",
+          "X-RateLimit-Remaining: 950",
+          "X-RateLimit-Reset: 1640000000"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if rate limit headers are documented (X-RateLimit-*)",
+        "passCriteria": [
+          "X-RateLimit-Limit header documented",
+          "X-RateLimit-Remaining documented",
+          "X-RateLimit-Reset documented"
+        ],
+        "failCriteria": [
+          "No rate limit headers",
+          "Missing rate limit information"
+        ]
+      }
+    },
+    {
+      "id": "PO-072",
+      "title": "Include Retry-After on 429",
+      "category": "throttling",
+      "severity": "error",
+      "description": "429 Too Many Requests responses MUST include Retry-After header.",
+      "rationale": "Retry-After tells clients exactly when they can retry, preventing thundering herd.",
+      "source": "RFC 7231",
+      "examples": {
+        "good": [
+          "HTTP/1.1 429 Too Many Requests\\nRetry-After: 60"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if 429 responses include Retry-After header",
+        "passCriteria": [
+          "Retry-After header documented for 429",
+          "Value format specified (seconds or date)"
+        ],
+        "failCriteria": [
+          "No Retry-After for 429",
+          "429 response missing guidance"
+        ]
+      }
+    },
+    {
+      "id": "PO-073",
+      "title": "Document rate limit tiers",
+      "category": "throttling",
+      "severity": "warn",
+      "description": "Rate limits SHOULD be documented with clear tiers (per-second, per-minute, per-day limits).",
+      "rationale": "Clear documentation helps clients plan their request patterns.",
+      "source": "Industry best practice",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if rate limit tiers are documented",
+        "passCriteria": [
+          "Rate limits documented in description",
+          "Different tiers if applicable",
+          "Reset period specified"
+        ],
+        "partialCriteria": [
+          "Rate limits mentioned but not detailed"
+        ],
+        "failCriteria": [
+          "No rate limit documentation"
+        ]
+      },
+      "examples": {
+        "good": [
+          "Rate limit: 1000 requests/minute, 10000 requests/hour"
+        ],
+        "bad": [
+          "No rate limit documentation"
+        ]
+      }
+    },
+    {
+      "id": "PO-074",
+      "title": "Avoid breaking changes",
+      "category": "compatibility",
+      "severity": "error",
+      "description": "Do not make breaking changes within an API version. Breaking changes require a new major version.",
+      "rationale": "Breaking changes disrupt existing clients. Plan for evolution from the start.",
+      "source": "Zalando Z-107, Microsoft MS-060",
+      "judge": {
+        "prompt": "Check that API changes are backward compatible",
+        "passCriteria": [
+          "No breaking changes detected",
+          "Only additive changes",
+          "No removed fields or endpoints",
+          "No type changes"
+        ],
+        "failCriteria": [
+          "Fields removed",
+          "Fields renamed",
+          "Types changed",
+          "Required fields added to existing schemas"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "examples": {
+        "good": [
+          "v1.1.0 adds optional 'nickname' field - backward compatible"
+        ],
+        "bad": [
+          "v1.1.0 removes 'fullName' field - breaking change"
+        ]
+      }
+    },
+    {
+      "id": "PO-075",
+      "title": "Make additive changes only",
+      "category": "compatibility",
+      "severity": "error",
+      "description": "Only make additive changes: new endpoints, new optional fields, new enum values at the end.",
+      "rationale": "Additive changes are backward compatible. Clients ignore unknown fields.",
+      "source": "Zalando Z-108",
+      "examples": {
+        "good": [
+          "Adding optional field",
+          "Adding new endpoint",
+          "Adding new enum value"
+        ],
+        "bad": [
+          "Removing field",
+          "Renaming field",
+          "Changing field type"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if changes are additive only (no removed or renamed fields)",
+        "passCriteria": [
+          "Only new fields added",
+          "No fields removed",
+          "No field renames",
+          "New enum values at end"
+        ],
+        "failCriteria": [
+          "Fields removed",
+          "Fields renamed",
+          "Type changes",
+          "Enum values reordered"
+        ]
+      }
+    },
+    {
+      "id": "PO-076",
+      "title": "Ignore unknown fields",
+      "category": "compatibility",
+      "severity": "warn",
+      "description": "Clients SHOULD ignore unknown fields. Servers SHOULD accept requests with unknown fields.",
+      "rationale": "Ignoring unknown fields enables forward compatibility as APIs evolve.",
+      "source": "Postel's Law, Zalando Z-109",
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if API tolerates unknown fields",
+        "passCriteria": [
+          "No additionalProperties: false blocking unknown fields",
+          "Forward compatibility documented"
+        ],
+        "partialCriteria": [
+          "Some schemas allow additional properties"
+        ],
+        "failCriteria": [
+          "additionalProperties: false everywhere",
+          "Strict schema validation"
+        ]
+      },
+      "examples": {
+        "good": [
+          "additionalProperties: true (or omitted)",
+          "Client ignores unknown fields"
+        ],
+        "bad": [
+          "additionalProperties: false blocking future fields"
+        ]
+      }
+    },
+    {
+      "id": "PO-077",
+      "title": "Use Deprecation header",
+      "category": "deprecation",
+      "severity": "error",
+      "description": "Deprecated endpoints MUST include Deprecation header with deprecation date.",
+      "rationale": "Deprecation header provides machine-readable deprecation notice.",
+      "source": "RFC 8594",
+      "examples": {
+        "good": [
+          "Deprecation: Sun, 01 Jan 2025 00:00:00 GMT"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if deprecated endpoints include Deprecation header",
+        "passCriteria": [
+          "Deprecation header documented",
+          "Deprecation date specified",
+          "deprecated: true in OpenAPI"
+        ],
+        "failCriteria": [
+          "Deprecated endpoints without Deprecation header",
+          "No deprecation date"
+        ]
+      }
+    },
+    {
+      "id": "PO-078",
+      "title": "Use Sunset header",
+      "category": "deprecation",
+      "severity": "error",
+      "description": "Deprecated endpoints MUST include Sunset header indicating when the endpoint will be removed.",
+      "rationale": "Sunset header gives clients a clear deadline to migrate.",
+      "source": "RFC 8594, Zalando Z-186",
+      "examples": {
+        "good": [
+          "Sunset: Sun, 01 Jul 2025 00:00:00 GMT"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if deprecated endpoints include Sunset header",
+        "passCriteria": [
+          "Sunset header documented",
+          "Removal date specified",
+          "At least 6 months notice"
+        ],
+        "failCriteria": [
+          "No Sunset header",
+          "Immediate removal without notice"
+        ]
+      }
+    },
+    {
+      "id": "PO-079",
+      "title": "Document migration path",
+      "category": "deprecation",
+      "severity": "warn",
+      "description": "Deprecated endpoints SHOULD include Link header pointing to replacement endpoint or migration guide.",
+      "rationale": "Clear migration guidance helps clients update efficiently.",
+      "source": "Zalando Z-187",
+      "examples": {
+        "good": [
+          "Link: </v2/users>; rel=\"successor-version\""
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if deprecated endpoints document migration path",
+        "passCriteria": [
+          "Link header with successor-version",
+          "Migration guide referenced",
+          "Replacement endpoint documented"
+        ],
+        "partialCriteria": [
+          "Deprecation notice but no migration path"
+        ],
+        "failCriteria": [
+          "No migration guidance",
+          "No replacement documented"
+        ]
+      }
+    },
+    {
+      "id": "PO-080",
+      "title": "Use consistent enum naming",
+      "category": "naming",
+      "severity": "warn",
+      "description": "Enum values SHOULD use UPPER_SNAKE_CASE for constants. Enum names should be singular nouns.",
+      "rationale": "Consistent enum naming improves readability and matches conventions in most programming languages.",
+      "source": "Google API Design Guide, Zalando Z-125",
+      "examples": {
+        "good": [
+          "enum: [PENDING, IN_PROGRESS, COMPLETED]",
+          "enum: [USD, EUR, GBP]"
+        ],
+        "bad": [
+          "enum: [pending, inProgress, completed]",
+          "enum: [Pending, InProgress]"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if enum values use UPPER_SNAKE_CASE naming convention",
+        "passCriteria": [
+          "Enum values use UPPER_SNAKE_CASE",
+          "Enum names are descriptive"
+        ],
+        "failCriteria": [
+          "Enum values use camelCase or lowercase",
+          "Inconsistent enum casing"
+        ]
+      }
+    },
+    {
+      "id": "PO-081",
+      "title": "Avoid abbreviations in names",
+      "category": "naming",
+      "severity": "warn",
+      "description": "Avoid abbreviations unless universally understood (id, url, http). Use full words for clarity.",
+      "rationale": "Abbreviations reduce readability and can be ambiguous. 'cnt' could mean count or content.",
+      "source": "Google API Design Guide",
+      "examples": {
+        "good": [
+          "customerId",
+          "accountNumber",
+          "transactionDate",
+          "configuration"
+        ],
+        "bad": [
+          "custId",
+          "acctNum",
+          "txnDt",
+          "cfg",
+          "cnt"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if property and resource names avoid unnecessary abbreviations",
+        "passCriteria": [
+          "Names use full words",
+          "Only common abbreviations (id, url, http) used"
+        ],
+        "failCriteria": [
+          "Cryptic abbreviations used",
+          "Inconsistent abbreviation patterns"
+        ]
+      }
+    },
+    {
+      "id": "PO-082",
+      "title": "Use boolean naming conventions",
+      "category": "naming",
+      "severity": "info",
+      "description": "Boolean properties SHOULD use is, has, can, should prefixes (e.g., isActive, hasChildren, canEdit).",
+      "rationale": "Prefixed booleans read naturally and make the property's type obvious without checking the schema.",
+      "source": "Industry best practice",
+      "examples": {
+        "good": [
+          "isActive",
+          "hasPermission",
+          "canDelete",
+          "shouldNotify",
+          "isEnabled"
+        ],
+        "bad": [
+          "active",
+          "permission",
+          "delete",
+          "notify",
+          "enabled"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if boolean properties use is/has/can/should prefixes",
+        "passCriteria": [
+          "Boolean properties have appropriate prefixes",
+          "Naming is consistent"
+        ],
+        "partialCriteria": [
+          "Some booleans have prefixes"
+        ],
+        "failCriteria": [
+          "Boolean properties lack prefixes",
+          "Ambiguous boolean names"
+        ]
+      }
+    },
+    {
+      "id": "PO-083",
+      "title": "Provide complete API info",
+      "category": "general",
+      "severity": "error",
+      "description": "API info MUST include title, version, description, and contact information.",
+      "rationale": "Complete metadata enables documentation generation and helps consumers find support.",
+      "source": "OpenAPI Specification",
+      "examples": {
+        "good": [
+          "info:\\n  title: User API\\n  version: 1.0.0\\n  description: Manages users\\n  contact:\\n    email: api@example.com"
+        ],
+        "bad": [
+          "info:\\n  title: API\\n  version: 1"
+        ]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.info.contact"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if API info section is complete with title, version, description, and contact",
+        "passCriteria": [
+          "Title is descriptive",
+          "Version follows semver",
+          "Description explains purpose",
+          "Contact info provided"
+        ],
+        "failCriteria": [
+          "Missing required info fields",
+          "Generic or placeholder values"
+        ]
+      }
+    },
+    {
+      "id": "PO-084",
+      "title": "Define servers with descriptions",
+      "category": "general",
+      "severity": "warn",
+      "description": "API SHOULD define server URLs with descriptions for each environment (production, staging, etc.).",
+      "rationale": "Server definitions enable tools and developers to easily switch environments.",
+      "source": "OpenAPI Best Practice",
+      "examples": {
+        "good": [
+          "servers:\\n  - url: https://api.example.com\\n    description: Production"
+        ],
+        "bad": [
+          "No servers defined",
+          "servers:\\n  - url: https://localhost:8080"
+        ]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "truthy",
+        "given": {
+          "paths": [
+            "$.servers"
+          ]
+        }
+      },
+      "judge": {
+        "prompt": "Check if servers are defined with proper URLs and descriptions",
+        "passCriteria": [
+          "At least one server defined",
+          "Server URLs are HTTPS",
+          "Descriptions provided"
+        ],
+        "failCriteria": [
+          "No servers defined",
+          "Only localhost servers",
+          "Missing descriptions"
+        ]
+      }
+    },
+    {
+      "id": "PO-085",
+      "title": "No verbs in URL paths",
+      "category": "urls",
+      "severity": "error",
+      "description": "URL paths MUST NOT contain verbs. Use HTTP methods to express actions, not URL segments.",
+      "rationale": "RESTful URLs identify resources (nouns), not actions. Verbs belong in HTTP methods.",
+      "source": "REST API Design, Zalando Z-136",
+      "examples": {
+        "good": [
+          "POST /v1/orders",
+          "DELETE /v1/users/{id}",
+          "POST /v1/orders/{id}/cancel"
+        ],
+        "bad": [
+          "/v1/createOrder",
+          "/v1/deleteUser/{id}",
+          "/v1/getUsers"
+        ]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {
+          "paths": [
+            "$.paths[*]~"
+          ]
+        },
+        "options": {
+          "notMatch": "/(create|get|update|delete|fetch|remove|add|set)[A-Z]"
+        }
+      },
+      "judge": {
+        "prompt": "Check if URL paths avoid verbs and use nouns for resources",
+        "passCriteria": [
+          "Paths use nouns only",
+          "Actions expressed via HTTP methods",
+          "Sub-resource actions use POST with noun"
+        ],
+        "failCriteria": [
+          "Paths contain verbs like create, get, delete",
+          "Action words in path segments"
+        ]
+      }
+    },
+    {
+      "id": "PO-086",
+      "title": "Use camelCase for query parameters",
+      "category": "urls",
+      "severity": "warn",
+      "description": "Query parameter names SHOULD use camelCase to match JSON property naming conventions.",
+      "rationale": "Consistent casing between query params and JSON properties reduces cognitive load.",
+      "source": "Microsoft REST Guidelines",
+      "examples": {
+        "good": [
+          "?pageSize=20",
+          "?sortBy=createdAt",
+          "?includeDeleted=true"
+        ],
+        "bad": [
+          "?page_size=20",
+          "?sort-by=created_at",
+          "?include-deleted=true"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if query parameters use camelCase naming",
+        "passCriteria": [
+          "Query params use camelCase",
+          "Consistent with JSON property naming"
+        ],
+        "failCriteria": [
+          "Query params use snake_case",
+          "Query params use kebab-case"
+        ]
+      }
+    },
+    {
+      "id": "PO-087",
+      "title": "Include error code in Problem Details",
+      "category": "errors",
+      "severity": "warn",
+      "description": "Error responses SHOULD include a machine-readable error code in addition to human-readable messages.",
+      "rationale": "Error codes enable programmatic error handling and internationalization of error messages.",
+      "source": "Zalando Z-177",
+      "examples": {
+        "good": [
+          "{\"type\": \"...\", \"title\": \"Validation Error\", \"code\": \"INVALID_EMAIL_FORMAT\", \"detail\": \"...\"}"
+        ],
+        "bad": [
+          "{\"message\": \"The email is invalid\"}"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if error responses include machine-readable error codes",
+        "passCriteria": [
+          "Error schema has code field",
+          "Codes are documented",
+          "Codes are consistent"
+        ],
+        "failCriteria": [
+          "No error codes",
+          "Only human-readable messages"
+        ]
+      }
+    },
+    {
+      "id": "PO-088",
+      "title": "Document validation error details",
+      "category": "errors",
+      "severity": "warn",
+      "description": "Validation errors SHOULD include field-level details showing which fields failed and why.",
+      "rationale": "Field-level errors enable UIs to show inline validation messages.",
+      "source": "RFC 9457 extensions",
+      "examples": {
+        "good": [
+          "{\"errors\": [{\"field\": \"email\", \"code\": \"INVALID_FORMAT\", \"message\": \"Must be valid email\"}]}"
+        ],
+        "bad": [
+          "{\"message\": \"Validation failed\"}"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if validation errors include field-level details",
+        "passCriteria": [
+          "Error schema supports field-level errors",
+          "Field name included",
+          "Field-specific message provided"
+        ],
+        "failCriteria": [
+          "Only generic validation message",
+          "No field identification"
+        ]
+      }
+    },
+    {
+      "id": "PO-089",
+      "title": "Document pagination parameters",
+      "category": "pagination",
+      "severity": "warn",
+      "description": "Pagination parameters (limit, cursor) MUST be documented with default values and maximum limits.",
+      "rationale": "Clear pagination documentation helps clients implement efficient data fetching.",
+      "source": "API Documentation Best Practice",
+      "examples": {
+        "good": [
+          "limit:\\n  description: Max items per page (default: 20, max: 100)\\n  schema:\\n    type: integer\\n    default: 20\\n    maximum: 100"
+        ],
+        "bad": [
+          "limit:\\n  type: integer"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if pagination parameters document defaults and limits",
+        "passCriteria": [
+          "Limit parameter has default value",
+          "Maximum limit documented",
+          "Cursor format explained"
+        ],
+        "failCriteria": [
+          "No default values",
+          "No maximum limit",
+          "Undocumented pagination"
+        ]
+      }
+    },
+    {
+      "id": "PO-090",
+      "title": "Use consistent collection property names",
+      "category": "collections",
+      "severity": "error",
+      "description": "Collection responses MUST use 'items' for the array property, not resource-specific names like 'users' or 'orders'.",
+      "rationale": "Consistent property names enable generic client code for pagination and collection handling.",
+      "source": "Zalando Z-165",
+      "examples": {
+        "good": [
+          "{\"items\": [{...}], \"nextCursor\": \"...\"}"
+        ],
+        "bad": [
+          "{\"users\": [{...}]}",
+          "{\"data\": [{...}]}"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if all collection responses use 'items' as the array property name",
+        "passCriteria": [
+          "All collections use 'items' property",
+          "Consistent across endpoints"
+        ],
+        "failCriteria": [
+          "Resource-specific names like 'users', 'orders'",
+          "Inconsistent collection property names"
+        ]
+      }
+    },
+    {
+      "id": "PO-091",
+      "title": "Use discriminator for polymorphic types",
+      "category": "schema",
+      "severity": "error",
+      "description": "oneOf and anyOf schemas MUST include a discriminator with propertyName. Without discriminators, SDK generators produce unusable interface{} or Object types.",
+      "rationale": "Discriminators enable SDK generators to create proper typed unions. Without them, Go generates interface{}, TypeScript generates unknown, making the SDK unusable.",
+      "source": "OpenAPI 3.0 Spec, ogen requirements",
+      "examples": {
+        "good": [
+          "oneOf:\\n  - $ref: '#/components/schemas/Dog'\\n  - $ref: '#/components/schemas/Cat'\\ndiscriminator:\\n  propertyName: petType\\n  mapping:\\n    dog: '#/components/schemas/Dog'\\n    cat: '#/components/schemas/Cat'"
+        ],
+        "bad": [
+          "oneOf:\\n  - $ref: '#/components/schemas/Dog'\\n  - $ref: '#/components/schemas/Cat'\\n# No discriminator - generates interface{}"
+        ]
+      },
+      "enforcement": {
+        "type": "none",
+        "reason": "JSONPath filter expressions not supported by parser"
+      },
+      "judge": {
+        "prompt": "Check if oneOf/anyOf schemas have discriminator with propertyName",
+        "passCriteria": [
+          "All oneOf schemas have discriminator",
+          "All anyOf schemas have discriminator",
+          "Discriminator has propertyName",
+          "Mapping is provided for clarity"
+        ],
+        "failCriteria": [
+          "oneOf without discriminator",
+          "anyOf without discriminator",
+          "Discriminator missing propertyName"
+        ]
+      }
+    },
+    {
+      "id": "PO-092",
+      "title": "Use named schemas for request/response bodies",
+      "category": "schema",
+      "severity": "error",
+      "description": "Request and response bodies MUST reference named schemas from components/schemas. Inline schemas produce ugly generated type names like 'PostUsersRequest' or 'GetUsersResponse200'.",
+      "rationale": "Named schemas become clean type names in SDKs. Inline schemas get auto-generated names that are verbose and inconsistent across generators.",
+      "source": "SDK generation best practice",
+      "examples": {
+        "good": [
+          "requestBody:\\n  content:\\n    application/json:\\n      schema:\\n        $ref: '#/components/schemas/CreateUserRequest'"
+        ],
+        "bad": [
+          "requestBody:\\n  content:\\n    application/json:\\n      schema:\\n        type: object\\n        properties:\\n          name:\\n            type: string"
+        ]
+      },
+      "enforcement": {
+        "type": "none",
+        "reason": "JSONPath quoted keys with slashes and $ref not supported by parser"
+      },
+      "judge": {
+        "prompt": "Check if request/response bodies use $ref to named schemas instead of inline definitions",
+        "passCriteria": [
+          "Request bodies use $ref to named schemas",
+          "Response bodies use $ref to named schemas",
+          "Schemas defined in components/schemas",
+          "Schema names are descriptive (CreateUserRequest, User, Error)"
+        ],
+        "failCriteria": [
+          "Inline object schemas in request body",
+          "Inline object schemas in response body",
+          "Auto-generated schema names needed"
+        ]
+      }
+    },
+    {
+      "id": "PO-093",
+      "title": "Require response schema for all responses",
+      "category": "schema",
+      "severity": "error",
+      "description": "All responses with bodies MUST have a schema defined. Responses without schemas generate empty or any types in SDKs.",
+      "rationale": "SDK generators need response schemas to generate return types. Missing schemas result in interface{} or untyped responses.",
+      "source": "SDK generation best practice",
+      "examples": {
+        "good": [
+          "responses:\\n  200:\\n    content:\\n      application/json:\\n        schema:\\n          $ref: '#/components/schemas/User'"
+        ],
+        "bad": [
+          "responses:\\n  200:\\n    description: Success\\n    # No schema defined"
+        ]
+      },
+      "enforcement": {
+        "type": "none",
+        "reason": "JSONPath quoted keys with slashes not supported by parser"
+      },
+      "judge": {
+        "prompt": "Check if all responses with content have schemas defined",
+        "passCriteria": [
+          "All 2xx responses have schemas",
+          "All error responses have error schema",
+          "No responses with content but missing schema"
+        ],
+        "failCriteria": [
+          "Response has content but no schema",
+          "Schema is empty object",
+          "Description only without schema"
+        ]
+      }
+    },
+    {
+      "id": "PO-094",
+      "title": "Use explicit nullable for optional null values",
+      "category": "json",
+      "severity": "error",
+      "description": "Properties that can be null MUST use 'nullable: true' (OpenAPI 3.0) or 'type: [\"string\", \"null\"]' (OpenAPI 3.1). This distinction affects pointer vs value types in Go.",
+      "rationale": "In Go, nullable fields become pointers (*string), non-nullable become values (string). Incorrect nullable handling causes nil pointer panics or incorrect serialization.",
+      "source": "ogen documentation, Go SDK patterns",
+      "examples": {
+        "good": [
+          "middleName:\\n  type: string\\n  nullable: true  # Go: *string",
+          "name:\\n  type: string  # Go: string (required, never null)"
+        ],
+        "bad": [
+          "middleName:\\n  type: string  # Ambiguous - is null valid?",
+          "# Relying on 'required' array alone for nullability"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if nullable properties explicitly use nullable: true or type array with null",
+        "passCriteria": [
+          "Optional properties that accept null use nullable: true",
+          "Required properties are not nullable",
+          "Clear distinction between optional and nullable"
+        ],
+        "failCriteria": [
+          "Ambiguous nullability",
+          "Optional without nullable when null is valid",
+          "Inconsistent nullable patterns"
+        ]
+      }
+    },
+    {
+      "id": "PO-095",
+      "title": "Explicitly define additionalProperties",
+      "category": "schema",
+      "severity": "warn",
+      "description": "Object schemas SHOULD explicitly set additionalProperties to false (strict) or a typed schema (map). Implicit additionalProperties: true causes map[string]interface{} in Go.",
+      "rationale": "ogen and other generators handle additionalProperties differently. Explicit false creates clean structs. Typed additionalProperties creates map[string]Type.",
+      "source": "ogen documentation",
+      "examples": {
+        "good": [
+          "User:\\n  type: object\\n  additionalProperties: false\\n  properties:\\n    id: ...",
+          "Metadata:\\n  type: object\\n  additionalProperties:\\n    type: string  # map[string]string in Go"
+        ],
+        "bad": [
+          "User:\\n  type: object\\n  properties:\\n    id: ...\\n  # additionalProperties defaults to true \u2192 map[string]interface{}"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if object schemas explicitly define additionalProperties",
+        "passCriteria": [
+          "Schemas explicitly set additionalProperties: false for strict objects",
+          "Map-like schemas use typed additionalProperties",
+          "No implicit additionalProperties: true"
+        ],
+        "partialCriteria": [
+          "Some schemas explicit, others implicit"
+        ],
+        "failCriteria": [
+          "additionalProperties not specified",
+          "Untyped additionalProperties: true"
+        ]
+      }
+    },
+    {
+      "id": "PO-096",
+      "title": "Use consistent response envelope",
+      "category": "request-response",
+      "severity": "warn",
+      "description": "Consider using a consistent response envelope across all endpoints: {\"data\": ..., \"meta\": ...}. This enables generic SDK response handling and middleware.",
+      "rationale": "Stripe and other leading APIs use consistent envelopes. This enables generic error handling, pagination, and metadata extraction in SDKs.",
+      "source": "Stripe API, JSON:API",
+      "examples": {
+        "good": [
+          "Single: {\"data\": {user object}, \"meta\": {\"requestId\": \"...\"}}",
+          "List: {\"data\": [{...}], \"meta\": {\"hasMore\": true, \"cursor\": \"...\"}}"
+        ],
+        "bad": [
+          "Inconsistent: /users returns array, /orders returns {\"orders\": [...]}",
+          "Mixed envelopes across endpoints"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if API uses consistent response envelope structure",
+        "passCriteria": [
+          "Consistent top-level structure across endpoints",
+          "Data wrapper for main payload",
+          "Meta field for pagination/request info"
+        ],
+        "partialCriteria": [
+          "Collections use envelope but singles don't"
+        ],
+        "failCriteria": [
+          "Inconsistent response structures",
+          "Raw arrays at top level",
+          "Different envelope shapes per endpoint"
+        ]
+      }
+    },
+    {
+      "id": "PO-097",
+      "title": "Support expandable relations",
+      "category": "request-response",
+      "severity": "info",
+      "description": "Consider supporting expandable relations via ?expand=customer,items query parameter. Returns full objects instead of IDs, reducing round trips.",
+      "rationale": "Stripe's expand pattern is widely adopted. It reduces N+1 queries and improves SDK usability by letting clients fetch related data in one call.",
+      "source": "Stripe API",
+      "examples": {
+        "good": [
+          "GET /orders/123?expand=customer,items",
+          "Response includes full customer object instead of just customerId"
+        ],
+        "bad": [
+          "Requiring separate calls to fetch each related resource"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if API supports expandable relations pattern",
+        "passCriteria": [
+          "Expand query parameter documented",
+          "Related resources can be expanded inline",
+          "Default returns IDs, expand returns full objects"
+        ],
+        "partialCriteria": [
+          "Some endpoints support expand"
+        ],
+        "failCriteria": [
+          "No expand support, requires multiple round trips"
+        ]
+      }
+    },
+    {
+      "id": "PO-098",
+      "title": "Support idempotency keys for mutations",
+      "category": "request-response",
+      "severity": "warn",
+      "description": "POST, PUT, PATCH endpoints SHOULD accept Idempotency-Key header. Store and check keys server-side to enable safe retries.",
+      "rationale": "Idempotency keys enable safe retries for network failures. Critical for payment and order APIs. Stripe requires this for all mutations.",
+      "source": "Stripe API, IETF draft-idempotency-header",
+      "examples": {
+        "good": [
+          "POST /orders\\nIdempotency-Key: ord_req_123abc\\n\\nServer returns cached response for duplicate key"
+        ],
+        "bad": [
+          "POST /orders creates duplicate on retry",
+          "No idempotency mechanism for non-idempotent operations"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if mutation endpoints support Idempotency-Key header",
+        "passCriteria": [
+          "Idempotency-Key header documented for POST/PUT/PATCH",
+          "Retry behavior documented",
+          "Key format specified (UUID recommended)"
+        ],
+        "partialCriteria": [
+          "Some endpoints support idempotency"
+        ],
+        "failCriteria": [
+          "No idempotency support for mutations",
+          "Silent duplicate creation on retry"
+        ]
+      }
+    },
+    {
+      "id": "PO-099",
+      "title": "Use verb + resource operationId format",
+      "category": "documentation",
+      "severity": "error",
+      "description": "operationId MUST follow verbResource format: listUsers, getUser, createUser, updateUser, deleteUser. This produces clean SDK method names.",
+      "rationale": "Consistent operationId naming produces consistent SDK method names. client.ListUsers(), client.GetUser(id) is intuitive. Random names create confusing APIs.",
+      "source": "OpenAPI best practice, SDK conventions",
+      "examples": {
+        "good": [
+          "listUsers, getUser, createUser, updateUser, deleteUser",
+          "listOrderItems, getOrderItem, createOrderItem"
+        ],
+        "bad": [
+          "users_list, user_get (snake_case)",
+          "UsersGet, UserCreate (PascalCase verbs)",
+          "fetchAllUsers, addNewUser (inconsistent verbs)"
+        ]
+      },
+      "enforcement": {
+        "type": "spectral",
+        "function": "pattern",
+        "given": {
+          "paths": [
+            "$.paths[*][*].operationId"
+          ]
+        },
+        "options": {
+          "match": "^(list|get|create|update|delete|search|upload|download|send|cancel|approve|reject|archive|restore)[A-Z][a-zA-Z]*$"
+        }
+      },
+      "judge": {
+        "prompt": "Check if operationIds follow verb + resource naming pattern",
+        "passCriteria": [
+          "operationIds use camelCase",
+          "operationIds start with standard verb (list, get, create, update, delete)",
+          "Resource name follows verb",
+          "Consistent across all operations"
+        ],
+        "failCriteria": [
+          "snake_case operationIds",
+          "PascalCase operationIds",
+          "Missing verb prefix",
+          "Inconsistent verb choices"
+        ]
+      }
+    },
+    {
+      "id": "PO-100",
+      "title": "Specify array item types",
+      "category": "schema",
+      "severity": "error",
+      "description": "Array properties MUST specify items type. Arrays without item types generate []interface{} in Go.",
+      "rationale": "SDK generators need item types to create typed slices. []User is usable, []interface{} requires type assertions everywhere.",
+      "source": "ogen requirements",
+      "examples": {
+        "good": [
+          "tags:\\n  type: array\\n  items:\\n    type: string",
+          "users:\\n  type: array\\n  items:\\n    $ref: '#/components/schemas/User'"
+        ],
+        "bad": [
+          "tags:\\n  type: array\\n  # No items - generates []interface{}",
+          "data:\\n  type: array  # What's in it?"
+        ]
+      },
+      "enforcement": {
+        "type": "none",
+        "reason": "JSONPath filter expressions not supported by parser"
+      },
+      "judge": {
+        "prompt": "Check if all array properties have items type defined",
+        "passCriteria": [
+          "All arrays have items defined",
+          "Items have explicit type or $ref",
+          "Nested arrays also have item types"
+        ],
+        "failCriteria": [
+          "Array without items",
+          "Items without type",
+          "Generates []interface{}"
+        ]
+      }
+    },
+    {
+      "id": "PO-101",
+      "title": "Use standard string formats",
+      "category": "schema",
+      "severity": "warn",
+      "description": "Use standard OpenAPI string formats for semantic types: date-time, date, email, uri, uuid, byte, binary. SDK generators provide special handling for these.",
+      "rationale": "Standard formats get special types in SDKs: time.Time for date-time, url.URL for uri, uuid.UUID for uuid. Custom formats become plain strings.",
+      "source": "OpenAPI spec, ogen type mapping",
+      "examples": {
+        "good": [
+          "createdAt:\\n  type: string\\n  format: date-time  # time.Time in Go",
+          "id:\\n  type: string\\n  format: uuid  # uuid.UUID in Go",
+          "email:\\n  type: string\\n  format: email  # validated string"
+        ],
+        "bad": [
+          "createdAt:\\n  type: string  # Just string, no parsing",
+          "id:\\n  type: string\\n  format: custom-uuid  # Unknown format"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if semantic string properties use standard formats",
+        "passCriteria": [
+          "Date/time fields use format: date-time or date",
+          "UUID fields use format: uuid",
+          "Email fields use format: email",
+          "URL fields use format: uri"
+        ],
+        "partialCriteria": [
+          "Some fields have formats, others don't"
+        ],
+        "failCriteria": [
+          "Date fields without format",
+          "UUID fields without format",
+          "Custom formats instead of standard"
+        ]
+      }
+    },
+    {
+      "id": "PO-102",
+      "title": "Handle circular references properly",
+      "category": "schema",
+      "severity": "error",
+      "description": "Circular schema references MUST use nullable or array to break the cycle. Direct circular refs cause infinite recursion in SDK generation.",
+      "rationale": "Go structs can't have direct circular references. Use pointers (nullable) or arrays to break cycles. ogen handles these correctly when marked.",
+      "source": "ogen documentation",
+      "examples": {
+        "good": [
+          "TreeNode:\\n  properties:\\n    children:\\n      type: array\\n      items:\\n        $ref: '#/components/schemas/TreeNode'  # Array breaks cycle",
+          "Employee:\\n  properties:\\n    manager:\\n      nullable: true\\n      $ref: '#/components/schemas/Employee'  # Nullable breaks cycle"
+        ],
+        "bad": [
+          "Category:\\n  properties:\\n    parent:\\n      $ref: '#/components/schemas/Category'  # Direct cycle - stack overflow"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if circular schema references are properly handled",
+        "passCriteria": [
+          "Circular refs use nullable or array",
+          "No direct non-nullable circular refs",
+          "Self-referential schemas are valid"
+        ],
+        "failCriteria": [
+          "Direct circular reference without nullable",
+          "Infinite recursion possible",
+          "SDK generation fails"
+        ]
+      }
+    },
+    {
+      "id": "PO-103",
+      "title": "Support header-based versioning",
+      "category": "versioning",
+      "severity": "info",
+      "description": "Consider supporting API-Version or Accept header versioning in addition to URL versioning for more flexible version negotiation.",
+      "rationale": "Header versioning (like Stripe's Stripe-Version) allows gradual migration and version pinning per request. More flexible than URL-only versioning.",
+      "source": "Stripe API, GitHub API",
+      "examples": {
+        "good": [
+          "API-Version: 2024-01-15",
+          "Accept: application/vnd.api+json; version=2"
+        ],
+        "bad": [
+          "Only URL versioning with no override option"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if API supports header-based versioning option",
+        "passCriteria": [
+          "API-Version header documented",
+          "Version format specified (date or semver)",
+          "Default version behavior documented"
+        ],
+        "partialCriteria": [
+          "URL versioning only but migration path exists"
+        ],
+        "failCriteria": [
+          "No version flexibility",
+          "Breaking changes without version bump"
+        ]
+      }
+    },
+    {
+      "id": "PO-104",
+      "title": "Include tenant scope in URL path",
+      "category": "multi-tenancy",
+      "severity": "warn",
+      "description": "Multi-tenant APIs SHOULD include tenant identifier in the URL path (e.g., /tenants/{tenantId}/resources). This makes tenant context explicit and enables better caching, routing, and debugging.",
+      "rationale": "Explicit tenant in URL provides: (1) Cache-friendly URLs where tenant is part of cache key, (2) Infrastructure routing to tenant-specific deployments, (3) Clear audit logs showing tenant context, (4) SDK ergonomics with tenant.resources.list() patterns, (5) Cross-tenant admin operations with explicit IDs.",
+      "source": "Google Cloud API, Slack API, industry best practice",
+      "examples": {
+        "good": [
+          "GET /v1/tenants/{tenantId}/users",
+          "GET /v1/organizations/{orgId}/projects/{projectId}",
+          "GET /v1/workspaces/{workspaceId}/channels"
+        ],
+        "bad": [
+          "GET /v1/users (tenant inferred only from token)",
+          "GET /v1/users?tenant_id=acme (tenant in query string)"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if multi-tenant API includes tenant scope in URL path",
+        "passCriteria": [
+          "Tenant/organization/workspace ID in URL path",
+          "Consistent tenant path position across endpoints",
+          "Tenant ID format documented"
+        ],
+        "partialCriteria": [
+          "Tenant in path for some endpoints but not all",
+          "Mixed tenant in path and query string"
+        ],
+        "failCriteria": [
+          "Tenant only derived from token with no URL context",
+          "Tenant ID in query string instead of path",
+          "Inconsistent tenant scoping across endpoints"
+        ]
+      }
+    },
+    {
+      "id": "PO-105",
+      "title": "Support tilde alias for current tenant",
+      "category": "multi-tenancy",
+      "severity": "info",
+      "description": "Support `~` (tilde) as an alias for the current tenant derived from the access token. This reduces URL verbosity for the common case while still allowing explicit tenant IDs for cross-tenant operations.",
+      "rationale": "The tilde alias (Google Cloud pattern) provides ergonomic URLs for the common case. Users don't need to know their tenant ID for typical operations. Explicit IDs remain available for admins and cross-tenant scenarios.",
+      "source": "Google Cloud API Design Guide",
+      "examples": {
+        "good": [
+          "GET /v1/tenants/~/users (current tenant from token)",
+          "GET /v1/tenants/tenant_acme/users (explicit tenant)",
+          "GET /v1/organizations/~/projects/~/resources"
+        ],
+        "bad": [
+          "GET /v1/tenants/me/users (me is for users, not tenants)",
+          "GET /v1/tenants/current/users (reserved word collision risk)"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if API supports tilde (~) alias for current tenant",
+        "passCriteria": [
+          "~ supported as alias for current tenant",
+          "~ resolved server-side from access token",
+          "Explicit tenant IDs also supported",
+          "Behavior documented"
+        ],
+        "partialCriteria": [
+          "Different alias used (-, me, current)",
+          "Alias supported but not documented"
+        ],
+        "failCriteria": [
+          "No shorthand for current tenant",
+          "Must always specify explicit tenant ID"
+        ]
+      }
+    },
+    {
+      "id": "PO-106",
+      "title": "Validate tenant ID matches token scope",
+      "category": "multi-tenancy",
+      "severity": "error",
+      "description": "The server MUST validate that the tenant ID in the URL path matches the tenant scope in the access token. Return 403 Forbidden if the token does not grant access to the requested tenant.",
+      "rationale": "Tenant isolation is a critical security boundary. Without validation, attackers could access other tenants by guessing IDs. The server must enforce that tokens only access authorized tenants.",
+      "source": "OWASP API Security, industry best practice",
+      "examples": {
+        "good": [
+          "Token scoped to tenant_acme accessing /tenants/tenant_acme/users → 200 OK",
+          "Token scoped to tenant_acme accessing /tenants/tenant_other/users → 403 Forbidden",
+          "Admin token with cross-tenant scope accessing /tenants/tenant_other/users → 200 OK"
+        ],
+        "bad": [
+          "Any valid token can access any tenant ID in URL",
+          "Tenant validation only in application code, not API layer"
+        ]
+      },
+      "enforcement": {
+        "type": "none"
+      },
+      "judge": {
+        "prompt": "Check if API validates tenant ID in URL matches token scope",
+        "passCriteria": [
+          "403 returned for tenant ID mismatch",
+          "Tenant scope validated at API gateway or middleware",
+          "Cross-tenant access requires explicit scope",
+          "Security documentation covers tenant isolation"
+        ],
+        "failCriteria": [
+          "No tenant validation against token",
+          "Tenant ID in URL ignored",
+          "Any authenticated user can access any tenant"
+        ]
+      }
+    }
+  ],
+  "designPatterns": [
+    {
+      "id": "cursor-pagination",
+      "title": "Cursor-Based Pagination",
+      "category": "pagination",
+      "description": "Scalable pagination using opaque cursors instead of page numbers.",
+      "when": "Any endpoint returning collections that may grow large",
+      "implementation": "Use base64-encoded cursors containing sort field values. Never expose database IDs directly.",
+      "examples": {
+        "request": "GET /v1/users?limit=20&cursor=eyJpZCI6MTIzLCJjcmVhdGVkX2F0IjoiMjAyNC0wMS0xNSJ9",
+        "response": "{\n  \"items\": [{\"id\": \"userAbc\", \"name\": \"Alice\"}, ...],\n  \"nextCursor\": \"eyJpZCI6MTQzLCJjcmVhdGVkX2F0IjoiMjAyNC0wMS0xNCJ9\",\n  \"hasMore\": true\n}"
+      }
+    },
+    {
+      "id": "problem-details",
+      "title": "RFC 9457 Problem Details",
+      "category": "errors",
+      "description": "Standard error response format for HTTP APIs.",
+      "when": "Any 4xx or 5xx response",
+      "implementation": "Return Content-Type: application/problem+json with type, title, status, detail, and instance fields.",
+      "examples": {
+        "response": "{\n  \"type\": \"https://api.example.com/problems/insufficient-funds\",\n  \"title\": \"Insufficient Funds\",\n  \"status\": 422,\n  \"detail\": \"Account balance is $10.00, but transaction requires $25.00\",\n  \"instance\": \"/accounts/12345/transactions/67890\"\n}"
+      }
+    },
+    {
+      "id": "optimistic-locking",
+      "title": "Optimistic Locking with ETag",
+      "category": "request-response",
+      "description": "Prevent lost updates using ETag and If-Match headers.",
+      "when": "Resources that may be updated concurrently",
+      "implementation": "Include ETag in GET responses. Require If-Match on PUT/PATCH. Return 412 Precondition Failed on mismatch.",
+      "examples": {
+        "get_response": "HTTP/1.1 200 OK\nETag: \"abc123\"\n\n{\"id\": \"userAbc\", \"name\": \"Alice\"}",
+        "update_request": "PATCH /v1/users/abc HTTP/1.1\nIf-Match: \"abc123\"\n\n{\"name\": \"Alicia\"}",
+        "conflict_response": "HTTP/1.1 412 Precondition Failed"
+      }
+    },
+    {
+      "id": "idempotency-key",
+      "title": "Idempotency Keys",
+      "category": "request-response",
+      "description": "Enable safe retries for non-idempotent operations.",
+      "when": "POST requests that create resources or trigger side effects",
+      "implementation": "Accept Idempotency-Key header. Store and check keys server-side. Return cached response for duplicate keys.",
+      "examples": {
+        "request": "POST /v1/payments HTTP/1.1\nIdempotency-Key: 550e8400-e29b-41d4-a716-446655440000\n\n{\"amount\": 100}"
+      }
+    },
+    {
+      "id": "bulk-operations",
+      "title": "Bulk Operations",
+      "category": "batch",
+      "description": "Process multiple resources in a single request.",
+      "when": "Clients need to create/update/delete many resources efficiently",
+      "implementation": "Accept array of operations. Return array of results with same order. Use 207 Multi-Status for mixed results.",
+      "examples": {
+        "request": "POST /v1/users/bulk HTTP/1.1\n\n{\"operations\": [{\"method\": \"create\", \"data\": {...}}, {\"method\": \"update\", \"id\": \"userAbc\", \"data\": {...}}]}",
+        "response": "{\n  \"results\": [\n    {\"status\": 201, \"data\": {...}},\n    {\"status\": 200, \"data\": {...}}\n  ]\n}"
+      }
+    },
+    {
+      "id": "long-running-operations",
+      "title": "Long-Running Operations (LRO)",
+      "category": "long-running",
+      "description": "Pattern for operations that take too long to complete synchronously.",
+      "when": "Operations that may take more than a few seconds (file processing, complex calculations, external integrations)",
+      "implementation": "Return 202 Accepted with Location header pointing to status endpoint. Client polls status endpoint until completion.",
+      "examples": {
+        "initial_request": "POST /v1/reports/generate HTTP/1.1\n\n{\"type\": \"monthly-summary\"}",
+        "accepted_response": "HTTP/1.1 202 Accepted\nLocation: /v1/operations/op_abc123\nRetry-After: 30",
+        "status_pending": "GET /v1/operations/op_abc123\n\n{\"id\": \"op_abc123\", \"status\": \"running\", \"progress\": 45}",
+        "status_complete": "GET /v1/operations/op_abc123\n\n{\"id\": \"op_abc123\", \"status\": \"succeeded\", \"result\": {\"reportUrl\": \"/v1/reports/rpt_xyz\"}}"
+      }
+    },
+    {
+      "id": "webhook-events",
+      "title": "Webhook Events",
+      "category": "events",
+      "description": "Push event notifications to registered endpoints.",
+      "when": "Clients need real-time notifications of changes without polling",
+      "implementation": "Use CloudEvents format with signature header. Include event metadata (id, type, timestamp). Support retry with exponential backoff.",
+      "examples": {
+        "webhook_payload": "POST https://client.example.com/webhooks HTTP/1.1\nContent-Type: application/cloudevents+json\nX-Signature-256: sha256=abc123...\n\n{\n  \"specversion\": \"1.0\",\n  \"type\": \"com.plexusone.order.created\",\n  \"source\": \"/orders\",\n  \"id\": \"evt_abc123\",\n  \"time\": \"2024-01-15T10:30:00Z\",\n  \"data\": {\n    \"orderId\": \"ord_xyz\",\n    \"total\": 99.99\n  }\n}"
+      }
+    },
+    {
+      "id": "rate-limiting",
+      "title": "Rate Limiting",
+      "category": "throttling",
+      "description": "Protect APIs from excessive use with rate limits.",
+      "when": "All production APIs to prevent abuse and ensure fair usage",
+      "implementation": "Include rate limit headers in all responses. Return 429 with Retry-After when limit exceeded.",
+      "examples": {
+        "normal_response": "HTTP/1.1 200 OK\nX-RateLimit-Limit: 1000\nX-RateLimit-Remaining: 950\nX-RateLimit-Reset: 1640000000",
+        "rate_limited": "HTTP/1.1 429 Too Many Requests\nRetry-After: 60\nX-RateLimit-Limit: 1000\nX-RateLimit-Remaining: 0\nX-RateLimit-Reset: 1640000060\n\n{\"type\": \"https://api.example.com/problems/rate-limited\", \"title\": \"Rate Limit Exceeded\", \"status\": 429, \"detail\": \"You have exceeded the rate limit. Try again in 60 seconds.\"}"
+      }
+    },
+    {
+      "id": "deprecation-lifecycle",
+      "title": "Deprecation Lifecycle",
+      "category": "deprecation",
+      "description": "Gracefully phase out API endpoints.",
+      "when": "Replacing or removing API functionality",
+      "implementation": "Add Deprecation and Sunset headers. Minimum 6 months notice. Provide migration documentation.",
+      "examples": {
+        "deprecated_response": "HTTP/1.1 200 OK\nDeprecation: Sun, 01 Jan 2025 00:00:00 GMT\nSunset: Sun, 01 Jul 2025 00:00:00 GMT\nLink: </v2/users>; rel=\"successor-version\""
+      }
+    },
+    {
+      "id": "expandable-objects",
+      "title": "Expandable Object Relations",
+      "category": "request-response",
+      "description": "Reduce round trips by expanding related objects inline via query parameter.",
+      "when": "Resources reference other resources that clients often need together",
+      "implementation": "Accept ?expand=relation1,relation2 query parameter. Return full objects instead of IDs for specified relations. Default to IDs only for performance.",
+      "examples": {
+        "request": "GET /v1/orders/ord_123?expand=customer,items",
+        "response_collapsed": "{\n  \"id\": \"ord_123\",\n  \"customer\": \"cust_456\",\n  \"items\": [\"item_789\"]\n}",
+        "response_expanded": "{\n  \"id\": \"ord_123\",\n  \"customer\": {\n    \"id\": \"cust_456\",\n    \"name\": \"Alice\",\n    \"email\": \"alice@example.com\"\n  },\n  \"items\": [\n    {\"id\": \"item_789\", \"name\": \"Widget\", \"price\": 9.99}\n  ]\n}"
+      }
+    },
+    {
+      "id": "tenant-scoped-urls",
+      "title": "Tenant-Scoped URL Pattern",
+      "category": "multi-tenancy",
+      "description": "Include tenant identifier in URL path with tilde alias support for current tenant.",
+      "when": "Building multi-tenant SaaS APIs where resources belong to tenants/organizations/workspaces",
+      "implementation": "Use /tenants/{tenantId}/... URL structure. Support ~ as alias for current tenant from token. Validate tenant ID matches token scope. Return 403 for cross-tenant access without proper scope.",
+      "examples": {
+        "current_tenant": "GET /v1/tenants/~/users → resolves ~ to tenant from token",
+        "explicit_tenant": "GET /v1/tenants/tenant_acme/users → explicit tenant ID",
+        "cross_tenant_denied": "GET /v1/tenants/tenant_other/users → 403 Forbidden (token scoped to tenant_acme)",
+        "admin_cross_tenant": "GET /v1/tenants/tenant_other/users → 200 OK (admin token with cross-tenant scope)"
+      }
+    },
+    {
+      "id": "discriminated-unions",
+      "title": "Discriminated Unions for Polymorphism",
+      "category": "schema",
+      "description": "Use discriminator property for type-safe polymorphic schemas that generate clean SDK types.",
+      "when": "A field can contain different object types (e.g., payment methods, event payloads)",
+      "implementation": "Use oneOf with discriminator specifying propertyName and mapping. Each variant must include the discriminator property.",
+      "examples": {
+        "schema": "PaymentMethod:\n  oneOf:\n    - $ref: '#/components/schemas/CardPayment'\n    - $ref: '#/components/schemas/BankPayment'\n  discriminator:\n    propertyName: type\n    mapping:\n      card: '#/components/schemas/CardPayment'\n      bank: '#/components/schemas/BankPayment'\n\nCardPayment:\n  type: object\n  required: [type, cardNumber]\n  properties:\n    type:\n      type: string\n      enum: [card]\n    cardNumber:\n      type: string",
+        "go_generated": "type PaymentMethod struct {\n  Type string // \"card\" or \"bank\"\n  // Typed access to variants\n}\n\nfunc (p *PaymentMethod) AsCard() (*CardPayment, bool)\nfunc (p *PaymentMethod) AsBank() (*BankPayment, bool)"
+      }
+    }
+  ],
+  "glossary": [
+    {
+      "term": "API First",
+      "definition": "Design approach where the API specification is created before implementation"
+    },
+    {
+      "term": "Bearer Token",
+      "definition": "An opaque token passed in the Authorization header for authentication"
+    },
+    {
+      "term": "CloudEvents",
+      "definition": "CNCF specification for describing event data in a common way"
+    },
+    {
+      "term": "Cursor",
+      "definition": "An opaque string encoding pagination position, more scalable than offset"
+    },
+    {
+      "term": "Deprecation Header",
+      "definition": "RFC 8594 header indicating when an endpoint was deprecated"
+    },
+    {
+      "term": "ETag",
+      "definition": "Entity tag for caching and optimistic concurrency control"
+    },
+    {
+      "term": "HATEOAS",
+      "definition": "Hypermedia as the Engine of Application State - REST architectural constraint for discoverability"
+    },
+    {
+      "term": "Idempotent",
+      "definition": "An operation that produces the same result regardless of how many times it's executed"
+    },
+    {
+      "term": "If-Match",
+      "definition": "HTTP header for conditional requests, enables optimistic concurrency control"
+    },
+    {
+      "term": "kebab-case",
+      "definition": "Naming convention using lowercase words separated by hyphens: user-accounts"
+    },
+    {
+      "term": "Long-Running Operation",
+      "definition": "Async operation that returns 202 Accepted and provides status endpoint for polling"
+    },
+    {
+      "term": "OpenAPI",
+      "definition": "Specification format for describing REST APIs (formerly Swagger)"
+    },
+    {
+      "term": "Problem Details",
+      "definition": "RFC 9457 standard format for HTTP API error responses"
+    },
+    {
+      "term": "Resource",
+      "definition": "A domain object exposed through the API, identified by a URL"
+    },
+    {
+      "term": "Tenant",
+      "definition": "An isolated organizational unit in a multi-tenant system (also: organization, workspace, account)"
+    },
+    {
+      "term": "Tenant Alias",
+      "definition": "Shorthand like ~ (tilde) that resolves to the current tenant from the access token"
+    },
+    {
+      "term": "Tenant Isolation",
+      "definition": "Security boundary ensuring one tenant cannot access another tenant's data"
+    },
+    {
+      "term": "RFC 7396",
+      "definition": "JSON Merge Patch - format for partial updates"
+    },
+    {
+      "term": "snake_case",
+      "definition": "Naming convention using lowercase words separated by underscores (e.g., user_id). PlexusOne uses camelCase instead."
+    },
+    {
+      "term": "Sunset Header",
+      "definition": "RFC 8594 header indicating when an endpoint will be removed"
+    },
+    {
+      "term": "URI",
+      "definition": "Uniform Resource Identifier, the address of a resource"
+    },
+    {
+      "term": "Webhook",
+      "definition": "HTTP callback that pushes event data to a registered URL when something happens"
+    },
+    {
+      "term": "Discriminator",
+      "definition": "OpenAPI property that identifies which schema variant applies in oneOf/anyOf unions"
+    },
+    {
+      "term": "ogen",
+      "definition": "Go OpenAPI code generator that produces type-safe, idiomatic Go clients and servers"
+    },
+    {
+      "term": "Expandable Objects",
+      "definition": "Pattern where related resources can be fetched inline via ?expand parameter"
+    },
+    {
+      "term": "Nullable",
+      "definition": "OpenAPI property indicating a field can be null, generates pointer types in Go"
+    }
+  ],
   "conformanceLevels": {
-    "bronze": {
-      "description": "Minimum viable API - basic structure and methods",
-      "requiredCategories": ["uri-design", "http-methods"],
+    "minimum": {
+      "description": "Minimum viable API - basic functionality",
+      "requiredRules": [
+        "PO-001",
+        "PO-002",
+        "PO-003",
+        "PO-006",
+        "PO-022",
+        "PO-036",
+        "PO-041",
+        "PO-050",
+        "PO-040",
+        "PO-091",
+        "PO-092",
+        "PO-093",
+        "PO-106"
+      ],
+      "maxErrors": 5,
+      "maxWarnings": 20
+    },
+    "standard": {
+      "description": "Production-ready API with good practices",
+      "requiredRules": [
+        "PO-001",
+        "PO-002",
+        "PO-003",
+        "PO-004",
+        "PO-005",
+        "PO-006",
+        "PO-008",
+        "PO-010",
+        "PO-012",
+        "PO-013",
+        "PO-014",
+        "PO-015",
+        "PO-020",
+        "PO-021",
+        "PO-022",
+        "PO-023",
+        "PO-028",
+        "PO-036",
+        "PO-041",
+        "PO-048",
+        "PO-050",
+        "PO-067",
+        "PO-068",
+        "PO-071",
+        "PO-072",
+        "PO-074",
+        "PO-077",
+        "PO-078",
+        "PO-083",
+        "PO-085",
+        "PO-090",
+        "PO-091",
+        "PO-092",
+        "PO-093",
+        "PO-094",
+        "PO-099",
+        "PO-100",
+        "PO-102"
+      ],
       "maxErrors": 0,
       "maxWarnings": 10
     },
-    "silver": {
-      "description": "Production-ready API - proper naming and error handling",
-      "requiredCategories": ["naming", "errors"],
+    "exemplary": {
+      "description": "Best-in-class API following all guidelines",
+      "requiredRules": [
+        "PO-001",
+        "PO-002",
+        "PO-003",
+        "PO-004",
+        "PO-005",
+        "PO-006",
+        "PO-007",
+        "PO-008",
+        "PO-009",
+        "PO-010",
+        "PO-011",
+        "PO-012",
+        "PO-013",
+        "PO-014",
+        "PO-015",
+        "PO-016",
+        "PO-017",
+        "PO-018",
+        "PO-019",
+        "PO-020",
+        "PO-021",
+        "PO-022",
+        "PO-023",
+        "PO-024",
+        "PO-025",
+        "PO-026",
+        "PO-027",
+        "PO-028",
+        "PO-029",
+        "PO-030",
+        "PO-031",
+        "PO-032",
+        "PO-033",
+        "PO-034",
+        "PO-035",
+        "PO-036",
+        "PO-037",
+        "PO-038",
+        "PO-039",
+        "PO-040",
+        "PO-041",
+        "PO-042",
+        "PO-043",
+        "PO-044",
+        "PO-045",
+        "PO-046",
+        "PO-047",
+        "PO-048",
+        "PO-049",
+        "PO-050",
+        "PO-051",
+        "PO-052",
+        "PO-053",
+        "PO-054",
+        "PO-055",
+        "PO-056",
+        "PO-057",
+        "PO-058",
+        "PO-059",
+        "PO-060",
+        "PO-061",
+        "PO-062",
+        "PO-063",
+        "PO-064",
+        "PO-065",
+        "PO-066",
+        "PO-067",
+        "PO-068",
+        "PO-069",
+        "PO-070",
+        "PO-071",
+        "PO-072",
+        "PO-073",
+        "PO-074",
+        "PO-075",
+        "PO-076",
+        "PO-077",
+        "PO-078",
+        "PO-079",
+        "PO-080",
+        "PO-081",
+        "PO-082",
+        "PO-083",
+        "PO-084",
+        "PO-085",
+        "PO-086",
+        "PO-087",
+        "PO-088",
+        "PO-089",
+        "PO-090",
+        "PO-091",
+        "PO-092",
+        "PO-093",
+        "PO-094",
+        "PO-095",
+        "PO-096",
+        "PO-097",
+        "PO-098",
+        "PO-099",
+        "PO-100",
+        "PO-101",
+        "PO-102",
+        "PO-103",
+        "PO-104",
+        "PO-105",
+        "PO-106"
+      ],
       "maxErrors": 0,
-      "maxWarnings": 5,
-      "extends": "bronze"
-    },
-    "gold": {
-      "description": "Exemplary API - complete documentation and security",
-      "requiredCategories": ["documentation", "security"],
-      "maxErrors": 0,
-      "maxWarnings": 0,
-      "extends": "silver"
+      "maxWarnings": 0
     }
-  },
-
-  "metadata": {
-    "author": "api-style-spec",
-    "license": "MIT",
-    "repository": "https://github.com/plexusone/api-style-spec"
   }
 }
