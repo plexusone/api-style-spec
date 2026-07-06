@@ -16,24 +16,24 @@ func TestLoad_Default(t *testing.T) {
 		t.Errorf("Name = %q, want %q", spec.Name, "default")
 	}
 
-	if spec.Version != "1.0.0" {
-		t.Errorf("Version = %q, want %q", spec.Version, "1.0.0")
+	if spec.Version != "2.3.0" {
+		t.Errorf("Version = %q, want %q", spec.Version, "2.3.0")
 	}
 
-	// Should have ~30 rules
-	if len(spec.Rules) < 25 {
-		t.Errorf("len(Rules) = %d, want >= 25", len(spec.Rules))
+	// Should have 100+ rules (industry-leading profile with SDK focus)
+	if len(spec.Rules) < 100 {
+		t.Errorf("len(Rules) = %d, want >= 100", len(spec.Rules))
 	}
 
 	t.Logf("Loaded %d rules from default profile", len(spec.Rules))
 
-	// Check some expected rules exist
+	// Check some expected rules exist (PO-xxx for PlexusOne rules)
 	ruleIDs := make(map[string]bool)
 	for _, rule := range spec.Rules {
 		ruleIDs[rule.ID] = true
 	}
 
-	expectedRules := []string{"URI-001", "URI-002", "HTTP-001", "NAMING-001", "DOC-001", "SEC-001"}
+	expectedRules := []string{"PO-001", "PO-002", "PO-003", "PO-006", "PO-008", "PO-022"}
 	for _, id := range expectedRules {
 		if !ruleIDs[id] {
 			t.Errorf("Expected rule %q not found", id)
@@ -80,13 +80,14 @@ func TestDefaultProfile_Categories(t *testing.T) {
 	}
 
 	expectedCategories := []string{
-		"uri-design",
-		"http-methods",
+		"general",
 		"naming",
+		"urls",
+		"http-methods",
+		"http-status",
 		"errors",
-		"responses",
-		"documentation",
 		"security",
+		"documentation",
 	}
 
 	categoryMap := make(map[string]bool)
@@ -107,7 +108,7 @@ func TestDefaultProfile_ConformanceLevels(t *testing.T) {
 		t.Fatalf("Load failed: %v", err)
 	}
 
-	expectedLevels := []string{"bronze", "silver", "gold"}
+	expectedLevels := []string{"minimum", "standard", "exemplary"}
 
 	for _, level := range expectedLevels {
 		if _, ok := spec.ConformanceLevels[level]; !ok {
@@ -115,10 +116,11 @@ func TestDefaultProfile_ConformanceLevels(t *testing.T) {
 		}
 	}
 
-	// Gold should extend silver
-	gold := spec.ConformanceLevels["gold"]
-	if gold.Extends != "silver" {
-		t.Errorf("Gold extends = %q, want %q", gold.Extends, "silver")
+	// Standard should have more required rules than minimum
+	standard := spec.ConformanceLevels["standard"]
+	minimum := spec.ConformanceLevels["minimum"]
+	if len(standard.RequiredRules) <= len(minimum.RequiredRules) {
+		t.Errorf("Standard should have more required rules than minimum")
 	}
 }
 
@@ -190,24 +192,24 @@ func TestLoad_Zalando(t *testing.T) {
 		t.Fatalf("Load(zalando) failed: %v", err)
 	}
 
-	if spec.Name != "Zalando RESTful API Guidelines" {
-		t.Errorf("Name = %q, want %q", spec.Name, "Zalando RESTful API Guidelines")
+	if spec.Name != "Zalando REST API Guidelines" {
+		t.Errorf("Name = %q, want %q", spec.Name, "Zalando REST API Guidelines")
 	}
 
-	// Should have ~28 rules
-	if len(spec.Rules) < 25 {
-		t.Errorf("len(Rules) = %d, want >= 25", len(spec.Rules))
+	// Should have ~147 rules (comprehensive version)
+	if len(spec.Rules) < 100 {
+		t.Errorf("len(Rules) = %d, want >= 100", len(spec.Rules))
 	}
 
 	t.Logf("Loaded %d rules from zalando profile", len(spec.Rules))
 
-	// Check some expected rules exist
+	// Check some expected rules exist (official Zalando Z-XXX IDs)
 	ruleIDs := make(map[string]bool)
 	for _, rule := range spec.Rules {
 		ruleIDs[rule.ID] = true
 	}
 
-	expectedRules := []string{"ZAL-META-001", "ZAL-JSON-001", "ZAL-URL-001", "ZAL-SEC-001"}
+	expectedRules := []string{"Z-100", "Z-101", "Z-118", "Z-176"}
 	for _, id := range expectedRules {
 		if !ruleIDs[id] {
 			t.Errorf("Expected rule %q not found", id)
