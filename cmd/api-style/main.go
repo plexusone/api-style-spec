@@ -30,6 +30,7 @@ func init() {
 	rootCmd.AddCommand(generateCmd)
 	rootCmd.AddCommand(hooksCmd)
 	rootCmd.AddCommand(serveCmd)
+	rootCmd.AddCommand(scoreProfileCmd)
 	rootCmd.AddCommand(versionCmd)
 }
 
