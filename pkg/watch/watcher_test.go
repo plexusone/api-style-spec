@@ -25,7 +25,11 @@ func TestWatcher(t *testing.T) {
 	if err != nil {
 		t.Fatalf("New failed: %v", err)
 	}
-	defer w.Close()
+	t.Cleanup(func() {
+		if err := w.Close(); err != nil {
+			t.Errorf("failed to close watcher: %v", err)
+		}
+	})
 
 	// Track events
 	events := make(chan Event, 10)

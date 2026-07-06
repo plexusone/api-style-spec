@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	"os/signal"
 	"strings"
@@ -200,7 +202,11 @@ func runWatchMode(specFiles []string, cfg *config.Config) error {
 	if err != nil {
 		return fmt.Errorf("creating watcher: %w", err)
 	}
-	defer watcher.Close()
+	defer func() {
+		if closeErr := watcher.Close(); closeErr != nil {
+			slog.Error("failed to close watcher", "error", closeErr)
+		}
+	}()
 
 	// Load style spec once
 	var styleSpec *types.APIStyleSpec
@@ -251,7 +257,7 @@ func runWatchMode(specFiles []string, cfg *config.Config) error {
 
 	fmt.Println("\nWatching for changes...")
 
-	if err := watcher.Watch(ctx); err != nil && err != context.Canceled {
+	if err := watcher.Watch(ctx); err != nil && !errors.Is(err, context.Canceled) {
 		return fmt.Errorf("watching: %w", err)
 	}
 

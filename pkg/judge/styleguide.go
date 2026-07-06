@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"regexp"
 	"strconv"
 	"strings"
@@ -314,8 +315,9 @@ func (e *StyleGuideEvaluator) parseResponse(cat StyleGuideCategory, content stri
 		Weaknesses   []string `json:"weaknesses"`
 	}
 
-	if err := json.Unmarshal([]byte(jsonContent), &parsed); err != nil {
-		// Try to extract score from text if JSON parsing fails
+	if parseErr := json.Unmarshal([]byte(jsonContent), &parsed); parseErr != nil {
+		// Log parse error and fall back to extracting score from text
+		slog.Debug("JSON parse failed, extracting score from text", "error", parseErr, "category", cat.ID)
 		result.Score = extractScoreFromText(content)
 		result.NumericScore = scoreToNumeric(result.Score)
 		result.Reasoning = "Unable to parse structured response: " + content[:min(200, len(content))]
@@ -399,11 +401,12 @@ func (e *StyleGuideEvaluator) calculateSummary(report *StyleGuideReport) {
 	}
 
 	// Determine overall status
-	if failed > 0 {
+	switch {
+	case failed > 0:
 		report.Status = "fail"
-	} else if partial > 0 {
+	case partial > 0:
 		report.Status = "partial"
-	} else {
+	default:
 		report.Status = "pass"
 	}
 }
@@ -424,14 +427,6 @@ func LoadStyleGuideRubricFromBytes(data []byte) (*StyleGuideRubric, error) {
 		return nil, fmt.Errorf("parsing rubric: %w", err)
 	}
 	return &rubric, nil
-}
-
-// Helper for min
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
 }
 
 // NumericScoreFromText extracts a numeric score from various text formats.
