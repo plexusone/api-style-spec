@@ -3,7 +3,6 @@
 [![Go CI][go-ci-svg]][go-ci-url]
 [![Go Lint][go-lint-svg]][go-lint-url]
 [![Go SAST][go-sast-svg]][go-sast-url]
-[![Go Report Card][goreport-svg]][goreport-url]
 [![Docs][docs-godoc-svg]][docs-godoc-url]
 [![Docs][docs-mkdoc-svg]][docs-mkdoc-url]
 [![Visualization][viz-svg]][viz-url]
@@ -15,8 +14,6 @@
  [go-lint-url]: https://github.com/plexusone/api-style-spec/actions/workflows/go-lint.yaml
  [go-sast-svg]: https://github.com/plexusone/api-style-spec/actions/workflows/go-sast-codeql.yaml/badge.svg?branch=main
  [go-sast-url]: https://github.com/plexusone/api-style-spec/actions/workflows/go-sast-codeql.yaml
- [goreport-svg]: https://goreportcard.com/badge/github.com/plexusone/api-style-spec
- [goreport-url]: https://goreportcard.com/report/github.com/plexusone/api-style-spec
  [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/plexusone/api-style-spec
  [docs-godoc-url]: https://pkg.go.dev/github.com/plexusone/api-style-spec
  [docs-mkdoc-svg]: https://img.shields.io/badge/Go-dev%20guide-blue.svg
@@ -156,12 +153,25 @@ See [.api-style.yaml.example](.api-style.yaml.example) for a complete example.
 
 ## Built-in Profiles
 
-| Profile | Based On | Rules |
-|---------|----------|-------|
-| `default` | Common best practices | ~30 |
-| `azure` | Microsoft/Azure guidelines | ~80 |
-| `google` | Google API Design Guide | ~60 |
-| `zalando` | Zalando RESTful Guidelines | ~70 |
+| Profile | Rules | Categories | Focus |
+|---------|-------|------------|-------|
+| `default` | 106 | 27 | Industry-leading, SDK-optimized (ogen) |
+| `comprehensive` | 88 | 26 | Full coverage, all best practices |
+| `zalando` | 147 | 13 | E-commerce, events |
+| `microsoft-rest` | 123 | 15 | Enterprise REST APIs |
+| `microsoft-graph` | 82 | 12 | OData/Graph APIs |
+| `azure` | 23 | 9 | Azure cloud services |
+| `google` | 20 | 7 | Resource-oriented design |
+| `minimal` | 29 | 7 | Basic API hygiene |
+
+**Default Profile Highlights:**
+
+- 100% evaluable with LLM-as-Judge criteria
+- 34% deterministic Spectral enforcement
+- SDK-optimized for ogen, openapi-generator
+- Multi-tenancy patterns with `~` alias
+- RFC 9457 Problem Details for errors
+- Discriminated unions for polymorphism
 
 ## Documentation
 
