@@ -137,6 +137,51 @@ api-style analyze openapi.yaml --lint-only
 
 ---
 
+### score-profile
+
+Evaluate a style guide profile against quality criteria using LLM-as-a-Judge.
+
+```bash
+api-style score-profile <profile-name-or-file> [flags]
+```
+
+**Requires:** `ANTHROPIC_API_KEY` environment variable
+
+This command assesses how complete and well-structured a style guide is,
+evaluating categories like content coverage, rule quality, examples, and more.
+
+**Arguments:**
+
+| Argument | Description |
+|----------|-------------|
+| `profile-name-or-file` | Built-in profile name (e.g., `default`, `azure`) or path to a custom profile file |
+
+**Flags:**
+
+| Flag | Short | Default | Description |
+|------|-------|---------|-------------|
+| `--format` | `-f` | `text` | Output format: `text`, `json` |
+| `--output` | `-o` | stdout | Output file path |
+| `--model` | `-m` | `claude-3-5-haiku` | LLM model to use |
+
+**Examples:**
+
+```bash
+# Score the default profile
+api-style score-profile default
+
+# Score Azure profile with JSON output
+api-style score-profile azure --format json
+
+# Score a custom profile file
+api-style score-profile ./custom-profile.json --output scores.json
+
+# Use a different model
+api-style score-profile zalando --model claude-sonnet-4
+```
+
+---
+
 ### generate
 
 Generate artifacts from a style profile.

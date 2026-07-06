@@ -141,6 +141,7 @@ See [.api-style.yaml.example](.api-style.yaml.example) for a complete example.
 | `api-style lint` | Deterministic linting (supports glob patterns, `--watch`, `--recursive`) |
 | `api-style evaluate` | LLM-based evaluation |
 | `api-style analyze` | Combined lint + evaluate |
+| `api-style score-profile` | Score a style profile using LLM evaluation |
 | `api-style generate guide` | Generate Markdown documentation |
 | `api-style generate mkdocs` | Generate MkDocs multi-page site |
 | `api-style generate spectral` | Generate Spectral ruleset |
