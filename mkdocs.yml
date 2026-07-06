@@ -50,6 +50,8 @@ nav:
       - Automated API Governance: guide/automated-api-governance.md
       - CI/CD Integration: guide/ci-cd.md
       - Using Profiles: guide/profiles.md
+      - Profile Comparison: guide/profile-comparison.md
+      - Profile Scoring: guide/profile-scoring.md
       - Documentation Generation: guide/documentation-generation.md
       - Custom Rules: guide/custom-rules.md
       - MCP Server: guide/mcp-server.md
@@ -60,8 +62,12 @@ nav:
       - AI Assistant Hooks: reference/hooks.md
   - Profiles:
       - Default: profiles/default.md
+      - Comprehensive: profiles/comprehensive.md
+      - Minimal: profiles/minimal.md
       - Azure: profiles/azure.md
       - Google: profiles/google.md
+      - Microsoft REST: profiles/microsoft-rest.md
+      - Microsoft Graph: profiles/microsoft-graph.md
       - Zalando: profiles/zalando.md
   - Design:
       - Constitution: specs/CONSTITUTION.md
