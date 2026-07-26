@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -8,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/plexusone/api-style-spec/pkg/generate"
+	"github.com/plexusone/api-style-spec/pkg/generate/report"
 	"github.com/plexusone/api-style-spec/pkg/judge"
 	"github.com/plexusone/api-style-spec/pkg/profile"
 	"github.com/plexusone/api-style-spec/pkg/types"
@@ -17,6 +19,14 @@ var (
 	generateOutput  string
 	generateProfile string
 	generateFile    string
+
+	// Rubric-specific flags
+	rubricMode string
+
+	// Report-specific flags
+	reportInput    string
+	reportTheme    string
+	reportRawJSON  bool
 
 	// MkDocs-specific flags
 	mkdocsSiteName        string
@@ -104,22 +114,54 @@ Examples:
 var generateRubricCmd = &cobra.Command{
 	Use:   "rubric",
 	Short: "Generate structured-evaluation rubric",
-	Long: `Generate a structured-evaluation rubric from a style profile.
+	Long: `Generate a structured rubric from a style profile.
 
-The generated rubric can be used with LLM-as-Judge for semantic
-evaluation of OpenAPI specifications against the style guide.
+Supported modes:
+  evaluation (default) - For LLM-as-Judge evaluation of existing specs
+  generation           - For AI agents generating new specs
 
-The rubric includes:
+Evaluation mode includes:
 - Categories derived from style profile categories
 - Pass/partial/fail criteria from rule judge configurations
 - Few-shot examples for calibration
 - Evaluation prompts for each category
 
+Generation mode includes:
+- Directives ordered by generation priority
+- Grouped by generation phase (info → paths → schemas)
+- Templates and checklists for guidance
+- Examples of good patterns
+
 Examples:
   api-style generate rubric
   api-style generate rubric --profile azure
+  api-style generate rubric --mode generation --profile default
   api-style generate rubric --file examples/zalando-rest.api-style.json --output zalando.rubric.json`,
 	RunE: runGenerateRubric,
+}
+
+var generateReportCmd = &cobra.Command{
+	Use:   "report",
+	Short: "Generate HTML evaluation report",
+	Long: `Generate an HTML report from a profile evaluation JSON file.
+
+The report includes:
+- Executive summary with pass/fail decision
+- Category scores with color-coded indicators
+- Detailed findings with recommendations
+- Recommended next steps
+
+The generated HTML can be:
+- Viewed directly in a browser
+- Converted to PDF using a headless browser
+- Printed with proper page breaks
+
+Examples:
+  api-style generate report --input evaluation.json
+  api-style generate report --input evaluation.json --output report.html
+  api-style generate report --input evaluation.json --theme dark
+  api-style generate report --input evaluation.json --include-json`,
+	RunE: runGenerateReport,
 }
 
 func init() {
@@ -136,10 +178,20 @@ func init() {
 	generateMkDocsCmd.Flags().BoolVar(&mkdocsNoSplitCategory, "no-split-categories", false, "Keep all rules in one page")
 	generateMkDocsCmd.Flags().BoolVar(&mkdocsNoSearch, "no-search", false, "Disable search plugin")
 
+	// Rubric-specific flags
+	generateRubricCmd.Flags().StringVarP(&rubricMode, "mode", "m", "evaluation", "Rubric mode: evaluation, generation")
+
+	// Report-specific flags
+	generateReportCmd.Flags().StringVarP(&reportInput, "input", "i", "", "Path to evaluation JSON file (required)")
+	generateReportCmd.Flags().StringVar(&reportTheme, "theme", "light", "Color theme: light, dark")
+	generateReportCmd.Flags().BoolVar(&reportRawJSON, "include-json", false, "Include raw JSON data in report")
+	_ = generateReportCmd.MarkFlagRequired("input")
+
 	generateCmd.AddCommand(generateGuideCmd)
 	generateCmd.AddCommand(generateMkDocsCmd)
 	generateCmd.AddCommand(generateSpectralCmd)
 	generateCmd.AddCommand(generateRubricCmd)
+	generateCmd.AddCommand(generateReportCmd)
 }
 
 func loadProfile() (*types.APIStyleSpec, error) {
@@ -258,17 +310,61 @@ func runGenerateRubric(_ *cobra.Command, _ []string) error {
 		return err
 	}
 
-	// Generate structured-evaluation rubric
-	rubricSet := judge.GenerateRubricSet(spec)
+	var jsonBytes []byte
 
-	// Serialize to JSON
-	jsonBytes, err := judge.RubricSetToJSON(rubricSet)
-	if err != nil {
-		return fmt.Errorf("serializing rubric: %w", err)
+	switch strings.ToLower(rubricMode) {
+	case "generation":
+		// Generate generation rubric (for AI agents creating specs)
+		genRubric := generate.GenerationRubricFromSpec(spec)
+		jsonBytes, err = genRubric.ToJSON()
+		if err != nil {
+			return fmt.Errorf("serializing generation rubric: %w", err)
+		}
+	case "evaluation", "":
+		// Generate evaluation rubric (for LLM-as-Judge)
+		rubricSet := judge.GenerateRubricSet(spec)
+		jsonBytes, err = judge.RubricSetToJSON(rubricSet)
+		if err != nil {
+			return fmt.Errorf("serializing rubric: %w", err)
+		}
+	default:
+		return fmt.Errorf("unknown rubric mode: %s (use 'evaluation' or 'generation')", rubricMode)
 	}
 
 	// Write output
 	return writeOutput(string(jsonBytes))
+}
+
+func runGenerateReport(_ *cobra.Command, _ []string) error {
+	// Create report generator
+	gen, err := report.New()
+	if err != nil {
+		return fmt.Errorf("creating report generator: %w", err)
+	}
+
+	// Configure options
+	opts := &report.Options{
+		Theme:          reportTheme,
+		IncludeRawJSON: reportRawJSON,
+	}
+
+	// Generate HTML report from evaluation JSON
+	html, err := gen.GenerateFromFile(context.Background(), reportInput, opts)
+	if err != nil {
+		return fmt.Errorf("generating report: %w", err)
+	}
+
+	// Write output
+	if generateOutput != "" {
+		if err := os.WriteFile(generateOutput, html, 0o600); err != nil {
+			return fmt.Errorf("writing output: %w", err)
+		}
+		fmt.Printf("Generated report: %s\n", generateOutput)
+	} else {
+		fmt.Print(string(html))
+	}
+
+	return nil
 }
 
 func writeOutput(content string) error {
