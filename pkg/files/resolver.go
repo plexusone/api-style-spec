@@ -70,8 +70,9 @@ func ResolveSpecs(args []string, recursive bool, include, exclude []string) ([]s
 			continue
 		}
 
-		// It's a regular file
-		if !seen[arg] && shouldInclude(arg, include, exclude) {
+		// It's a regular file - when explicitly provided, only check exclude patterns
+		// (bypass include patterns since user explicitly requested this file)
+		if !seen[arg] && !isExcluded(arg, exclude) {
 			files = append(files, arg)
 			seen[arg] = true
 		}
@@ -143,6 +144,16 @@ func IsOpenAPIFile(path string) bool {
 		return true
 	}
 
+	return false
+}
+
+// isExcluded checks if a file matches any exclude pattern.
+func isExcluded(path string, exclude []string) bool {
+	for _, pattern := range exclude {
+		if m, _ := matchGlob(path, pattern); m {
+			return true
+		}
+	}
 	return false
 }
 
