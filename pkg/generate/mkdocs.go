@@ -106,8 +106,8 @@ func MkDocs(spec *types.APIStyleSpec, opts *MkDocsOptions) (*MkDocsResult, error
 
 	// Generate rules pages
 	if opts.SplitCategories {
-		categories := groupRulesByCategory(spec.Rules)
-		categoryOrder := getCategoryOrder(spec.Categories, categories)
+		categories := GroupRulesByCategory(spec.Rules)
+		categoryOrder := GetCategoryOrder(spec.Categories, categories)
 
 		for _, catID := range categoryOrder {
 			rules := categories[catID]
@@ -433,8 +433,8 @@ func generateRulesIndexPage(spec *types.APIStyleSpec, _ *MkDocsOptions) string {
 
 	sb.WriteString("# Rules\n\n")
 
-	categories := groupRulesByCategory(spec.Rules)
-	categoryOrder := getCategoryOrder(spec.Categories, categories)
+	categories := GroupRulesByCategory(spec.Rules)
+	categoryOrder := GetCategoryOrder(spec.Categories, categories)
 
 	// Summary table
 	sb.WriteString("| Category | Rules |\n")
@@ -442,7 +442,7 @@ func generateRulesIndexPage(spec *types.APIStyleSpec, _ *MkDocsOptions) string {
 
 	for _, catID := range categoryOrder {
 		rules := categories[catID]
-		catName := getCategoryName(spec.Categories, catID)
+		catName := GetCategoryName(spec.Categories, catID)
 		filename := sanitizeFilename(catID)
 		fmt.Fprintf(&sb, "| [%s](%s.md) | %d |\n", catName, filename, len(rules))
 	}
@@ -453,8 +453,8 @@ func generateRulesIndexPage(spec *types.APIStyleSpec, _ *MkDocsOptions) string {
 	sb.WriteString("## Categories\n\n")
 
 	for _, catID := range categoryOrder {
-		catName := getCategoryName(spec.Categories, catID)
-		catDesc := getCategoryDescription(spec.Categories, catID)
+		catName := GetCategoryName(spec.Categories, catID)
+		catDesc := GetCategoryDescription(spec.Categories, catID)
 		filename := sanitizeFilename(catID)
 
 		fmt.Fprintf(&sb, "### [%s](%s.md)\n\n", catName, filename)
@@ -471,8 +471,8 @@ func generateRulesIndexPage(spec *types.APIStyleSpec, _ *MkDocsOptions) string {
 func generateCategoryPage(spec *types.APIStyleSpec, catID string, rules []types.Rule, opts *MkDocsOptions) string {
 	var sb strings.Builder
 
-	catName := getCategoryName(spec.Categories, catID)
-	catDesc := getCategoryDescription(spec.Categories, catID)
+	catName := GetCategoryName(spec.Categories, catID)
+	catDesc := GetCategoryDescription(spec.Categories, catID)
 
 	fmt.Fprintf(&sb, "# %s\n\n", catName)
 
@@ -503,8 +503,8 @@ func generateAllRulesPage(spec *types.APIStyleSpec, opts *MkDocsOptions) string 
 
 	sb.WriteString("# Rules\n\n")
 
-	categories := groupRulesByCategory(spec.Rules)
-	categoryOrder := getCategoryOrder(spec.Categories, categories)
+	categories := GroupRulesByCategory(spec.Rules)
+	categoryOrder := GetCategoryOrder(spec.Categories, categories)
 
 	for _, catID := range categoryOrder {
 		rules := categories[catID]
@@ -512,8 +512,8 @@ func generateAllRulesPage(spec *types.APIStyleSpec, opts *MkDocsOptions) string 
 			continue
 		}
 
-		catName := getCategoryName(spec.Categories, catID)
-		catDesc := getCategoryDescription(spec.Categories, catID)
+		catName := GetCategoryName(spec.Categories, catID)
+		catDesc := GetCategoryDescription(spec.Categories, catID)
 
 		fmt.Fprintf(&sb, "## %s\n\n", catName)
 
@@ -688,11 +688,11 @@ func generateMkDocsConfig(spec *types.APIStyleSpec, opts *MkDocsOptions, pages m
 			sb.WriteString("  - Rules:\n")
 			sb.WriteString("    - Overview: rules/index.md\n")
 
-			categories := groupRulesByCategory(spec.Rules)
-			categoryOrder := getCategoryOrder(spec.Categories, categories)
+			categories := GroupRulesByCategory(spec.Rules)
+			categoryOrder := GetCategoryOrder(spec.Categories, categories)
 
 			for _, catID := range categoryOrder {
-				catName := getCategoryName(spec.Categories, catID)
+				catName := GetCategoryName(spec.Categories, catID)
 				filename := sanitizeFilename(catID)
 				fmt.Fprintf(&sb, "    - %s: rules/%s.md\n", catName, filename)
 			}
