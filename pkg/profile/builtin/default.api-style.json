@@ -209,7 +209,10 @@
           "description": "pageSize controls items per page, pageToken continues from previous response"
         }
       ],
-      "relatedRules": ["PO-013", "PO-014"],
+      "relatedRules": [
+        "PO-013",
+        "PO-014"
+      ],
       "references": [
         {
           "title": "Google AIP-158: Pagination",
@@ -233,7 +236,10 @@
           "description": "Machine-readable type URI, human-readable title and detail, HTTP status, and unique instance identifier"
         }
       ],
-      "relatedRules": ["PO-047", "PO-048"],
+      "relatedRules": [
+        "PO-047",
+        "PO-048"
+      ],
       "references": [
         {
           "title": "RFC 9457: Problem Details for HTTP APIs",
@@ -257,7 +263,13 @@
           "description": "Consistent HTTP methods with appropriate status codes"
         }
       ],
-      "relatedRules": ["PO-027", "PO-028", "PO-029", "PO-030", "PO-031"]
+      "relatedRules": [
+        "PO-027",
+        "PO-028",
+        "PO-029",
+        "PO-030",
+        "PO-031"
+      ]
     },
     {
       "id": "resource-naming",
@@ -281,7 +293,12 @@
           "description": "Mixing singular/plural and different case conventions"
         }
       ],
-      "relatedRules": ["PO-002", "PO-003", "PO-004", "PO-005"]
+      "relatedRules": [
+        "PO-002",
+        "PO-003",
+        "PO-004",
+        "PO-005"
+      ]
     },
     {
       "id": "collection-response",
@@ -305,7 +322,10 @@
           "description": "Cannot add pagination or collection metadata later without breaking change"
         }
       ],
-      "relatedRules": ["PO-013", "PO-014"]
+      "relatedRules": [
+        "PO-013",
+        "PO-014"
+      ]
     },
     {
       "id": "discriminated-unions",
@@ -323,7 +343,10 @@
           "description": "Clear discriminator enables SDK to generate type-safe switch/match"
         }
       ],
-      "relatedRules": ["PO-067", "PO-068"]
+      "relatedRules": [
+        "PO-067",
+        "PO-068"
+      ]
     },
     {
       "id": "idempotency",
@@ -341,7 +364,9 @@
           "description": "Client provides UUID, server returns same response for duplicate keys"
         }
       ],
-      "relatedRules": ["PO-042"],
+      "relatedRules": [
+        "PO-042"
+      ],
       "references": [
         {
           "title": "Stripe: Idempotent Requests",
@@ -371,7 +396,10 @@
           "description": "Poll until completed, optionally redirect to result"
         }
       ],
-      "relatedRules": ["PO-050", "PO-051"]
+      "relatedRules": [
+        "PO-050",
+        "PO-051"
+      ]
     }
   ],
   "rules": [
@@ -481,9 +509,18 @@
         "prompt": "Use camelCase for all JSON property names (firstName, lastName, createdAt)",
         "priority": 95,
         "examples": [
-          {"good": "firstName", "bad": "first_name"},
-          {"good": "userId", "bad": "user_id"},
-          {"good": "createdAt", "bad": "created_at"}
+          {
+            "good": "firstName",
+            "bad": "first_name"
+          },
+          {
+            "good": "userId",
+            "bad": "user_id"
+          },
+          {
+            "good": "createdAt",
+            "bad": "created_at"
+          }
         ],
         "checklist": [
           "Use camelCase for all schema property names",
@@ -540,8 +577,14 @@
         "template": "/v1/{resource-name}",
         "priority": 90,
         "examples": [
-          {"good": "/user-accounts", "bad": "/userAccounts"},
-          {"good": "/order-items/{orderId}", "bad": "/order_items/{orderId}"}
+          {
+            "good": "/user-accounts",
+            "bad": "/userAccounts"
+          },
+          {
+            "good": "/order-items/{orderId}",
+            "bad": "/order_items/{orderId}"
+          }
         ],
         "checklist": [
           "All path segments in lowercase",
@@ -593,9 +636,18 @@
         "template": "/v1/{plural-resources}",
         "priority": 88,
         "examples": [
-          {"good": "/users", "bad": "/user"},
-          {"good": "/orders", "bad": "/order"},
-          {"good": "/products", "bad": "/product"}
+          {
+            "good": "/users",
+            "bad": "/user"
+          },
+          {
+            "good": "/orders",
+            "bad": "/order"
+          },
+          {
+            "good": "/products",
+            "bad": "/product"
+          }
         ],
         "checklist": [
           "Collection endpoints use plural nouns",
@@ -651,8 +703,14 @@
         "template": "/v1/{resources}",
         "priority": 92,
         "examples": [
-          {"good": "/v1/users", "bad": "/users"},
-          {"good": "/v1/orders/{orderId}", "bad": "/orders/{orderId}"}
+          {
+            "good": "/v1/users",
+            "bad": "/users"
+          },
+          {
+            "good": "/v1/orders/{orderId}",
+            "bad": "/orders/{orderId}"
+          }
         ],
         "checklist": [
           "All paths start with /v1/",
@@ -3430,9 +3488,18 @@
         "prompt": "Use nouns for URL paths, not verbs. Express actions via HTTP methods.",
         "priority": 85,
         "examples": [
-          {"good": "POST /v1/orders", "bad": "/v1/createOrder"},
-          {"good": "DELETE /v1/users/{id}", "bad": "/v1/deleteUser/{id}"},
-          {"good": "POST /v1/orders/{id}/cancel", "bad": "/v1/cancelOrder/{id}"}
+          {
+            "good": "POST /v1/orders",
+            "bad": "/v1/createOrder"
+          },
+          {
+            "good": "DELETE /v1/users/{id}",
+            "bad": "/v1/deleteUser/{id}"
+          },
+          {
+            "good": "POST /v1/orders/{id}/cancel",
+            "bad": "/v1/cancelOrder/{id}"
+          }
         ],
         "checklist": [
           "URLs contain only resource nouns",
@@ -3759,7 +3826,7 @@
           "Metadata:\\n  type: object\\n  additionalProperties:\\n    type: string  # map[string]string in Go"
         ],
         "bad": [
-          "User:\\n  type: object\\n  properties:\\n    id: ...\\n  # additionalProperties defaults to true \u2192 map[string]interface{}"
+          "User:\\n  type: object\\n  properties:\\n    id: ...\\n  # additionalProperties defaults to true → map[string]interface{}"
         ]
       },
       "enforcement": {
@@ -4634,5 +4701,90 @@
       "maxErrors": 0,
       "maxWarnings": 0
     }
-  }
+  },
+  "categoryGroups": [
+    {
+      "id": "fundamentals",
+      "title": "Fundamentals",
+      "description": "Core API design principles, naming, and structural conventions",
+      "categories": [
+        "general",
+        "naming",
+        "json",
+        "schema",
+        "documentation"
+      ],
+      "order": 1
+    },
+    {
+      "id": "resource-design",
+      "title": "Resource Design",
+      "description": "URL structure, collections, and resource relationships",
+      "categories": [
+        "urls",
+        "collections",
+        "hypermedia",
+        "actions"
+      ],
+      "order": 2
+    },
+    {
+      "id": "http-protocol",
+      "title": "HTTP Protocol",
+      "description": "HTTP methods, status codes, headers, and conditional requests",
+      "categories": [
+        "http-methods",
+        "http-status",
+        "headers",
+        "conditional"
+      ],
+      "order": 3
+    },
+    {
+      "id": "data-exchange",
+      "title": "Data Exchange",
+      "description": "Request/response design, pagination, filtering, and batch operations",
+      "categories": [
+        "request-response",
+        "errors",
+        "pagination",
+        "filtering",
+        "batch"
+      ],
+      "order": 4
+    },
+    {
+      "id": "lifecycle",
+      "title": "API Lifecycle",
+      "description": "Versioning, compatibility, and deprecation management",
+      "categories": [
+        "versioning",
+        "compatibility",
+        "deprecation"
+      ],
+      "order": 5
+    },
+    {
+      "id": "operations",
+      "title": "Operations & Reliability",
+      "description": "Security, performance, rate limiting, and long-running operations",
+      "categories": [
+        "security",
+        "performance",
+        "throttling",
+        "long-running"
+      ],
+      "order": 6
+    },
+    {
+      "id": "extensibility",
+      "title": "Extensibility",
+      "description": "Events, webhooks, and multi-tenancy support",
+      "categories": [
+        "events",
+        "multi-tenancy"
+      ],
+      "order": 7
+    }
+  ]
 }
