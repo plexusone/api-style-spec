@@ -169,12 +169,12 @@ func writeTOC(sb *strings.Builder, spec *types.APIStyleSpec, opts *MarkdownOptio
 	}
 
 	// Group rules by category
-	categories := groupRulesByCategory(spec.Rules)
-	categoryOrder := getCategoryOrder(spec.Categories, categories)
+	categories := GroupRulesByCategory(spec.Rules)
+	categoryOrder := GetCategoryOrder(spec.Categories, categories)
 
 	sb.WriteString("- **Rules**\n")
 	for _, catID := range categoryOrder {
-		catName := getCategoryName(spec.Categories, catID)
+		catName := GetCategoryName(spec.Categories, catID)
 		anchor := strings.ToLower(strings.ReplaceAll(catName, " ", "-"))
 		fmt.Fprintf(sb, "  - [%s](#%s)\n", catName, anchor)
 	}
@@ -217,8 +217,8 @@ func writeConformanceLevels(sb *strings.Builder, spec *types.APIStyleSpec) {
 }
 
 func writeRulesByCategory(sb *strings.Builder, spec *types.APIStyleSpec, opts *MarkdownOptions) {
-	categories := groupRulesByCategory(spec.Rules)
-	categoryOrder := getCategoryOrder(spec.Categories, categories)
+	categories := GroupRulesByCategory(spec.Rules)
+	categoryOrder := GetCategoryOrder(spec.Categories, categories)
 
 	for _, catID := range categoryOrder {
 		rules := categories[catID]
@@ -226,8 +226,8 @@ func writeRulesByCategory(sb *strings.Builder, spec *types.APIStyleSpec, opts *M
 			continue
 		}
 
-		catName := getCategoryName(spec.Categories, catID)
-		catDesc := getCategoryDescription(spec.Categories, catID)
+		catName := GetCategoryName(spec.Categories, catID)
+		catDesc := GetCategoryDescription(spec.Categories, catID)
 
 		fmt.Fprintf(sb, "## %s\n\n", catName)
 
@@ -348,7 +348,7 @@ func formatSeverity(sev types.Severity, useEmoji bool) string {
 	return string(sev)
 }
 
-func groupRulesByCategory(rules []types.Rule) map[string][]types.Rule {
+func GroupRulesByCategory(rules []types.Rule) map[string][]types.Rule {
 	categories := make(map[string][]types.Rule)
 	for _, rule := range rules {
 		cat := rule.Category
@@ -360,7 +360,7 @@ func groupRulesByCategory(rules []types.Rule) map[string][]types.Rule {
 	return categories
 }
 
-func getCategoryOrder(categories []types.Category, ruleCategories map[string][]types.Rule) []string {
+func GetCategoryOrder(categories []types.Category, ruleCategories map[string][]types.Rule) []string {
 	// First add categories in defined order
 	var order []string
 	seen := make(map[string]bool)
@@ -385,7 +385,7 @@ func getCategoryOrder(categories []types.Category, ruleCategories map[string][]t
 	return order
 }
 
-func getCategoryName(categories []types.Category, id string) string {
+func GetCategoryName(categories []types.Category, id string) string {
 	for _, cat := range categories {
 		if cat.ID == id {
 			return cat.Title
@@ -395,7 +395,7 @@ func getCategoryName(categories []types.Category, id string) string {
 	return titleCaser.String(strings.ReplaceAll(id, "-", " "))
 }
 
-func getCategoryDescription(categories []types.Category, id string) string {
+func GetCategoryDescription(categories []types.Category, id string) string {
 	for _, cat := range categories {
 		if cat.ID == id {
 			return cat.Description

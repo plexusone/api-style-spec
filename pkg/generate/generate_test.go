@@ -304,7 +304,7 @@ func TestGroupRulesByCategory(t *testing.T) {
 		{ID: "C-001", Category: ""},
 	}
 
-	groups := groupRulesByCategory(rules)
+	groups := GroupRulesByCategory(rules)
 
 	if len(groups["cat-a"]) != 2 {
 		t.Errorf("cat-a should have 2 rules, got %d", len(groups["cat-a"]))
