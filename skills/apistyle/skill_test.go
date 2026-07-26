@@ -118,8 +118,8 @@ func TestSkill_MarshalJSON(t *testing.T) {
 		t.Fatal("expected tools array")
 	}
 
-	if len(tools) != 6 {
-		t.Errorf("expected 6 tools, got %d", len(tools))
+	if len(tools) != 9 {
+		t.Errorf("expected 9 tools, got %d", len(tools))
 	}
 }
 

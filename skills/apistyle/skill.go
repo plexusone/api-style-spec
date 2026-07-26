@@ -16,6 +16,7 @@ import (
 	"strings"
 
 	"github.com/plexusone/api-style-spec/pkg/analyze"
+	"github.com/plexusone/api-style-spec/pkg/fix"
 	"github.com/plexusone/api-style-spec/pkg/judge"
 	"github.com/plexusone/api-style-spec/pkg/lint"
 	"github.com/plexusone/api-style-spec/pkg/profile"
@@ -77,6 +78,9 @@ func (s *Skill) Tools() []skill.Tool {
 		s.listRulesTool(),
 		s.listProfilesTool(),
 		s.explainRuleTool(),
+		s.suggestFixesTool(),
+		s.designCheckTool(),
+		s.conformancePathTool(),
 	}
 }
 
@@ -449,6 +453,316 @@ func (s *Skill) explainRuleTool() skill.Tool {
 			return result, nil
 		},
 	)
+}
+
+func (s *Skill) suggestFixesTool() skill.Tool {
+	return skill.NewTool(
+		"suggest_fixes",
+		"Generate fix suggestions for OpenAPI spec violations. Returns specific changes to make, with diffs and JSON Patch operations.",
+		map[string]skill.Parameter{
+			"openapi_spec": {
+				Type:        "string",
+				Description: "The OpenAPI specification content (YAML or JSON)",
+				Required:    true,
+			},
+			"violations": {
+				Type:        "array",
+				Description: "List of violations to fix. If empty, lints first and fixes all violations.",
+				Required:    false,
+				Items:       &skill.Parameter{Type: "object"},
+			},
+			"profile": {
+				Type:        "string",
+				Description: "Style profile to use (default, minimal, comprehensive, azure, google, microsoft-rest, microsoft-graph, zalando)",
+				Required:    false,
+				Default:     "default",
+			},
+			"max_suggestions": {
+				Type:        "integer",
+				Description: "Maximum number of suggestions to return (default: 50)",
+				Required:    false,
+				Default:     50,
+			},
+		},
+		func(ctx context.Context, params map[string]any) (any, error) {
+			specContent, _ := params["openapi_spec"].(string)
+			if specContent == "" {
+				return nil, fmt.Errorf("openapi_spec is required")
+			}
+
+			profileName, _ := params["profile"].(string)
+			if profileName == "" {
+				profileName = "default"
+			}
+
+			maxSuggestions := 50
+			if ms, ok := params["max_suggestions"].(float64); ok {
+				maxSuggestions = int(ms)
+			}
+
+			// Load the style profile
+			styleSpec, err := profile.Load(profileName)
+			if err != nil {
+				return nil, fmt.Errorf("failed to load profile %q: %w", profileName, err)
+			}
+
+			// Get violations from params or by linting
+			var violations []types.Violation
+			if v, ok := params["violations"].([]any); ok && len(v) > 0 {
+				violations = parseViolations(v)
+			} else {
+				// Lint to get violations
+				linter := lint.NewVacuumLinter(styleSpec)
+				report, err := linter.Lint(ctx, []byte(specContent), nil)
+				if err != nil {
+					return nil, fmt.Errorf("linting failed: %w", err)
+				}
+				violations = report.Violations
+			}
+
+			// Generate fix suggestions
+			fixer := fix.NewRuleFixer(styleSpec)
+			opts := &fix.Options{
+				Profile:        profileName,
+				MaxSuggestions: maxSuggestions,
+				IncludePatch:   true,
+			}
+
+			report, err := fixer.SuggestFixes(ctx, []byte(specContent), violations, opts)
+			if err != nil {
+				return nil, fmt.Errorf("generating fixes: %w", err)
+			}
+
+			return formatFixReport(report), nil
+		},
+	)
+}
+
+func (s *Skill) designCheckTool() skill.Tool {
+	return skill.NewTool(
+		"design_check",
+		"Get design guidance before generating an OpenAPI spec. Returns a checklist of rules to follow and a template.",
+		map[string]skill.Parameter{
+			"resource_name": {
+				Type:        "string",
+				Description: "The resource being designed (e.g., 'user', 'order')",
+				Required:    true,
+			},
+			"operations": {
+				Type:        "array",
+				Description: "Planned operations (e.g., ['list', 'create', 'get', 'update', 'delete'])",
+				Required:    false,
+				Items:       &skill.Parameter{Type: "string"},
+				Default:     []string{"list", "create", "get", "update", "delete"},
+			},
+			"profile": {
+				Type:        "string",
+				Description: "Style profile to use",
+				Required:    false,
+				Default:     "default",
+			},
+		},
+		func(ctx context.Context, params map[string]any) (any, error) {
+			resourceName, _ := params["resource_name"].(string)
+			if resourceName == "" {
+				return nil, fmt.Errorf("resource_name is required")
+			}
+
+			profileName, _ := params["profile"].(string)
+			if profileName == "" {
+				profileName = "default"
+			}
+
+			operations := []string{"list", "create", "get", "update", "delete"}
+			if ops, ok := params["operations"].([]any); ok && len(ops) > 0 {
+				operations = make([]string, len(ops))
+				for i, op := range ops {
+					operations[i], _ = op.(string)
+				}
+			}
+
+			// Load the style profile
+			styleSpec, err := profile.Load(profileName)
+			if err != nil {
+				return nil, fmt.Errorf("failed to load profile %q: %w", profileName, err)
+			}
+
+			// Generate design check
+			fixer := fix.NewRuleFixer(styleSpec)
+			check, err := fixer.DesignCheck(ctx, resourceName, operations, nil)
+			if err != nil {
+				return nil, fmt.Errorf("design check failed: %w", err)
+			}
+
+			return formatDesignCheck(check), nil
+		},
+	)
+}
+
+func (s *Skill) conformancePathTool() skill.Tool {
+	return skill.NewTool(
+		"conformance_path",
+		"Show the path to reach a conformance level. Returns blockers, warnings, and progress.",
+		map[string]skill.Parameter{
+			"openapi_spec": {
+				Type:        "string",
+				Description: "The OpenAPI specification content",
+				Required:    true,
+			},
+			"target_level": {
+				Type:        "string",
+				Description: "Target conformance level (bronze, silver, gold)",
+				Required:    true,
+			},
+			"profile": {
+				Type:        "string",
+				Description: "Style profile to evaluate against",
+				Required:    false,
+				Default:     "default",
+			},
+		},
+		func(ctx context.Context, params map[string]any) (any, error) {
+			specContent, _ := params["openapi_spec"].(string)
+			if specContent == "" {
+				return nil, fmt.Errorf("openapi_spec is required")
+			}
+
+			targetLevel, _ := params["target_level"].(string)
+			if targetLevel == "" {
+				return nil, fmt.Errorf("target_level is required")
+			}
+
+			profileName, _ := params["profile"].(string)
+			if profileName == "" {
+				profileName = "default"
+			}
+
+			// Load the style profile
+			styleSpec, err := profile.Load(profileName)
+			if err != nil {
+				return nil, fmt.Errorf("failed to load profile %q: %w", profileName, err)
+			}
+
+			// Generate conformance path
+			fixer := fix.NewRuleFixer(styleSpec)
+			path, err := fixer.ConformancePath(ctx, []byte(specContent), targetLevel, nil)
+			if err != nil {
+				return nil, fmt.Errorf("conformance path failed: %w", err)
+			}
+
+			return formatConformancePath(path), nil
+		},
+	)
+}
+
+// parseViolations converts a slice of any to typed Violations.
+func parseViolations(v []any) []types.Violation {
+	violations := make([]types.Violation, 0, len(v))
+	for _, item := range v {
+		if m, ok := item.(map[string]any); ok {
+			violation := types.Violation{}
+			if ruleID, ok := m["ruleId"].(string); ok {
+				violation.RuleID = ruleID
+			} else if ruleID, ok := m["rule_id"].(string); ok {
+				violation.RuleID = ruleID
+			}
+			if path, ok := m["path"].(string); ok {
+				violation.Path = path
+			}
+			if msg, ok := m["message"].(string); ok {
+				violation.Message = msg
+			}
+			violations = append(violations, violation)
+		}
+	}
+	return violations
+}
+
+// formatFixReport converts a fix report to a map for JSON serialization.
+func formatFixReport(report *types.FixReport) map[string]any {
+	suggestions := make([]map[string]any, len(report.Suggestions))
+	for i, s := range report.Suggestions {
+		suggestions[i] = map[string]any{
+			"rule_id":         s.RuleID,
+			"path":            s.Path,
+			"current_value":   s.CurrentValue,
+			"suggested_value": s.SuggestedValue,
+			"diff":            s.Diff,
+			"confidence":      s.Confidence,
+			"reasoning":       s.Reasoning,
+		}
+	}
+
+	patchOps := make([]map[string]any, len(report.PatchOperations))
+	for i, p := range report.PatchOperations {
+		patchOps[i] = map[string]any{
+			"op":    p.Op,
+			"path":  p.Path,
+			"value": p.Value,
+		}
+		if p.From != "" {
+			patchOps[i]["from"] = p.From
+		}
+	}
+
+	return map[string]any{
+		"suggestions":      suggestions,
+		"patch_operations": patchOps,
+		"fixed_count":      report.FixedCount,
+		"unfixed_count":    report.UnfixedCount,
+		"unfixed_rules":    report.UnfixedRules,
+	}
+}
+
+// formatDesignCheck converts a design check to a map for JSON serialization.
+func formatDesignCheck(check *types.DesignCheck) map[string]any {
+	checklist := make([]map[string]any, len(check.Checklist))
+	for i, item := range check.Checklist {
+		checklist[i] = map[string]any{
+			"rule_id":     item.RuleID,
+			"instruction": item.Instruction,
+			"priority":    item.Priority,
+			"required":    item.Required,
+		}
+	}
+
+	return map[string]any{
+		"checklist": checklist,
+		"template":  check.Template,
+		"warnings":  check.Warnings,
+	}
+}
+
+// formatConformancePath converts a conformance path to a map for JSON serialization.
+func formatConformancePath(path *types.ConformancePath) map[string]any {
+	blockers := make([]map[string]any, len(path.Blockers))
+	for i, b := range path.Blockers {
+		blockers[i] = map[string]any{
+			"rule_id":          b.RuleID,
+			"count":            b.Count,
+			"priority":         b.Priority,
+			"fix_instructions": b.FixInstructions,
+		}
+	}
+
+	warnings := make([]map[string]any, len(path.Warnings))
+	for i, w := range path.Warnings {
+		warnings[i] = map[string]any{
+			"rule_id":          w.RuleID,
+			"count":            w.Count,
+			"priority":         w.Priority,
+			"fix_instructions": w.FixInstructions,
+		}
+	}
+
+	return map[string]any{
+		"current_level":      path.CurrentLevel,
+		"target_level":       path.TargetLevel,
+		"blockers":           blockers,
+		"warnings":           warnings,
+		"progress_to_target": path.ProgressToTarget,
+		"estimated_fixes":    path.EstimatedFixes,
+	}
 }
 
 // formatLintReport converts a lint report to a map for JSON serialization.
