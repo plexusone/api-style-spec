@@ -9,6 +9,8 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/plexusone/api-style-spec/pkg/generate"
+	"github.com/plexusone/api-style-spec/pkg/generate/gap"
+	"github.com/plexusone/api-style-spec/pkg/generate/guide"
 	"github.com/plexusone/api-style-spec/pkg/generate/report"
 	"github.com/plexusone/api-style-spec/pkg/judge"
 	"github.com/plexusone/api-style-spec/pkg/profile"
@@ -24,9 +26,16 @@ var (
 	rubricMode string
 
 	// Report-specific flags
-	reportInput    string
-	reportTheme    string
-	reportRawJSON  bool
+	reportInput   string
+	reportTheme   string
+	reportRawJSON bool
+
+	// Guide HTML flags
+	guideHTMLTheme string
+
+	// Gap analysis flags
+	gapInput string
+	gapTheme string
 
 	// MkDocs-specific flags
 	mkdocsSiteName        string
@@ -44,14 +53,18 @@ var generateCmd = &cobra.Command{
 	Long: `Generate various outputs from an API style specification profile.
 
 Supported types:
-  guide    - Generate single-page Markdown documentation (style guide)
-  mkdocs   - Generate MkDocs multi-page documentation site
-  spectral - Generate Spectral YAML ruleset
-  rubric   - Generate structured-evaluation rubric for LLM-as-Judge
+  guide         - Generate single-page Markdown documentation (style guide)
+  guide-html    - Generate standalone HTML style guide
+  gap-analysis  - Generate HTML gap analysis from lint results
+  mkdocs        - Generate MkDocs multi-page documentation site
+  spectral      - Generate Spectral YAML ruleset
+  rubric        - Generate structured-evaluation rubric for LLM-as-Judge
+  report        - Generate HTML evaluation report
 
 Examples:
   api-style generate guide --profile azure
-  api-style generate guide --file examples/zalando-rest.api-style.json --output zalando.md
+  api-style generate guide-html --profile default --output guide.html
+  api-style generate gap-analysis --input lint.json --profile default --output gap.html
   api-style generate mkdocs --profile zalando --output ./docs
   api-style generate spectral --profile zalando --output .spectral.yaml
   api-style generate rubric --profile zalando --output zalando.rubric.json`,
@@ -164,6 +177,48 @@ Examples:
 	RunE: runGenerateReport,
 }
 
+var generateGuideHTMLCmd = &cobra.Command{
+	Use:   "guide-html",
+	Short: "Generate standalone HTML style guide",
+	Long: `Generate a standalone HTML document from a style profile.
+
+The generated HTML includes:
+- Sticky table of contents
+- Design principles and conformance levels
+- Rule categories with severity badges
+- Collapsible rule details with examples
+- Design patterns and glossary
+- Light and dark theme support
+
+Examples:
+  api-style generate guide-html
+  api-style generate guide-html --profile azure
+  api-style generate guide-html --profile default --theme dark --output guide.html`,
+	RunE: runGenerateGuideHTML,
+}
+
+var generateGapAnalysisCmd = &cobra.Command{
+	Use:   "gap-analysis",
+	Short: "Generate HTML gap analysis report",
+	Long: `Generate an HTML gap analysis report from lint results.
+
+The report includes:
+- Severity distribution with visual bars
+- Category coverage heatmap (when profile provided)
+- Most violated rules ranked by count
+- Violations grouped by category with details
+- Per-file results (for multi-file reports)
+- Uncovered areas and improvement opportunities
+
+Accepts both single-file (LintReport) and multi-file (MultiLintReport) JSON.
+
+Examples:
+  api-style generate gap-analysis --input lint.json
+  api-style generate gap-analysis --input lint.json --profile default --output gap.html
+  api-style generate gap-analysis --input lint.json --theme dark`,
+	RunE: runGenerateGapAnalysis,
+}
+
 func init() {
 	generateCmd.PersistentFlags().StringVarP(&generateOutput, "output", "o", "", "Output file/directory (default: stdout for guide/spectral, ./docs for mkdocs)")
 	generateCmd.PersistentFlags().StringVarP(&generateProfile, "profile", "p", "", "Style profile name to use (built-in or from search paths)")
@@ -187,11 +242,21 @@ func init() {
 	generateReportCmd.Flags().BoolVar(&reportRawJSON, "include-json", false, "Include raw JSON data in report")
 	_ = generateReportCmd.MarkFlagRequired("input")
 
+	// Guide HTML flags
+	generateGuideHTMLCmd.Flags().StringVar(&guideHTMLTheme, "theme", "light", "Color theme: light, dark")
+
+	// Gap analysis flags
+	generateGapAnalysisCmd.Flags().StringVarP(&gapInput, "input", "i", "", "Path to lint JSON file (required)")
+	generateGapAnalysisCmd.Flags().StringVar(&gapTheme, "theme", "light", "Color theme: light, dark")
+	_ = generateGapAnalysisCmd.MarkFlagRequired("input")
+
 	generateCmd.AddCommand(generateGuideCmd)
+	generateCmd.AddCommand(generateGuideHTMLCmd)
 	generateCmd.AddCommand(generateMkDocsCmd)
 	generateCmd.AddCommand(generateSpectralCmd)
 	generateCmd.AddCommand(generateRubricCmd)
 	generateCmd.AddCommand(generateReportCmd)
+	generateCmd.AddCommand(generateGapAnalysisCmd)
 }
 
 func loadProfile() (*types.APIStyleSpec, error) {
@@ -360,6 +425,72 @@ func runGenerateReport(_ *cobra.Command, _ []string) error {
 			return fmt.Errorf("writing output: %w", err)
 		}
 		fmt.Printf("Generated report: %s\n", generateOutput)
+	} else {
+		fmt.Print(string(html))
+	}
+
+	return nil
+}
+
+func runGenerateGuideHTML(_ *cobra.Command, _ []string) error {
+	spec, err := loadProfile()
+	if err != nil {
+		return err
+	}
+
+	gen, err := guide.New()
+	if err != nil {
+		return fmt.Errorf("creating guide generator: %w", err)
+	}
+
+	opts := guide.DefaultOptions()
+	opts.Theme = guideHTMLTheme
+
+	html, err := gen.Generate(context.Background(), spec, opts)
+	if err != nil {
+		return fmt.Errorf("generating guide HTML: %w", err)
+	}
+
+	if generateOutput != "" {
+		if err := os.WriteFile(generateOutput, html, 0o600); err != nil {
+			return fmt.Errorf("writing output: %w", err)
+		}
+		fmt.Printf("Generated guide: %s\n", generateOutput)
+	} else {
+		fmt.Print(string(html))
+	}
+
+	return nil
+}
+
+func runGenerateGapAnalysis(_ *cobra.Command, _ []string) error {
+	gen, err := gap.New()
+	if err != nil {
+		return fmt.Errorf("creating gap analysis generator: %w", err)
+	}
+
+	opts := gap.DefaultOptions()
+	opts.Theme = gapTheme
+
+	// Optionally load profile for coverage analysis
+	if generateProfile != "" || generateFile != "" {
+		spec, err := loadProfile()
+		if err != nil {
+			return err
+		}
+		opts.Profile = spec
+	}
+
+	html, err := gen.GenerateFromFile(context.Background(), gapInput, opts)
+	if err != nil {
+		return fmt.Errorf("generating gap analysis: %w", err)
+	}
+
+	if generateOutput != "" {
+		if err := os.WriteFile(generateOutput, html, 0o600); err != nil {
+			return fmt.Errorf("writing output: %w", err)
+		}
+		fmt.Printf("Generated gap analysis: %s\n", generateOutput)
 	} else {
 		fmt.Print(string(html))
 	}
