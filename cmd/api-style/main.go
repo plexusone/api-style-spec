@@ -28,9 +28,12 @@ func init() {
 	rootCmd.AddCommand(evaluateCmd)
 	rootCmd.AddCommand(analyzeCmd)
 	rootCmd.AddCommand(generateCmd)
+	rootCmd.AddCommand(exemplarCmd)
+	rootCmd.AddCommand(patternCmd)
 	rootCmd.AddCommand(hooksCmd)
 	rootCmd.AddCommand(serveCmd)
 	rootCmd.AddCommand(scoreProfileCmd)
+	rootCmd.AddCommand(suggestCmd)
 	rootCmd.AddCommand(versionCmd)
 }
 

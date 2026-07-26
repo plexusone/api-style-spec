@@ -15,6 +15,7 @@ import (
 
 	"github.com/plexusone/api-style-spec/pkg/config"
 	"github.com/plexusone/api-style-spec/pkg/files"
+	"github.com/plexusone/api-style-spec/pkg/fix"
 	"github.com/plexusone/api-style-spec/pkg/lint"
 	"github.com/plexusone/api-style-spec/pkg/profile"
 	"github.com/plexusone/api-style-spec/pkg/sarif"
@@ -23,13 +24,14 @@ import (
 )
 
 var (
-	lintFormat    string
-	lintOutput    string
-	lintProfile   string
-	lintLevel     string
-	lintConfig    string
-	lintRecursive bool
-	lintWatch     bool
+	lintFormat       string
+	lintOutput       string
+	lintProfile      string
+	lintLevel        string
+	lintConfig       string
+	lintRecursive    bool
+	lintWatch        bool
+	lintSuggestFixes bool
 )
 
 var lintCmd = &cobra.Command{
@@ -67,6 +69,7 @@ func init() {
 	lintCmd.Flags().StringVarP(&lintConfig, "config", "c", "", "Config file path (default: .api-style.yaml)")
 	lintCmd.Flags().BoolVarP(&lintRecursive, "recursive", "r", false, "Search directories recursively")
 	lintCmd.Flags().BoolVarP(&lintWatch, "watch", "w", false, "Watch files for changes and re-lint")
+	lintCmd.Flags().BoolVar(&lintSuggestFixes, "suggest-fixes", false, "Include fix suggestions in output")
 }
 
 func runLint(_ *cobra.Command, args []string) error {
@@ -106,8 +109,14 @@ func runLint(_ *cobra.Command, args []string) error {
 	// Lint all files
 	multiReport, styleSpec := lintFiles(specFiles, cfg)
 
+	// Generate fix suggestions if requested
+	var fixReport *types.FixReport
+	if lintSuggestFixes && styleSpec != nil {
+		fixReport = generateFixSuggestions(context.Background(), multiReport, styleSpec)
+	}
+
 	// Format and output
-	if err := outputResults(multiReport, styleSpec); err != nil {
+	if err := outputResults(multiReport, styleSpec, fixReport); err != nil {
 		return err
 	}
 
@@ -289,7 +298,32 @@ func printWatchSummary(file string, report *types.LintReport) {
 	}
 }
 
-func outputResults(multiReport *types.MultiLintReport, styleSpec *types.APIStyleSpec) error {
+func generateFixSuggestions(ctx context.Context, multiReport *types.MultiLintReport, styleSpec *types.APIStyleSpec) *types.FixReport {
+	// Collect all violations
+	var allViolations []types.Violation
+	for _, fr := range multiReport.FileReports {
+		allViolations = append(allViolations, fr.Violations...)
+	}
+
+	if len(allViolations) == 0 {
+		return nil
+	}
+
+	fixer := fix.NewRuleFixer(styleSpec)
+	opts := &fix.Options{
+		MaxSuggestions: 50,
+		IncludePatch:   false,
+	}
+
+	report, err := fixer.SuggestFixes(ctx, nil, allViolations, opts)
+	if err != nil {
+		return nil
+	}
+
+	return report
+}
+
+func outputResults(multiReport *types.MultiLintReport, styleSpec *types.APIStyleSpec, fixReport *types.FixReport) error {
 	var output string
 	var err error
 
@@ -305,6 +339,12 @@ func outputResults(multiReport *types.MultiLintReport, styleSpec *types.APIStyle
 		return fmt.Errorf("formatting report: %w", err)
 	}
 
+	// Append fix suggestions if available
+	if fixReport != nil && fixReport.FixedCount > 0 {
+		fixOutput := formatFixSuggestions(fixReport, lintFormat)
+		output += fixOutput
+	}
+
 	// Write output
 	if lintOutput != "" {
 		//nolint:gosec // G703: Path from CLI flag
@@ -316,6 +356,54 @@ func outputResults(multiReport *types.MultiLintReport, styleSpec *types.APIStyle
 	}
 
 	return nil
+}
+
+func formatFixSuggestions(report *types.FixReport, format string) string {
+	switch strings.ToLower(format) {
+	case "json":
+		// For JSON, return a separate fixSuggestions object
+		data, err := json.MarshalIndent(map[string]any{
+			"fixSuggestions": report.Suggestions,
+			"fixedCount":     report.FixedCount,
+			"unfixedCount":   report.UnfixedCount,
+			"unfixedRules":   report.UnfixedRules,
+		}, "", "  ")
+		if err != nil {
+			return ""
+		}
+		return "\n" + string(data) + "\n"
+	case "text":
+		var sb strings.Builder
+		sb.WriteString("\nFix Suggestions\n")
+		sb.WriteString("---------------\n\n")
+		fmt.Fprintf(&sb, "Violations with fixes: %d, without fixes: %d\n\n",
+			report.FixedCount, report.UnfixedCount)
+
+		for i, s := range report.Suggestions {
+			fmt.Fprintf(&sb, "%d. [%s] %s\n", i+1, s.RuleID, s.Path)
+			if s.CurrentValue != "" {
+				fmt.Fprintf(&sb, "   Current:   %s\n", s.CurrentValue)
+			}
+			if s.SuggestedValue != "" {
+				fmt.Fprintf(&sb, "   Suggested: %s\n", s.SuggestedValue)
+			}
+			if s.Reasoning != "" {
+				fmt.Fprintf(&sb, "   Reason:    %s\n", s.Reasoning)
+			}
+			sb.WriteString("\n")
+		}
+
+		if len(report.UnfixedRules) > 0 {
+			sb.WriteString("Rules without automatic fixes:\n")
+			for _, r := range report.UnfixedRules {
+				fmt.Fprintf(&sb, "  - %s\n", r)
+			}
+		}
+
+		return sb.String()
+	default:
+		return ""
+	}
 }
 
 func formatReport(report *types.LintReport, styleSpec *types.APIStyleSpec, format string) (string, error) {
@@ -444,6 +532,13 @@ func formatMultiText(report *types.MultiLintReport) string {
 				location = fmt.Sprintf("%s (line %d)", v.Path, v.Line)
 			}
 			fmt.Fprintf(&sb, "  [%s] %s: %s\n    %s\n", v.Severity, v.RuleID, v.Message, location)
+			// Show key metadata in multi-file mode
+			if v.RuleTitle != "" {
+				fmt.Fprintf(&sb, "    Rule: %s\n", v.RuleTitle)
+			}
+			if v.FixPriority > 0 {
+				fmt.Fprintf(&sb, "    Fix Priority: %d\n", v.FixPriority)
+			}
 			count++
 		}
 		sb.WriteString("\n")
@@ -464,6 +559,29 @@ func printViolations(sb *strings.Builder, level string, violations []types.Viola
 			location = fmt.Sprintf("%s (line %d)", v.Path, v.Line)
 		}
 		fmt.Fprintf(sb, "  - [%s] %s\n    %s\n", v.RuleID, v.Message, location)
+
+		// Print additional metadata when available
+		if v.RuleTitle != "" {
+			fmt.Fprintf(sb, "    Rule: %s\n", v.RuleTitle)
+		}
+		if v.Category != "" {
+			fmt.Fprintf(sb, "    Category: %s\n", v.Category)
+		}
+		if v.FixPriority > 0 {
+			fmt.Fprintf(sb, "    Fix Priority: %d\n", v.FixPriority)
+		}
+		if len(v.RelatedRules) > 0 {
+			fmt.Fprintf(sb, "    Related: %s\n", strings.Join(v.RelatedRules, ", "))
+		}
+		if v.ExampleFix != "" {
+			fmt.Fprintf(sb, "    Example Fix:\n")
+			for _, line := range strings.Split(v.ExampleFix, "\n") {
+				fmt.Fprintf(sb, "      %s\n", line)
+			}
+		}
+		if v.RuleURL != "" {
+			fmt.Fprintf(sb, "    Docs: %s\n", v.RuleURL)
+		}
 	}
 	sb.WriteString("\n")
 }
