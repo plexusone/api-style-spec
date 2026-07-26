@@ -225,7 +225,7 @@ func TestAnalyzer_Decision_Warning(t *testing.T) {
 				Enforcement: &types.Enforcement{
 					Type:     types.EnforcementSpectral,
 					Function: "truthy",
-					Given:    types.NewGivenPath("$.info.x-custom-field"),
+					Given:    types.NewGivenPath("$.info['x-custom-field']"),
 				},
 			},
 		},
@@ -391,7 +391,7 @@ func TestAnalyzer_Analyze_FailOnWarnings(t *testing.T) {
 				Enforcement: &types.Enforcement{
 					Type:     types.EnforcementSpectral,
 					Function: "truthy",
-					Given:    types.NewGivenPath("$.info.x-missing-field"),
+					Given:    types.NewGivenPath("$.info['x-missing-field']"),
 				},
 			},
 		},
