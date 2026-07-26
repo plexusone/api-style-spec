@@ -154,6 +154,45 @@ Use the Microsoft REST profile when:
 | Categories | 15 | 9 |
 | Detail level | Exhaustive | Essential |
 
+## Evaluation Report
+
+This profile has been evaluated against the `api-style-guide-quality` rubric.
+
+### Summary
+
+| Metric | Value |
+|--------|-------|
+| Overall Decision | **PASS** |
+| Categories | 9 pass, 0 partial, 0 fail |
+| Findings | 0 critical, 0 high, 0 medium, 3 low |
+
+### Category Scores
+
+| Category | Score | Assessment |
+|----------|-------|------------|
+| Content Coverage | 5/5 🟢 | Covers all 6 domains plus enterprise patterns: REST/OData, OpenAPI, camelCase naming, structured error envelope, OAuth2/RBAC, api-version parameter |
+| Structure & Navigation | 5/5 🟢 | Excellent structure: TOC, 15 categories, MS-XXX rule IDs, conformance levels, design patterns |
+| Rule Quality & Clarity | 5/5 🟢 | Clear titles, detailed descriptions, severity levels, comprehensive rationale with RFC 2119 keywords |
+| Examples & Code Samples | 5/5 🟢 | HTTP request/response samples, mermaid sequence diagrams for LRO/pagination flows, good/bad contrasts |
+| Enforceability & Tooling | 4/5 🟡 | Distinguishes spectral-lintable vs. judge-only rules; some rules lack explicit Spectral configurations |
+| Guide Versioning & Evolution | 4/5 🟡 | Versioned on GitHub with compatibility section; could improve rule-level change tracking |
+| Completeness & Depth | 5/5 🟢 | Exceptional depth: LRO state machines, conditional requests, ETag strategies, pagination patterns |
+| Internal Consistency | 5/5 🟢 | Consistent terminology, value/nextLink pagination pattern, standardized error format |
+| Accessibility & Tone | 4/5 🟡 | Professional tone appropriate for enterprise developers; some Azure-specific terms need glossary expansion |
+
+### Improvement Opportunities
+
+| Finding | Category | Recommendation |
+|---------|----------|----------------|
+| Some rules lack explicit Spectral configurations | Enforceability | Publish complete Spectral ruleset |
+| No per-rule version or deprecation tracking | Versioning | Add version field to each rule |
+| Azure-specific terminology may confuse non-Azure developers | Accessibility | Expand glossary with Azure concepts |
+
+!!! note "Evaluation Metadata"
+    - **Rubric**: api-style-guide-quality v1.0.0
+    - **Evaluated**: 2025-06-17
+    - **Evaluator**: Claude Opus 4.5 (LLM-as-Judge)
+
 ## References
 
 - [Microsoft REST API Guidelines](https://github.com/microsoft/api-guidelines)

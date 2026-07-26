@@ -155,6 +155,46 @@ Use the Microsoft Graph profile when:
 | Query style | OData | Custom |
 | Delta support | Yes | No |
 
+## Evaluation Report
+
+This profile has been evaluated against the `api-style-guide-quality` rubric.
+
+### Summary
+
+| Metric | Value |
+|--------|-------|
+| Overall Decision | **PASS** |
+| Categories | 8 pass, 1 partial, 0 fail |
+| Findings | 0 critical, 0 high, 1 medium, 3 low |
+
+### Category Scores
+
+| Category | Score | Assessment |
+|----------|-------|------------|
+| Content Coverage | 4/5 🟡 | Covers essential domains with Graph-specific focus: OData-based REST, /me alias, permissions model, v1.0/beta versioning |
+| Structure & Navigation | 5/5 🟢 | GRAPH-XXX rule IDs, 12 categories focused on Graph-specific topics, clear navigation |
+| Rule Quality & Clarity | 4/5 🟡 | Rules well-structured with IDs, titles, severity; some rules have brief descriptions |
+| Examples & Code Samples | 5/5 🟢 | Excellent examples for delta query flows, batch request/response JSON, webhook subscriptions |
+| Enforceability & Tooling | 3/5 🟠 | Graph-specific rules harder to lint than generic REST; many require manual/LLM review |
+| Guide Versioning & Evolution | 4/5 🟡 | v1.0/beta versioning model clearly documented; beta to v1.0 migration guidance could be expanded |
+| Completeness & Depth | 4/5 🟡 | Good depth on delta queries, batch semantics, permission scopes, throttling patterns |
+| Internal Consistency | 5/5 🟢 | Consistent terminology with OData standards (@odata.context, @odata.deltaLink) |
+| Accessibility & Tone | 4/5 🟡 | Good glossary with 12 Graph-specific terms; assumes some OData knowledge |
+
+### Improvement Opportunities
+
+| Finding | Category | Recommendation |
+|---------|----------|----------------|
+| Many Graph-specific rules require manual/LLM review | Enforceability | Develop Graph-specific Spectral rules; consider OData-aware validators |
+| Some inherited MS REST topics could be cross-referenced | Content Coverage | Add explicit cross-references to base MS REST guide |
+| Some rules have brief descriptions | Rule Quality | Expand rule descriptions with more implementation context |
+| Beta to v1.0 migration guidance limited | Versioning | Add detailed migration guidance for promoting APIs |
+
+!!! note "Evaluation Metadata"
+    - **Rubric**: api-style-guide-quality v1.0.0
+    - **Evaluated**: 2025-06-17
+    - **Evaluator**: Claude Opus 4.5 (LLM-as-Judge)
+
 ## References
 
 - [Microsoft Graph API Guidelines](https://github.com/microsoftgraph/msgraph-sdk-design)

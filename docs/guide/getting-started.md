@@ -224,10 +224,57 @@ api-style hooks init
 
 This installs a pre-commit hook that lints staged OpenAPI files. See [Hooks Reference](../reference/hooks.md) for details.
 
+## Starting from Exemplars
+
+Use exemplar specifications as templates for new APIs:
+
+```bash
+# List available exemplars
+api-style exemplar list
+
+# View an exemplar
+api-style exemplar show default-minimal
+
+# Copy as starting point
+api-style exemplar copy default-minimal ./my-api.yaml
+```
+
+Exemplars demonstrate best practices for each style profile.
+
+## Using Design Patterns
+
+Explore reusable solutions for common API design problems:
+
+```bash
+# List patterns for a profile
+api-style pattern list --profile default
+
+# View pattern details with examples
+api-style pattern show cursor-pagination
+```
+
+Patterns include problem descriptions, solutions, code examples, and related rules.
+
+## Getting Fix Suggestions
+
+Get AI-powered suggestions to fix violations:
+
+```bash
+# Include suggestions in lint output
+api-style lint openapi.yaml --suggest-fixes
+
+# Or generate suggestions from violations
+api-style lint openapi.yaml --format json --output violations.json
+api-style suggest-fixes violations.json
+```
+
+Suggestions include the recommended fix, reasoning, and JSON Patch operations for automated fixing.
+
 ## Next Steps
 
 - [Automated API Governance](automated-api-governance.md) - Set up AI-first API design with 100% automated enforcement
 - [Using Profiles](profiles.md) - Understand built-in style profiles
 - [Documentation Generation](documentation-generation.md) - Generate Markdown and MkDocs documentation
 - [Custom Rules](custom-rules.md) - Create your own rules
+- [MCP Server](mcp-server.md) - AI agent integration
 - [CLI Reference](../reference/cli.md) - Complete command documentation

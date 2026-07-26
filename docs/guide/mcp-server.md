@@ -124,15 +124,57 @@ Get detailed explanation of a rule.
 
 ## Resources
 
-The MCP server also provides resources for reading profile data:
+The MCP server provides resources for AI agents to access style data:
 
-### apistyle://profiles
+### Profile Resources
 
-List all available profiles with metadata.
+| Resource URI | Description |
+|--------------|-------------|
+| `apistyle://profiles` | List all available profiles with metadata |
+| `apistyle://profile/{name}` | Get the full definition of a specific profile |
 
-### apistyle://profiles/{name}
+### Exemplar Resources
 
-Get the full definition of a specific profile.
+| Resource URI | Description |
+|--------------|-------------|
+| `apistyle://exemplars` | List all available exemplar specifications |
+| `apistyle://exemplar/{name}` | Get exemplar OpenAPI content |
+
+Exemplars are reference implementations that demonstrate best practices:
+
+```
+apistyle://exemplar/default-minimal
+apistyle://exemplar/default-comprehensive
+```
+
+### Pattern Resources
+
+| Resource URI | Description |
+|--------------|-------------|
+| `apistyle://patterns/{profile}` | List patterns for a profile |
+| `apistyle://pattern/{profile}/{id}` | Get pattern definition with examples |
+
+Patterns provide reusable solutions for common API design problems:
+
+```
+apistyle://pattern/default/cursor-pagination
+apistyle://pattern/default/rfc9457-errors
+apistyle://pattern/default/discriminated-unions
+```
+
+### Rubric Resources
+
+| Resource URI | Description |
+|--------------|-------------|
+| `apistyle://rubric/{profile}/evaluation` | Get evaluation rubric for LLM-as-Judge |
+| `apistyle://rubric/{profile}/generation` | Get generation rubric for API creation |
+
+Use rubrics to guide AI agents during API design and review:
+
+```
+apistyle://rubric/default/evaluation
+apistyle://rubric/default/generation
+```
 
 ## Prompts
 
