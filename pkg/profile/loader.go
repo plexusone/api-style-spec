@@ -16,6 +16,24 @@ import (
 //go:embed builtin/*.json
 var builtinProfiles embed.FS
 
+//go:embed builtin/exemplars/*.yaml
+var builtinExemplars embed.FS
+
+// Exemplar represents an exemplar OpenAPI specification.
+type Exemplar struct {
+	// Name is the exemplar identifier (e.g., "default-minimal")
+	Name string `json:"name"`
+
+	// Profile is the style profile this exemplar conforms to
+	Profile string `json:"profile"`
+
+	// Description is a human-readable description
+	Description string `json:"description"`
+
+	// Content is the raw OpenAPI specification content
+	Content []byte `json:"-"`
+}
+
 // Loader loads and resolves API style profiles.
 type Loader struct {
 	// SearchPaths are directories to search for profiles.
@@ -187,4 +205,117 @@ func ListBuiltin() ([]string, error) {
 	}
 
 	return names, nil
+}
+
+// ListExemplars returns all built-in exemplar specifications.
+func ListExemplars() ([]Exemplar, error) {
+	entries, err := builtinExemplars.ReadDir("builtin/exemplars")
+	if err != nil {
+		return nil, err
+	}
+
+	var exemplars []Exemplar
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		name := entry.Name()
+		if !strings.HasSuffix(name, ".yaml") {
+			continue
+		}
+
+		// Parse exemplar info from filename (format: profile-variant.yaml)
+		baseName := strings.TrimSuffix(name, ".yaml")
+		parts := strings.SplitN(baseName, "-", 2)
+		profile := parts[0]
+		variant := ""
+		if len(parts) > 1 {
+			variant = parts[1]
+		}
+
+		// Load content
+		content, err := builtinExemplars.ReadFile("builtin/exemplars/" + name)
+		if err != nil {
+			continue
+		}
+
+		// Extract description from info.description
+		description := extractDescription(content)
+
+		exemplars = append(exemplars, Exemplar{
+			Name:        baseName,
+			Profile:     profile,
+			Description: description,
+			Content:     content,
+		})
+		_ = variant // for future use
+	}
+
+	return exemplars, nil
+}
+
+// ListExemplarsForProfile returns exemplars for a specific profile.
+func ListExemplarsForProfile(profileName string) ([]Exemplar, error) {
+	all, err := ListExemplars()
+	if err != nil {
+		return nil, err
+	}
+
+	var filtered []Exemplar
+	for _, e := range all {
+		if e.Profile == profileName {
+			filtered = append(filtered, e)
+		}
+	}
+	return filtered, nil
+}
+
+// GetExemplar loads a specific exemplar by name.
+func GetExemplar(name string) (*Exemplar, error) {
+	// Try exact match first
+	filename := "builtin/exemplars/" + name + ".yaml"
+	content, err := builtinExemplars.ReadFile(filename)
+	if err != nil {
+		return nil, fmt.Errorf("exemplar %q not found: %w", name, err)
+	}
+
+	// Parse info
+	parts := strings.SplitN(name, "-", 2)
+	profile := parts[0]
+
+	return &Exemplar{
+		Name:        name,
+		Profile:     profile,
+		Description: extractDescription(content),
+		Content:     content,
+	}, nil
+}
+
+// extractDescription extracts the description from OpenAPI content.
+func extractDescription(content []byte) string {
+	var spec struct {
+		Info struct {
+			Description string `yaml:"description"`
+			Title       string `yaml:"title"`
+		} `yaml:"info"`
+	}
+
+	if err := yaml.Unmarshal(content, &spec); err != nil {
+		return ""
+	}
+
+	// Return first paragraph of description, or title if no description
+	desc := spec.Info.Description
+	if desc == "" {
+		return spec.Info.Title
+	}
+
+	// Take first paragraph (up to double newline or 200 chars)
+	if idx := strings.Index(desc, "\n\n"); idx > 0 && idx < 200 {
+		desc = desc[:idx]
+	} else if len(desc) > 200 {
+		desc = desc[:200] + "..."
+	}
+
+	return strings.TrimSpace(desc)
 }

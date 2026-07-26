@@ -186,6 +186,194 @@
       "description": "Throttling and rate limit headers"
     }
   ],
+  "patterns": [
+    {
+      "id": "cursor-pagination",
+      "name": "Cursor-Based Pagination",
+      "category": "collections",
+      "summary": "Paginate large collections using opaque cursors for stable traversal",
+      "problem": "Offset-based pagination breaks when items are added/removed during traversal. Large offsets cause performance issues.",
+      "solution": "Use an opaque cursor (typically base64-encoded) that encodes the position in the result set. Return nextPageToken when more results exist.",
+      "when": "Use for any collection endpoint that may return many items (>100). Especially important for real-time data that changes frequently.",
+      "examples": [
+        {
+          "type": "good",
+          "title": "Cursor-based list response",
+          "code": "{\n  \"items\": [...],\n  \"nextPageToken\": \"eyJpZCI6MTIzfQ\"\n}",
+          "description": "Client passes nextPageToken as pageToken query parameter to fetch next page"
+        },
+        {
+          "type": "good",
+          "title": "List endpoint with pagination parameters",
+          "code": "GET /v1/orders?pageSize=20&pageToken=eyJpZCI6MTIzfQ",
+          "description": "pageSize controls items per page, pageToken continues from previous response"
+        }
+      ],
+      "relatedRules": ["PO-013", "PO-014"],
+      "references": [
+        {
+          "title": "Google AIP-158: Pagination",
+          "url": "https://google.aip.dev/158"
+        }
+      ]
+    },
+    {
+      "id": "rfc9457-errors",
+      "name": "RFC 9457 Problem Details",
+      "category": "errors",
+      "summary": "Return structured error responses following RFC 9457 Problem Details for HTTP APIs",
+      "problem": "Inconsistent error formats make it difficult for clients to handle errors programmatically and provide good user feedback.",
+      "solution": "Return errors as application/problem+json with type (URI), title (human-readable), status (HTTP code), detail (specific message), and instance (occurrence URI).",
+      "when": "Use for all 4xx and 5xx error responses. The format is extensible for domain-specific error fields.",
+      "examples": [
+        {
+          "type": "good",
+          "title": "Validation error response",
+          "code": "{\n  \"type\": \"https://api.example.com/problems/validation-error\",\n  \"title\": \"Validation Failed\",\n  \"status\": 400,\n  \"detail\": \"The email field must be a valid email address\",\n  \"instance\": \"/v1/users/create/abc123\"\n}",
+          "description": "Machine-readable type URI, human-readable title and detail, HTTP status, and unique instance identifier"
+        }
+      ],
+      "relatedRules": ["PO-047", "PO-048"],
+      "references": [
+        {
+          "title": "RFC 9457: Problem Details for HTTP APIs",
+          "url": "https://www.rfc-editor.org/rfc/rfc9457"
+        }
+      ]
+    },
+    {
+      "id": "crud-operations",
+      "name": "Standard CRUD Operations",
+      "category": "http-methods",
+      "summary": "Map CRUD operations to HTTP methods consistently: Create=POST, Read=GET, Update=PATCH, Delete=DELETE",
+      "problem": "Inconsistent HTTP method usage confuses clients and breaks REST semantics.",
+      "solution": "Use POST for create (201), GET for read (200), PATCH for partial update (200), PUT for full replace (200), DELETE for remove (204).",
+      "when": "Apply to all resource-oriented endpoints. Use POST for non-CRUD actions on sub-resources.",
+      "examples": [
+        {
+          "type": "good",
+          "title": "User resource CRUD",
+          "code": "POST   /v1/users         → 201 Created\nGET    /v1/users/{id}    → 200 OK\nPATCH  /v1/users/{id}    → 200 OK\nDELETE /v1/users/{id}    → 204 No Content",
+          "description": "Consistent HTTP methods with appropriate status codes"
+        }
+      ],
+      "relatedRules": ["PO-027", "PO-028", "PO-029", "PO-030", "PO-031"]
+    },
+    {
+      "id": "resource-naming",
+      "name": "Resource Naming",
+      "category": "naming",
+      "summary": "Use plural nouns for collections, singular path parameters for items, kebab-case for paths",
+      "problem": "Inconsistent naming creates confusion and makes APIs harder to learn.",
+      "solution": "Collections use plural nouns (users, orders). Path parameters use kebab-case ({user-id}). Property names use camelCase.",
+      "when": "Apply to all URL paths and JSON property names.",
+      "examples": [
+        {
+          "type": "good",
+          "title": "Resource URL patterns",
+          "code": "/v1/users\n/v1/users/{user-id}\n/v1/users/{user-id}/orders\n/v1/users/{user-id}/orders/{order-id}",
+          "description": "Plural collections, kebab-case path parameters, hierarchical nesting"
+        },
+        {
+          "type": "bad",
+          "title": "Inconsistent naming",
+          "code": "/v1/user/{userId}/Order/{orderId}",
+          "description": "Mixing singular/plural and different case conventions"
+        }
+      ],
+      "relatedRules": ["PO-002", "PO-003", "PO-004", "PO-005"]
+    },
+    {
+      "id": "collection-response",
+      "name": "Collection Response Envelope",
+      "category": "collections",
+      "summary": "Wrap collection items in an envelope with pagination metadata",
+      "problem": "Returning bare arrays prevents adding pagination metadata and other collection-level fields.",
+      "solution": "Return an object with items array, nextPageToken (if more pages), and optionally totalCount.",
+      "when": "Use for all list/collection endpoints. Even if pagination isn't needed now, the envelope allows adding it later.",
+      "examples": [
+        {
+          "type": "good",
+          "title": "Collection response",
+          "code": "{\n  \"items\": [\n    {\"id\": \"123\", \"name\": \"Item 1\"},\n    {\"id\": \"456\", \"name\": \"Item 2\"}\n  ],\n  \"nextPageToken\": \"eyJpZCI6NDU2fQ\",\n  \"totalCount\": 42\n}",
+          "description": "Items array with pagination token and optional total count"
+        },
+        {
+          "type": "bad",
+          "title": "Bare array response",
+          "code": "[\n  {\"id\": \"123\", \"name\": \"Item 1\"},\n  {\"id\": \"456\", \"name\": \"Item 2\"}\n]",
+          "description": "Cannot add pagination or collection metadata later without breaking change"
+        }
+      ],
+      "relatedRules": ["PO-013", "PO-014"]
+    },
+    {
+      "id": "discriminated-unions",
+      "name": "Discriminated Unions",
+      "category": "schema",
+      "summary": "Use a type discriminator field for polymorphic schemas to enable clean SDK code generation",
+      "problem": "SDK generators cannot produce clean type-safe code for oneOf/anyOf without a discriminator. Clients must check multiple fields to determine the variant.",
+      "solution": "Add a discriminator with propertyName (e.g., 'type') and mapping from values to schema refs.",
+      "when": "Use whenever a field can be one of several types, especially for event payloads, notification types, or polymorphic resources.",
+      "examples": [
+        {
+          "type": "good",
+          "title": "Discriminated payment method",
+          "code": "PaymentMethod:\n  oneOf:\n    - $ref: '#/components/schemas/CreditCard'\n    - $ref: '#/components/schemas/BankTransfer'\n  discriminator:\n    propertyName: type\n    mapping:\n      credit_card: '#/components/schemas/CreditCard'\n      bank_transfer: '#/components/schemas/BankTransfer'",
+          "description": "Clear discriminator enables SDK to generate type-safe switch/match"
+        }
+      ],
+      "relatedRules": ["PO-067", "PO-068"]
+    },
+    {
+      "id": "idempotency",
+      "name": "Idempotency Keys",
+      "category": "request-response",
+      "summary": "Support idempotent retries for state-changing operations using client-provided idempotency keys",
+      "problem": "Network failures can cause duplicate operations when clients retry. Without idempotency, a payment could be charged twice.",
+      "solution": "Accept Idempotency-Key header on POST/PATCH operations. Store the key with request hash and return cached response on duplicate.",
+      "when": "Essential for financial operations, resource creation, and any operation that cannot be safely repeated.",
+      "examples": [
+        {
+          "type": "good",
+          "title": "Idempotent payment request",
+          "code": "POST /v1/payments\nIdempotency-Key: 550e8400-e29b-41d4-a716-446655440000\nContent-Type: application/json\n\n{\"amount\": 1000, \"currency\": \"USD\"}",
+          "description": "Client provides UUID, server returns same response for duplicate keys"
+        }
+      ],
+      "relatedRules": ["PO-042"],
+      "references": [
+        {
+          "title": "Stripe: Idempotent Requests",
+          "url": "https://stripe.com/docs/api/idempotent_requests"
+        }
+      ]
+    },
+    {
+      "id": "async-operations",
+      "name": "Long-Running Operations",
+      "category": "long-running",
+      "summary": "Return 202 Accepted for operations that take too long to complete synchronously",
+      "problem": "Long operations cause timeouts and poor user experience if handled synchronously.",
+      "solution": "Return 202 Accepted with Location header pointing to status endpoint. Status endpoint returns progress until complete, then redirects to result.",
+      "when": "Use when operation typically takes >5 seconds. Examples: video processing, bulk imports, report generation.",
+      "examples": [
+        {
+          "type": "good",
+          "title": "Async operation initiation",
+          "code": "POST /v1/reports/generate\n\n→ 202 Accepted\nLocation: /v1/operations/op-123\n\n{\"operationId\": \"op-123\", \"status\": \"pending\"}",
+          "description": "Returns immediately with operation ID for polling"
+        },
+        {
+          "type": "good",
+          "title": "Operation status response",
+          "code": "GET /v1/operations/op-123\n\n→ 200 OK\n{\"status\": \"completed\", \"result\": {\"reportUrl\": \"...\"}}\n\nor\n\n→ 303 See Other\nLocation: /v1/reports/rpt-456",
+          "description": "Poll until completed, optionally redirect to result"
+        }
+      ],
+      "relatedRules": ["PO-050", "PO-051"]
+    }
+  ],
   "rules": [
     {
       "id": "PO-001",
@@ -228,6 +416,16 @@
           "Uses OpenAPI 3.0.x or earlier",
           "No openapi field present",
           "Invalid version format"
+        ]
+      },
+      "generate": {
+        "prompt": "Always start with openapi: 3.1.0 at the root of the specification",
+        "template": "openapi: 3.1.0",
+        "priority": 100,
+        "checklist": [
+          "Set openapi version to 3.1.0",
+          "Include info section with title and version",
+          "Add description to info section"
         ]
       }
     },
@@ -278,6 +476,20 @@
           "Properties use kebab-case",
           "Inconsistent casing"
         ]
+      },
+      "generate": {
+        "prompt": "Use camelCase for all JSON property names (firstName, lastName, createdAt)",
+        "priority": 95,
+        "examples": [
+          {"good": "firstName", "bad": "first_name"},
+          {"good": "userId", "bad": "user_id"},
+          {"good": "createdAt", "bad": "created_at"}
+        ],
+        "checklist": [
+          "Use camelCase for all schema property names",
+          "First character must be lowercase",
+          "No underscores, hyphens, or spaces"
+        ]
       }
     },
     {
@@ -322,6 +534,20 @@
           "Paths use snake_case",
           "Paths use uppercase"
         ]
+      },
+      "generate": {
+        "prompt": "Use kebab-case for URL path segments (e.g., /user-accounts, /order-items)",
+        "template": "/v1/{resource-name}",
+        "priority": 90,
+        "examples": [
+          {"good": "/user-accounts", "bad": "/userAccounts"},
+          {"good": "/order-items/{orderId}", "bad": "/order_items/{orderId}"}
+        ],
+        "checklist": [
+          "All path segments in lowercase",
+          "Use hyphens to separate words",
+          "Path parameters in camelCase within braces"
+        ]
       }
     },
     {
@@ -361,6 +587,21 @@
       },
       "enforcement": {
         "type": "none"
+      },
+      "generate": {
+        "prompt": "Use plural nouns for collection endpoints (e.g., /users, /orders, /products)",
+        "template": "/v1/{plural-resources}",
+        "priority": 88,
+        "examples": [
+          {"good": "/users", "bad": "/user"},
+          {"good": "/orders", "bad": "/order"},
+          {"good": "/products", "bad": "/product"}
+        ],
+        "checklist": [
+          "Collection endpoints use plural nouns",
+          "Individual resource endpoints use /{plural}/{id}",
+          "Sub-resources are also plural"
+        ]
       }
     },
     {
@@ -403,6 +644,20 @@
           "No version in URL",
           "Version in query parameter",
           "Version in header only"
+        ]
+      },
+      "generate": {
+        "prompt": "Start all paths with version prefix /v1/ (major version only)",
+        "template": "/v1/{resources}",
+        "priority": 92,
+        "examples": [
+          {"good": "/v1/users", "bad": "/users"},
+          {"good": "/v1/orders/{orderId}", "bad": "/orders/{orderId}"}
+        ],
+        "checklist": [
+          "All paths start with /v1/",
+          "Use major version only (v1, v2, not v1.1)",
+          "Do not use query parameters or headers for versioning"
         ]
       }
     },
@@ -3169,6 +3424,21 @@
         "failCriteria": [
           "Paths contain verbs like create, get, delete",
           "Action words in path segments"
+        ]
+      },
+      "generate": {
+        "prompt": "Use nouns for URL paths, not verbs. Express actions via HTTP methods.",
+        "priority": 85,
+        "examples": [
+          {"good": "POST /v1/orders", "bad": "/v1/createOrder"},
+          {"good": "DELETE /v1/users/{id}", "bad": "/v1/deleteUser/{id}"},
+          {"good": "POST /v1/orders/{id}/cancel", "bad": "/v1/cancelOrder/{id}"}
+        ],
+        "checklist": [
+          "URLs contain only resource nouns",
+          "Use POST for creating resources",
+          "Use DELETE for removing resources",
+          "Use POST /resource/{id}/action for operations"
         ]
       }
     },

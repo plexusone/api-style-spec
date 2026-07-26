@@ -1,0 +1,591 @@
+openapi: 3.1.0
+info:
+  title: CRUD API Example
+  version: 1.0.0
+  description: |
+    A comprehensive CRUD API example demonstrating all standard operations
+    for a resource-oriented API. Conforms to the default style profile.
+
+    ## Features Demonstrated
+    - Full CRUD operations (Create, Read, Update, Delete)
+    - List with pagination and filtering
+    - Nested resources (orders -> order-items)
+    - Standard error responses (RFC 9457)
+    - Proper HTTP method usage
+
+servers:
+  - url: https://api.example.com
+
+tags:
+  - name: orders
+    description: Order management
+  - name: order-items
+    description: Order item management
+
+paths:
+  /v1/orders:
+    get:
+      operationId: listOrders
+      summary: List orders
+      description: Returns a paginated list of orders with optional filtering.
+      tags:
+        - orders
+      parameters:
+        - name: status
+          in: query
+          description: Filter by order status
+          schema:
+            type: string
+            enum: [pending, confirmed, shipped, delivered, cancelled]
+        - name: customerId
+          in: query
+          description: Filter by customer ID
+          schema:
+            type: string
+            format: uuid
+        - name: createdAfter
+          in: query
+          description: Filter orders created after this date
+          schema:
+            type: string
+            format: date-time
+        - name: createdBefore
+          in: query
+          description: Filter orders created before this date
+          schema:
+            type: string
+            format: date-time
+        - name: sortBy
+          in: query
+          description: Field to sort by
+          schema:
+            type: string
+            enum: [createdAt, updatedAt, totalAmount]
+            default: createdAt
+        - name: sortOrder
+          in: query
+          description: Sort order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+        - name: pageToken
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderList"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+    post:
+      operationId: createOrder
+      summary: Create an order
+      description: Creates a new order for a customer.
+      tags:
+        - orders
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderRequest"
+      responses:
+        "201":
+          description: Order created
+          headers:
+            Location:
+              description: URL of the created order
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /v1/orders/{order-id}:
+    parameters:
+      - $ref: "#/components/parameters/OrderId"
+    get:
+      operationId: getOrder
+      summary: Get an order
+      description: Returns a single order by ID.
+      tags:
+        - orders
+      responses:
+        "200":
+          description: Order details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+    patch:
+      operationId: updateOrder
+      summary: Update an order
+      description: Partially updates an order. Only provided fields are updated.
+      tags:
+        - orders
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderRequest"
+      responses:
+        "200":
+          description: Order updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+    delete:
+      operationId: deleteOrder
+      summary: Delete an order
+      description: Deletes an order. Only pending orders can be deleted.
+      tags:
+        - orders
+      responses:
+        "204":
+          description: Order deleted
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /v1/orders/{order-id}/cancel:
+    parameters:
+      - $ref: "#/components/parameters/OrderId"
+    post:
+      operationId: cancelOrder
+      summary: Cancel an order
+      description: Cancels an order. Only pending or confirmed orders can be cancelled.
+      tags:
+        - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CancelOrderRequest"
+      responses:
+        "200":
+          description: Order cancelled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /v1/orders/{order-id}/items:
+    parameters:
+      - $ref: "#/components/parameters/OrderId"
+    get:
+      operationId: listOrderItems
+      summary: List order items
+      description: Returns all items in an order.
+      tags:
+        - order-items
+      responses:
+        "200":
+          description: List of order items
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderItemList"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+    post:
+      operationId: createOrderItem
+      summary: Add item to order
+      description: Adds a new item to an existing order.
+      tags:
+        - order-items
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddOrderItemRequest"
+      responses:
+        "201":
+          description: Item added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderItem"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /v1/orders/{order-id}/items/{item-id}:
+    parameters:
+      - $ref: "#/components/parameters/OrderId"
+      - $ref: "#/components/parameters/ItemId"
+    get:
+      operationId: getOrderItem
+      summary: Get order item
+      description: Returns a single order item.
+      tags:
+        - order-items
+      responses:
+        "200":
+          description: Order item details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderItem"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+    patch:
+      operationId: updateOrderItem
+      summary: Update order item
+      description: Updates an order item (e.g., quantity).
+      tags:
+        - order-items
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderItemRequest"
+      responses:
+        "200":
+          description: Item updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderItem"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+    delete:
+      operationId: deleteOrderItem
+      summary: Remove order item
+      description: Removes an item from an order.
+      tags:
+        - order-items
+      responses:
+        "204":
+          description: Item removed
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+components:
+  parameters:
+    OrderId:
+      name: order-id
+      in: path
+      required: true
+      description: Unique order identifier
+      schema:
+        type: string
+        format: uuid
+
+    ItemId:
+      name: item-id
+      in: path
+      required: true
+      description: Unique order item identifier
+      schema:
+        type: string
+        format: uuid
+
+  schemas:
+    Order:
+      type: object
+      required:
+        - id
+        - customerId
+        - status
+        - items
+        - totalAmount
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        customerId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, confirmed, shipped, delivered, cancelled]
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        totalAmount:
+          $ref: "#/components/schemas/Money"
+        shippingAddress:
+          $ref: "#/components/schemas/Address"
+        notes:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        cancelledAt:
+          type: string
+          format: date-time
+        cancellationReason:
+          type: string
+
+    OrderItem:
+      type: object
+      required:
+        - id
+        - productId
+        - productName
+        - quantity
+        - unitPrice
+        - totalPrice
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        productName:
+          type: string
+        quantity:
+          type: integer
+          minimum: 1
+        unitPrice:
+          $ref: "#/components/schemas/Money"
+        totalPrice:
+          $ref: "#/components/schemas/Money"
+
+    OrderList:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+        nextPageToken:
+          type: string
+        totalCount:
+          type: integer
+
+    OrderItemList:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+
+    CreateOrderRequest:
+      type: object
+      required:
+        - customerId
+        - items
+      properties:
+        customerId:
+          type: string
+          format: uuid
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/AddOrderItemRequest"
+        shippingAddress:
+          $ref: "#/components/schemas/Address"
+        notes:
+          type: string
+
+    UpdateOrderRequest:
+      type: object
+      properties:
+        shippingAddress:
+          $ref: "#/components/schemas/Address"
+        notes:
+          type: string
+
+    CancelOrderRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          description: Reason for cancellation
+
+    AddOrderItemRequest:
+      type: object
+      required:
+        - productId
+        - quantity
+      properties:
+        productId:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+
+    UpdateOrderItemRequest:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          minimum: 1
+
+    Money:
+      type: object
+      required:
+        - amount
+        - currency
+      properties:
+        amount:
+          type: string
+          pattern: "^-?\\d+(\\.\\d{2})?$"
+          description: Decimal amount as string to avoid floating point issues
+        currency:
+          type: string
+          pattern: "^[A-Z]{3}$"
+          description: ISO 4217 currency code
+
+    Address:
+      type: object
+      required:
+        - street
+        - city
+        - country
+      properties:
+        street:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+          pattern: "^[A-Z]{2}$"
+          description: ISO 3166-1 alpha-2 country code
+
+    ProblemDetails:
+      type: object
+      description: RFC 9457 Problem Details
+      required:
+        - type
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+
+    Conflict:
+      description: Operation conflicts with current state
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+
+    UnprocessableEntity:
+      description: Request understood but cannot be processed
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
