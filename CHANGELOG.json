@@ -7,6 +7,51 @@
   "maintainers": ["johnwang", "johncwang@gmail.com"],
   "releases": [
     {
+      "version": "v0.5.0",
+      "date": "2026-07-15",
+      "highlights": [
+        { "description": "Exemplar specifications - reference OpenAPI specs demonstrating style profile best practices" },
+        { "description": "Pattern library - reusable solutions for common API design problems with examples" },
+        { "description": "MCP resource handlers - AI agents can access profiles, exemplars, patterns, and rubrics" },
+        { "description": "Fix suggestions - AI-powered suggestions to fix style violations with JSON Patch support" }
+      ],
+      "added": [
+        { "description": "`exemplar list` command to list available exemplar specifications" },
+        { "description": "`exemplar show` command to display exemplar content" },
+        { "description": "`exemplar copy` command to copy an exemplar to a local file" },
+        { "description": "`pattern list` command to list design patterns for a profile" },
+        { "description": "`pattern show` command to display pattern details with examples" },
+        { "description": "`suggest-fixes` command to generate fix suggestions for violations" },
+        { "description": "`--suggest-fixes` flag for `lint` command to include fix suggestions" },
+        { "description": "Exemplar specs: `default-minimal` and `default-comprehensive` for default profile" },
+        { "description": "Pattern library with cursor-pagination, rfc9457-errors, discriminated-unions patterns" },
+        { "description": "MCP resource URIs: `apistyle://profiles`, `apistyle://profile/{name}`" },
+        { "description": "MCP resource URIs: `apistyle://exemplars`, `apistyle://exemplar/{name}`" },
+        { "description": "MCP resource URIs: `apistyle://patterns/{profile}`, `apistyle://pattern/{profile}/{id}`" },
+        { "description": "MCP resource URIs: `apistyle://rubric/{profile}/{mode}` for evaluation/generation rubrics" },
+        { "description": "`pkg/fix` package with `RuleFixer` for generating fix suggestions" },
+        { "description": "`RuleFixer.SuggestFixes` for violation-based fix suggestions with JSON Patch" },
+        { "description": "`RuleFixer.DesignCheck` for proactive design checklist generation" },
+        { "description": "`RuleFixer.ConformancePath` for conformance level upgrade guidance" },
+        { "description": "Generation rubric generation from style profiles (`GenerationRubricFromSpec`)" },
+        { "description": "Exemplar loader functions: `ListExemplars`, `ListExemplarsForProfile`, `GetExemplar`" }
+      ],
+      "changed": [
+        { "description": "Default profile includes patterns for pagination, errors, and schemas" },
+        { "description": "`LintReport` extended with `Suggestions` field for fix recommendations" }
+      ],
+      "documentation": [
+        { "description": "README updated with exemplar, pattern, and suggest-fixes commands" },
+        { "description": "README updated with MCP resources and AI agent integration sections" },
+        { "description": "Quick start examples for exemplar and pattern commands" }
+      ],
+      "tests": [
+        { "description": "Unit tests for `pkg/fix/rule_fixer.go` covering all fix suggestion methods" },
+        { "description": "Unit tests for exemplar loading functions in `pkg/profile/loader_test.go`" },
+        { "description": "Unit tests for MCP resource handlers in `skills/apistyle/resources_test.go`" }
+      ]
+    },
+    {
       "version": "v0.4.0",
       "date": "2026-07-06",
       "highlights": [
