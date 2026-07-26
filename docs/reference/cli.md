@@ -36,6 +36,7 @@ api-style lint <openapi-spec> [<openapi-spec>...] [flags]
 | `--config` | `-c` | `.api-style.yaml` | Config file path |
 | `--recursive` | `-r` | `false` | Search directories recursively |
 | `--watch` | `-w` | `false` | Watch files for changes and re-lint |
+| `--suggest-fixes` | | `false` | Include AI-powered fix suggestions |
 
 **Examples:**
 
@@ -66,6 +67,9 @@ api-style lint openapi.yaml --watch
 
 # Use explicit config file
 api-style lint openapi.yaml --config .api-style.yaml
+
+# Include fix suggestions
+api-style lint openapi.yaml --suggest-fixes
 ```
 
 **Exit Codes:**
@@ -340,6 +344,204 @@ api-style generate spectral --profile azure --output .spectral.yaml
 # Use with vacuum
 vacuum lint openapi.yaml -r .spectral.yaml
 ```
+
+---
+
+### exemplar
+
+Work with exemplar specifications - reference OpenAPI specs demonstrating style profile best practices.
+
+#### exemplar list
+
+List available exemplar specifications.
+
+```bash
+api-style exemplar list [flags]
+```
+
+**Flags:**
+
+| Flag | Short | Default | Description |
+|------|-------|---------|-------------|
+| `--profile` | `-p` | | Filter by profile name |
+
+**Examples:**
+
+```bash
+# List all exemplars
+api-style exemplar list
+
+# List exemplars for a specific profile
+api-style exemplar list --profile default
+```
+
+#### exemplar show
+
+Display the content of an exemplar specification.
+
+```bash
+api-style exemplar show <exemplar-name>
+```
+
+**Arguments:**
+
+| Argument | Description |
+|----------|-------------|
+| `exemplar-name` | Name of the exemplar to display |
+
+**Examples:**
+
+```bash
+# Show minimal exemplar
+api-style exemplar show default-minimal
+
+# Show comprehensive exemplar
+api-style exemplar show default-comprehensive
+```
+
+#### exemplar copy
+
+Copy an exemplar specification to a local file.
+
+```bash
+api-style exemplar copy <exemplar-name> <output-path>
+```
+
+**Arguments:**
+
+| Argument | Description |
+|----------|-------------|
+| `exemplar-name` | Name of the exemplar to copy |
+| `output-path` | Destination file path |
+
+**Examples:**
+
+```bash
+# Copy exemplar as starting point
+api-style exemplar copy default-minimal ./my-api.yaml
+
+# Create comprehensive API from template
+api-style exemplar copy default-comprehensive ./api/openapi.yaml
+```
+
+---
+
+### pattern
+
+View API design patterns from style profiles.
+
+#### pattern list
+
+List design patterns for a profile.
+
+```bash
+api-style pattern list [flags]
+```
+
+**Flags:**
+
+| Flag | Short | Default | Description |
+|------|-------|---------|-------------|
+| `--profile` | `-p` | `default` | Style profile name |
+| `--category` | `-c` | | Filter by category |
+
+**Examples:**
+
+```bash
+# List all patterns
+api-style pattern list
+
+# List patterns for a profile
+api-style pattern list --profile zalando
+
+# Filter by category
+api-style pattern list --category pagination
+```
+
+#### pattern show
+
+Display detailed information about a specific pattern.
+
+```bash
+api-style pattern show <pattern-id> [flags]
+```
+
+**Arguments:**
+
+| Argument | Description |
+|----------|-------------|
+| `pattern-id` | ID of the pattern to display |
+
+**Flags:**
+
+| Flag | Short | Default | Description |
+|------|-------|---------|-------------|
+| `--profile` | `-p` | `default` | Style profile name |
+
+**Examples:**
+
+```bash
+# Show pattern details
+api-style pattern show cursor-pagination
+
+# Show pattern from specific profile
+api-style pattern show rfc9457-errors --profile default
+```
+
+The output includes:
+
+- Problem description
+- Solution explanation
+- When to use
+- Code examples
+- Related rules
+- External references
+
+---
+
+### suggest-fixes
+
+Generate fix suggestions for violations.
+
+```bash
+api-style suggest-fixes <violations-file> [flags]
+```
+
+**Arguments:**
+
+| Argument | Description |
+|----------|-------------|
+| `violations-file` | JSON file containing violations from `lint --format json` |
+
+**Flags:**
+
+| Flag | Short | Default | Description |
+|------|-------|---------|-------------|
+| `--profile` | `-p` | `default` | Style profile to use |
+| `--format` | `-f` | `text` | Output format: `text`, `json` |
+| `--output` | `-o` | stdout | Output file path |
+| `--max` | | `50` | Maximum number of suggestions |
+| `--include-patch` | | `true` | Include JSON Patch operations |
+
+**Examples:**
+
+```bash
+# Generate lint report first
+api-style lint openapi.yaml --format json --output violations.json
+
+# Get fix suggestions
+api-style suggest-fixes violations.json --profile default
+
+# JSON output with patches
+api-style suggest-fixes violations.json --format json --include-patch
+```
+
+The output includes:
+
+- **SuggestedValue**: The recommended fix
+- **Reasoning**: Why this fix is appropriate
+- **Confidence**: How confident the suggestion is (0-1)
+- **PatchOperations**: JSON Patch operations to apply the fix
 
 ---
 

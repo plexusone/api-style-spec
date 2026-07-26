@@ -48,6 +48,9 @@ api-style-spec (source of truth)
 - 🏢 **Industry Profiles** - Pre-built profiles based on Microsoft, Google, Zalando guidelines
 - 🏆 **Conformance Levels** - Graduated compliance (bronze/silver/gold)
 - 🌐 **Multi-Platform** - CLI, Web UI, MCP server, AI agents
+- 📖 **Exemplar Specs** - Reference OpenAPI specifications demonstrating best practices
+- 🧩 **Pattern Library** - Reusable solutions for common API design problems
+- 🔧 **Fix Suggestions** - AI-powered suggestions to fix style violations
 
 ## Installation
 
@@ -64,6 +67,9 @@ api-style lint openapi.yaml
 # Lint with a specific profile
 api-style lint openapi.yaml --profile azure
 
+# Lint with fix suggestions
+api-style lint openapi.yaml --suggest-fixes
+
 # Lint multiple files with glob patterns
 api-style lint api/*.yaml --recursive
 
@@ -75,6 +81,18 @@ api-style analyze openapi.yaml --profile azure --level silver
 
 # Generate human-readable style guide
 api-style generate guide --spec my-style.json --output docs/
+
+# View exemplar specifications
+api-style exemplar list
+api-style exemplar show default-minimal
+api-style exemplar copy default-minimal ./my-api.yaml
+
+# Explore design patterns
+api-style pattern list
+api-style pattern show cursor-pagination
+
+# Get fix suggestions for violations
+api-style suggest-fixes violations.json --profile default
 ```
 
 ## Configuration
@@ -138,9 +156,15 @@ See [.api-style.yaml.example](.api-style.yaml.example) for a complete example.
 
 | Command | Description |
 |---------|-------------|
-| `api-style lint` | Deterministic linting (supports glob patterns, `--watch`, `--recursive`) |
+| `api-style lint` | Deterministic linting (supports glob patterns, `--watch`, `--recursive`, `--suggest-fixes`) |
 | `api-style evaluate` | LLM-based evaluation |
 | `api-style analyze` | Combined lint + evaluate |
+| `api-style suggest-fixes` | Generate fix suggestions for violations |
+| `api-style exemplar list` | List available exemplar specifications |
+| `api-style exemplar show` | Display an exemplar specification |
+| `api-style exemplar copy` | Copy an exemplar to a local file |
+| `api-style pattern list` | List available design patterns |
+| `api-style pattern show` | Display pattern details with examples |
 | `api-style score-profile` | Score a style profile using LLM evaluation |
 | `api-style generate guide` | Generate Markdown documentation |
 | `api-style generate mkdocs` | Generate MkDocs multi-page site |
@@ -173,6 +197,80 @@ See [.api-style.yaml.example](.api-style.yaml.example) for a complete example.
 - Multi-tenancy patterns with `~` alias
 - RFC 9457 Problem Details for errors
 - Discriminated unions for polymorphism
+
+## Exemplar Specifications
+
+Exemplars are reference OpenAPI specifications that demonstrate best practices for a style profile. Use them as starting points or learning resources.
+
+```bash
+# List all exemplars
+api-style exemplar list
+
+# Show a specific exemplar
+api-style exemplar show default-minimal
+
+# Copy to local file as starting point
+api-style exemplar copy default-minimal ./my-api.yaml
+```
+
+| Exemplar | Profile | Description |
+|----------|---------|-------------|
+| `default-minimal` | default | Minimal CRUD API demonstrating core patterns |
+| `default-comprehensive` | default | Full-featured API with pagination, errors, versioning |
+
+## Pattern Library
+
+Design patterns are reusable solutions to common API design problems. Each pattern includes problem/solution descriptions, code examples, and related rules.
+
+```bash
+# List patterns for a profile
+api-style pattern list --profile default
+
+# Show pattern details
+api-style pattern show cursor-pagination
+```
+
+| Pattern | Category | Description |
+|---------|----------|-------------|
+| `cursor-pagination` | pagination | Cursor-based pagination for large datasets |
+| `rfc9457-errors` | errors | RFC 9457 Problem Details for error responses |
+| `discriminated-unions` | schemas | Type-safe polymorphism with discriminator fields |
+
+## MCP Server Resources
+
+The MCP server exposes API style resources for AI agents:
+
+| Resource URI | Description |
+|--------------|-------------|
+| `apistyle://profiles` | List available profiles |
+| `apistyle://profile/{name}` | Get profile specification |
+| `apistyle://exemplars` | List available exemplars |
+| `apistyle://exemplar/{name}` | Get exemplar content |
+| `apistyle://patterns/{profile}` | List patterns for a profile |
+| `apistyle://pattern/{profile}/{id}` | Get pattern definition |
+| `apistyle://rubric/{profile}/{mode}` | Get evaluation/generation rubric |
+
+## AI Agent Integration
+
+api-style-spec integrates with AI assistants for automated API design:
+
+```bash
+# Generate Claude Code hooks
+api-style hooks --format claude-code > .claude/CLAUDE.md
+
+# Install as pre-commit hook
+api-style hooks init
+
+# Start MCP server for AI agents
+api-style serve mcp
+```
+
+AI agents can use MCP resources to:
+
+- Access style profiles and rules during API generation
+- Retrieve exemplar specs as reference implementations
+- Look up design patterns for specific problems
+- Get structured rubrics for self-evaluation
 
 ## Documentation
 

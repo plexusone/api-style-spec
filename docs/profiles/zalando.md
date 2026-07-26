@@ -158,6 +158,46 @@ Use the Zalando profile when:
 | Errors | Generic | RFC 7807 |
 | Hypermedia | Not required | Encouraged |
 
+## Evaluation Report
+
+This profile has been evaluated against the `api-style-guide-quality` rubric.
+
+### Summary
+
+| Metric | Value |
+|--------|-------|
+| Overall Decision | **PASS** |
+| Categories | 9 pass, 0 partial, 0 fail |
+| Findings | 0 critical, 0 high, 0 medium, 4 low |
+
+### Category Scores
+
+| Category | Score | Assessment |
+|----------|-------|------------|
+| Content Coverage | 5/5 🟢 | Covers all 6 domains: REST/API First, OpenAPI 3.1, snake_case naming, RFC 7807 errors, OAuth2 security, semantic versioning |
+| Structure & Navigation | 5/5 🟢 | Clear TOC, numbered rules (Z-100 through Z-255), 13 logical categories, cross-references |
+| Rule Quality & Clarity | 5/5 🟢 | Well-structured with severity levels, rationale, RFC 2119 keywords (MUST/SHOULD/MAY) |
+| Examples & Code Samples | 4/5 🟡 | Good/bad examples for naming, errors, pagination; ~40% of rules lack examples |
+| Enforceability & Tooling | 5/5 🟢 | Zally linter provides automated enforcement; clear spectral vs. judge-only distinction |
+| Guide Versioning & Evolution | 4/5 🟡 | Version numbers and GitHub history; no changelog showing rule evolution |
+| Completeness & Depth | 5/5 🟢 | Deep coverage of pagination, error handling, compatibility, deprecation timelines |
+| Internal Consistency | 5/5 🟢 | Consistent terminology; examples align with rules; no contradictions |
+| Accessibility & Tone | 4/5 🟡 | Appropriate technical level; glossary limited to 8 terms for 147 rules |
+
+### Improvement Opportunities
+
+| Finding | Category | Recommendation |
+|---------|----------|----------------|
+| ~40% of rules lack concrete examples | Examples | Add JSON/HTTP examples to rules without them |
+| Some rules lack detailed implementation guidance | Rule Quality | Add step-by-step HOW guidance for complex rules |
+| No changelog showing rule additions/changes | Versioning | Add CHANGELOG.md tracking rule evolution |
+| Glossary has only 8 terms | Accessibility | Expand glossary to 20+ key concepts |
+
+!!! note "Evaluation Metadata"
+    - **Rubric**: api-style-guide-quality v1.0.0
+    - **Evaluated**: 2025-06-17
+    - **Evaluator**: Claude Opus 4.5 (LLM-as-Judge)
+
 ## References
 
 - [Zalando RESTful API Guidelines](https://opensource.zalando.com/restful-api-guidelines/)

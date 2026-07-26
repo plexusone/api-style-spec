@@ -25,6 +25,9 @@ api-style-spec (source of truth)
 - **Industry Profiles** - Pre-built profiles based on Microsoft, Google, Zalando guidelines
 - **Conformance Levels** - Graduated compliance (bronze/silver/gold)
 - **Multi-Platform** - CLI, MCP server, AI assistant hooks
+- **Exemplar Specs** - Reference OpenAPI implementations demonstrating best practices
+- **Pattern Library** - Reusable solutions for common API design problems
+- **Fix Suggestions** - AI-powered recommendations to fix style violations
 
 ## Quick Start
 
@@ -43,8 +46,18 @@ api-style lint openapi.yaml
 # Lint with a specific profile
 api-style lint openapi.yaml --profile azure
 
+# Lint with fix suggestions
+api-style lint openapi.yaml --suggest-fixes
+
 # Combined lint + LLM evaluation
 api-style analyze openapi.yaml --profile azure
+
+# Start from an exemplar
+api-style exemplar copy default-minimal ./my-api.yaml
+
+# Explore design patterns
+api-style pattern list
+api-style pattern show cursor-pagination
 ```
 
 ## Built-in Profiles
