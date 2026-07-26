@@ -39,6 +39,9 @@ type APIStyleSpec struct {
 	// Categories defines available rule categories with metadata.
 	Categories []Category `json:"categories,omitempty"`
 
+	// CategoryGroups defines semantic groupings of related categories.
+	CategoryGroups []CategoryGroup `json:"categoryGroups,omitempty"`
+
 	// Patterns defines reusable API design patterns.
 	Patterns []Pattern `json:"patterns,omitempty"`
 
