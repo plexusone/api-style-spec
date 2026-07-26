@@ -495,3 +495,138 @@ func containsAt(s, substr string, start int) bool {
 	}
 	return false
 }
+
+// Exemplar tests
+
+func TestListExemplars(t *testing.T) {
+	exemplars, err := ListExemplars()
+	if err != nil {
+		t.Fatalf("ListExemplars failed: %v", err)
+	}
+
+	if len(exemplars) == 0 {
+		t.Error("ListExemplars returned no exemplars")
+	}
+
+	t.Logf("Found %d exemplars", len(exemplars))
+
+	// Verify structure of exemplars
+	for _, e := range exemplars {
+		if e.Name == "" {
+			t.Error("Exemplar has empty name")
+		}
+		if e.Profile == "" {
+			t.Error("Exemplar has empty profile")
+		}
+		if len(e.Content) == 0 {
+			t.Errorf("Exemplar %q has no content", e.Name)
+		}
+		t.Logf("  - %s (profile: %s, %d bytes)", e.Name, e.Profile, len(e.Content))
+	}
+}
+
+func TestListExemplars_ContainsExpected(t *testing.T) {
+	exemplars, err := ListExemplars()
+	if err != nil {
+		t.Fatalf("ListExemplars failed: %v", err)
+	}
+
+	expectedNames := map[string]bool{
+		"default-minimal": false,
+		"default-crud":    false,
+	}
+
+	for _, e := range exemplars {
+		if _, ok := expectedNames[e.Name]; ok {
+			expectedNames[e.Name] = true
+		}
+	}
+
+	for name, found := range expectedNames {
+		if !found {
+			t.Errorf("Expected exemplar %q not found", name)
+		}
+	}
+}
+
+func TestListExemplarsForProfile(t *testing.T) {
+	exemplars, err := ListExemplarsForProfile("default")
+	if err != nil {
+		t.Fatalf("ListExemplarsForProfile failed: %v", err)
+	}
+
+	if len(exemplars) == 0 {
+		t.Error("No exemplars found for 'default' profile")
+	}
+
+	for _, e := range exemplars {
+		if e.Profile != "default" {
+			t.Errorf("Exemplar %q has profile %q, expected 'default'", e.Name, e.Profile)
+		}
+	}
+}
+
+func TestListExemplarsForProfile_Empty(t *testing.T) {
+	exemplars, err := ListExemplarsForProfile("nonexistent")
+	if err != nil {
+		t.Fatalf("ListExemplarsForProfile failed: %v", err)
+	}
+
+	if len(exemplars) != 0 {
+		t.Errorf("Expected 0 exemplars for nonexistent profile, got %d", len(exemplars))
+	}
+}
+
+func TestGetExemplar(t *testing.T) {
+	exemplar, err := GetExemplar("default-minimal")
+	if err != nil {
+		t.Fatalf("GetExemplar failed: %v", err)
+	}
+
+	if exemplar.Name != "default-minimal" {
+		t.Errorf("Name = %q, want %q", exemplar.Name, "default-minimal")
+	}
+
+	if exemplar.Profile != "default" {
+		t.Errorf("Profile = %q, want %q", exemplar.Profile, "default")
+	}
+
+	if len(exemplar.Content) == 0 {
+		t.Error("Content is empty")
+	}
+
+	// Verify it's valid YAML/OpenAPI
+	if !contains(string(exemplar.Content), "openapi:") {
+		t.Error("Content should contain 'openapi:' declaration")
+	}
+
+	if exemplar.Description == "" {
+		t.Error("Description should be extracted from content")
+	}
+}
+
+func TestGetExemplar_NotFound(t *testing.T) {
+	_, err := GetExemplar("nonexistent-exemplar")
+	if err == nil {
+		t.Error("GetExemplar should fail for nonexistent exemplar")
+	}
+}
+
+func TestExemplar_Description(t *testing.T) {
+	exemplar, err := GetExemplar("default-minimal")
+	if err != nil {
+		t.Fatalf("GetExemplar failed: %v", err)
+	}
+
+	// Description should be extracted from OpenAPI info.description
+	if exemplar.Description == "" {
+		t.Error("Description should not be empty")
+	}
+
+	// Should contain something about "minimal" or "conformant"
+	desc := exemplar.Description
+	if !contains(desc, "minimal") && !contains(desc, "Minimal") {
+		t.Logf("Description: %s", desc)
+		// This is a warning, not an error - description content may vary
+	}
+}

@@ -578,6 +578,79 @@ func TestMkDocs_SplitPatterns(t *testing.T) {
 	}
 }
 
+// TestSpectral_RegexEscaping verifies that regex patterns with backslashes
+// are correctly escaped in YAML output (not double-escaped).
+// Bug: https://github.com/plexusone/api-style-spec/issues/BUG-spectral-regex-escaping
+func TestSpectral_RegexEscaping(t *testing.T) {
+	// JSON profile contains: "match": "^(\\/[a-z][a-z0-9\\-]*(\\/\\{[^}]+})?)*$"
+	// After JSON unmarshaling:
+	//   - JSON `\\` becomes Go `\` (single backslash)
+	//   - JSON `\/` is just `/` (forward slashes can be escaped in JSON, but decode to just /)
+	//
+	// Wait - JSON `\\/` is actually `\\` + `/` = backslash + forward-slash after parsing
+	//
+	// So JSON "^(\\/[a-z]..." decodes to Go string `^(\/[a-z]...` where:
+	//   - `\/` = backslash followed by forward-slash
+	//   - `\-` = backslash followed by hyphen
+	//
+	// When written to YAML with %q:
+	//   - Go `\` becomes YAML `\\`
+	//
+	// Expected YAML: "^(\\/[a-z][a-z0-9\\-]*(\\/\\{[^}]+})?)*$"
+
+	spec := &types.APIStyleSpec{
+		Name: "Test",
+		Rules: []types.Rule{
+			{
+				ID:       "SAV-012",
+				Title:    "Use kebab-case paths",
+				Category: "uri",
+				Severity: types.SeverityError,
+				Enforcement: &types.Enforcement{
+					Type:     types.EnforcementSpectral,
+					Function: "pattern",
+					Given:    types.NewGivenPath("$.paths[*]~"),
+					Options: &types.EnforcementOptions{
+						// This simulates the Go string AFTER JSON parsing of:
+						// JSON: "^(\\/[a-z][a-z0-9\\-]*(\\/\\{[^}]+})?)*$"
+						// Go raw string with equivalent content:
+						Match: `^(\/[a-z][a-z0-9\-]*(\/\{[^}]+})?)*$`,
+					},
+				},
+			},
+		},
+	}
+
+	yaml, err := Spectral(spec, nil)
+	if err != nil {
+		t.Fatalf("Spectral() error = %v", err)
+	}
+
+	// The YAML should have double-backslash (\\) for each single backslash in the pattern.
+	// This is correct YAML escaping for double-quoted strings.
+	// Go string `\/` → YAML `\\/`
+	// Go string `\{` → YAML `\\{`
+	expectedMatch := `"^(\\/[a-z][a-z0-9\\-]*(\\/\\{[^}]+})?)*$"`
+
+	if !strings.Contains(yaml, expectedMatch) {
+		// Find what we actually got
+		lines := strings.Split(yaml, "\n")
+		var actualMatch string
+		for _, line := range lines {
+			if strings.Contains(line, "match:") {
+				actualMatch = strings.TrimSpace(line)
+				break
+			}
+		}
+		t.Errorf("Regex escaping incorrect.\nExpected match: %s\nActual line: %s", expectedMatch, actualMatch)
+	}
+
+	// Should NOT have quadruple backslashes (\\\\) - that would be double-escaping bug
+	if strings.Contains(yaml, `\\\\`) {
+		t.Error("Found quadruple backslashes (\\\\\\\\) - this indicates double-escaping bug")
+	}
+}
+
 func TestSanitizeFilename(t *testing.T) {
 	tests := []struct {
 		input    string
