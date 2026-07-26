@@ -70,6 +70,9 @@ type Rule struct {
 
 	// Migration provides guidance for fixing violations.
 	Migration *MigrationGuidance `json:"migration,omitempty"`
+
+	// Generate provides instructions for AI agents generating OpenAPI specs.
+	Generate *GenerationGuidance `json:"generate,omitempty"`
 }
 
 // Examples provides good and bad usage patterns for a rule.
@@ -223,4 +226,37 @@ type Reference struct {
 	Title string `json:"title"`
 	// URL is the link to the external resource.
 	URL string `json:"url"`
+}
+
+// GenerationGuidance provides instructions for AI agents generating OpenAPI specs.
+type GenerationGuidance struct {
+	// Prompt is the instruction for an LLM when generating spec content.
+	// Written as a positive directive (e.g., "Use plural nouns for collections").
+	Prompt string `json:"prompt"`
+
+	// Template is a URI or schema pattern to follow.
+	// Variables use {placeholder} syntax.
+	Template string `json:"template,omitempty"`
+
+	// Priority determines generation order (100 = apply first, 1 = last).
+	// Used to ensure foundational rules are followed before details.
+	Priority int `json:"priority,omitempty"`
+
+	// Examples show OpenAPI snippets demonstrating correct usage.
+	Examples []GenerationExample `json:"examples,omitempty"`
+
+	// Checklist provides bullet points to verify compliance.
+	Checklist []string `json:"checklist,omitempty"`
+}
+
+// GenerationExample shows correct OpenAPI usage for a rule.
+type GenerationExample struct {
+	// Description explains what this example demonstrates.
+	Description string `json:"description"`
+
+	// OpenAPI is a YAML/JSON snippet showing correct usage.
+	OpenAPI string `json:"openapi"`
+
+	// Context explains when this pattern applies.
+	Context string `json:"context,omitempty"`
 }

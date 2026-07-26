@@ -90,6 +90,25 @@ type Violation struct {
 
 	// Category is the rule's category.
 	Category string `json:"category,omitempty"`
+
+	// ExampleFix shows a code snippet demonstrating the fix.
+	// Format matches the input spec format (YAML or JSON).
+	ExampleFix string `json:"exampleFix,omitempty"`
+
+	// RuleURL links to the rule's documentation page.
+	RuleURL string `json:"ruleUrl,omitempty"`
+
+	// Confidence indicates certainty of this violation (0.0-1.0).
+	// 1.0 = deterministic match, <1.0 = heuristic or LLM-based.
+	Confidence float64 `json:"confidence,omitempty"`
+
+	// RelatedRules lists rule IDs that should be addressed first
+	// or are commonly fixed together with this violation.
+	RelatedRules []string `json:"relatedRules,omitempty"`
+
+	// FixPriority indicates the recommended fix order (1 = fix first).
+	// Derived from rule priority and dependencies.
+	FixPriority int `json:"fixPriority,omitempty"`
 }
 
 // ReportMetadata contains context about the linting run.
