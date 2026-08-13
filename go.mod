@@ -5,7 +5,7 @@ go 1.26.3
 require (
 	github.com/daveshanley/vacuum v0.30.0
 	github.com/fsnotify/fsnotify v1.10.1
-	github.com/grokify/mogo v0.74.6
+	github.com/grokify/mogo v0.74.7
 	github.com/invopop/jsonschema v0.14.0
 	github.com/modelcontextprotocol/go-sdk v1.6.1
 	github.com/plexusone/assistantkit v0.14.0
@@ -80,7 +80,7 @@ require (
 	go.yaml.in/yaml/v4 v4.0.0-rc.6 // indirect
 	golang.ngrok.com/muxado/v2 v2.0.1 // indirect
 	golang.ngrok.com/ngrok v1.13.0 // indirect
-	golang.org/x/exp v0.0.0-20260718201538-764159d718ef // indirect
+	golang.org/x/exp v0.0.0-20260727155853-b88d891fe743 // indirect
 	golang.org/x/net v0.57.0 // indirect
 	golang.org/x/oauth2 v0.36.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect
