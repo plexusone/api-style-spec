@@ -10,7 +10,7 @@ require (
 	github.com/modelcontextprotocol/go-sdk v1.6.1
 	github.com/plexusone/assistantkit v0.14.0
 	github.com/plexusone/omniskill v0.10.0
-	github.com/plexusone/structured-evaluation v0.11.0
+	github.com/plexusone/structured-evaluation v0.13.0
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/text v0.40.0
@@ -26,7 +26,7 @@ require (
 	github.com/alecthomas/chroma/v2 v2.27.0 // indirect
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/basgys/goxml2json v1.1.1-0.20231018121955-e66ee54ceaad // indirect
-	github.com/buger/jsonparser v1.2.0 // indirect
+	github.com/buger/jsonparser v1.6.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/charmbracelet/colorprofile v0.4.3 // indirect
 	github.com/charmbracelet/harmonica v0.2.0 // indirect
