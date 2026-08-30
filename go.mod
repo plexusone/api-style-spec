@@ -7,9 +7,9 @@ require (
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/grokify/mogo v0.74.7
 	github.com/invopop/jsonschema v0.14.0
-	github.com/modelcontextprotocol/go-sdk v1.6.1
+	github.com/modelcontextprotocol/go-sdk v1.7.0
 	github.com/plexusone/assistantkit v0.15.0
-	github.com/plexusone/omniskill v0.10.0
+	github.com/plexusone/omniskill v0.12.0
 	github.com/plexusone/structured-evaluation v0.13.0
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
@@ -86,6 +86,7 @@ require (
 	golang.org/x/sync v0.22.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
 	golang.org/x/term v0.45.0 // indirect
+	golang.org/x/time v0.15.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	modernc.org/libc v1.74.3 // indirect
