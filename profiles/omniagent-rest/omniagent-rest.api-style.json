@@ -3,14 +3,10 @@
   "name": "OmniAgent REST API Guidelines",
   "version": "1.0.0",
   "description": "REST API guidelines for OmniAgent, based on PlexusOne guidelines but using snake_case for OpenAI API compatibility. All OpenAI-compatible endpoints use snake_case to match the official OpenAI API specification.",
-  "metadata": {
-    "author": "PlexusOne",
-    "license": "Apache-2.0",
-    "repository": "https://github.com/plexusone/api-style-spec",
-    "lastUpdated": "2025-06-19",
-    "basedOn": "plexusone-rest"
-  },
-  "designPrinciples": [
+  "extends": [
+    "https://github.com/plexusone/plexusone-standards/blob/main/api/rest/plexusone-rest.api-style.json"
+  ],
+  "principles": [
     {
       "id": "api-first",
       "title": "API First",
@@ -42,6 +38,12 @@
       "description": "Keep APIs simple. Avoid unnecessary complexity. When in doubt, leave it out."
     }
   ],
+  "metadata": {
+    "author": "PlexusOne",
+    "license": "Apache-2.0",
+    "repository": "https://github.com/plexusone/api-style-spec",
+    "lastUpdated": "2025-06-19"
+  },
   "categories": [
     {
       "id": "general",
@@ -112,7 +114,6 @@
       "severity": "error",
       "description": "All APIs MUST have an OpenAPI 3.1 specification. The spec is the source of truth and MUST be maintained alongside code.",
       "rationale": "OpenAPI enables tooling, documentation generation, client SDK generation, and contract testing. Version 3.1 aligns with JSON Schema draft 2020-12.",
-      "source": "PlexusOne PO-001",
       "examples": {
         "good": [
           "openapi: 3.1.0"
@@ -133,7 +134,12 @@
         "options": {
           "match": "^3\\.1\\."
         }
-      }
+      },
+      "references": [
+        {
+          "title": "PlexusOne PO-001"
+        }
+      ]
     },
     {
       "id": "OA-002",
@@ -142,7 +148,6 @@
       "severity": "error",
       "description": "All JSON property names MUST use snake_case (e.g., first_name, created_at, user_id) for compatibility with OpenAI API conventions.",
       "rationale": "OmniAgent provides OpenAI-compatible APIs. Using snake_case ensures seamless compatibility with existing OpenAI client libraries (openai-python, openai-node, etc.) and reduces friction for developers migrating from OpenAI.",
-      "source": "OpenAI API specification",
       "examples": {
         "good": [
           "first_name",
@@ -169,7 +174,12 @@
         "options": {
           "match": "^[$a-z][a-z0-9_]*$"
         }
-      }
+      },
+      "references": [
+        {
+          "title": "OpenAI API specification"
+        }
+      ]
     },
     {
       "id": "OA-003",
@@ -178,7 +188,6 @@
       "severity": "error",
       "description": "URL path segments MUST use kebab-case (lowercase with hyphens) or simple lowercase.",
       "rationale": "Kebab-case is the standard for URLs. It's readable and avoids issues with case sensitivity in different systems.",
-      "source": "PlexusOne PO-003",
       "examples": {
         "good": [
           "/v1/chat/completions",
@@ -202,7 +211,12 @@
         "options": {
           "match": "^/[a-z0-9-/{}]+$"
         }
-      }
+      },
+      "references": [
+        {
+          "title": "PlexusOne PO-003"
+        }
+      ]
     },
     {
       "id": "OA-004",
@@ -211,7 +225,6 @@
       "severity": "error",
       "description": "Collection resource names MUST be plural nouns. Use /users not /user, /models not /model.",
       "rationale": "Plural nouns make it clear you're dealing with a collection. GET /models returns multiple models.",
-      "source": "PlexusOne PO-004",
       "examples": {
         "good": [
           "/v1/models",
@@ -235,7 +248,12 @@
       },
       "enforcement": {
         "type": "none"
-      }
+      },
+      "references": [
+        {
+          "title": "PlexusOne PO-004"
+        }
+      ]
     },
     {
       "id": "OA-005",
@@ -244,7 +262,6 @@
       "severity": "warn",
       "description": "API endpoints SHOULD be versioned using a URI prefix: /v1/, /v2/, etc. Utility endpoints like /health and /docs are exempt.",
       "rationale": "URI versioning is simple, explicit, and cacheable. Utility endpoints are version-agnostic by convention.",
-      "source": "PlexusOne PO-005 (modified)",
       "examples": {
         "good": [
           "/v1/chat/completions",
@@ -258,7 +275,12 @@
       },
       "enforcement": {
         "type": "none"
-      }
+      },
+      "references": [
+        {
+          "title": "PlexusOne PO-005 (modified)"
+        }
+      ]
     },
     {
       "id": "OA-006",
@@ -267,7 +289,6 @@
       "severity": "error",
       "description": "Use HTTP methods according to their semantics: GET (read), POST (create), PUT (replace), PATCH (partial update), DELETE (remove).",
       "rationale": "Correct HTTP method usage enables caching, idempotency guarantees, and predictable behavior.",
-      "source": "PlexusOne PO-008",
       "examples": {
         "good": [
           "GET /v1/agents/{id} - retrieve agent",
@@ -293,7 +314,12 @@
       },
       "enforcement": {
         "type": "none"
-      }
+      },
+      "references": [
+        {
+          "title": "PlexusOne PO-008"
+        }
+      ]
     },
     {
       "id": "OA-007",
@@ -302,7 +328,6 @@
       "severity": "warn",
       "description": "Successful POST requests that create resources SHOULD return 201 Created with a Location header pointing to the new resource.",
       "rationale": "201 explicitly indicates creation. The Location header enables clients to fetch the created resource without parsing the response body.",
-      "source": "PlexusOne PO-010",
       "examples": {
         "good": [
           "HTTP/1.1 201 Created\\nLocation: /v1/agents/12345"
@@ -319,7 +344,12 @@
             "$.paths[*].post.responses['201']"
           ]
         }
-      }
+      },
+      "references": [
+        {
+          "title": "PlexusOne PO-010"
+        }
+      ]
     },
     {
       "id": "OA-008",
@@ -328,7 +358,6 @@
       "severity": "warn",
       "description": "Successful DELETE requests SHOULD return 204 No Content with an empty body.",
       "rationale": "The resource no longer exists, so there's nothing to return. 204 clearly indicates success without a body.",
-      "source": "PlexusOne PO-011",
       "enforcement": {
         "type": "spectral",
         "function": "truthy",
@@ -337,7 +366,12 @@
             "$.paths[*].delete.responses['204']"
           ]
         }
-      }
+      },
+      "references": [
+        {
+          "title": "PlexusOne PO-011"
+        }
+      ]
     },
     {
       "id": "OA-009",
@@ -346,7 +380,6 @@
       "severity": "error",
       "description": "All date and time values MUST use ISO 8601 format: YYYY-MM-DDTHH:mm:ssZ for timestamps, YYYY-MM-DD for dates.",
       "rationale": "ISO 8601 is unambiguous and sortable. Always use UTC (Z suffix) for timestamps to avoid timezone confusion.",
-      "source": "PlexusOne PO-020",
       "examples": {
         "good": [
           "2024-01-15T14:30:00Z",
@@ -359,7 +392,12 @@
       },
       "enforcement": {
         "type": "none"
-      }
+      },
+      "references": [
+        {
+          "title": "PlexusOne PO-020"
+        }
+      ]
     },
     {
       "id": "OA-010",
@@ -368,7 +406,6 @@
       "severity": "error",
       "description": "Resource identifiers MUST be strings, not integers.",
       "rationale": "String IDs are more flexible than integers. They support UUIDs, prefixed IDs, and don't have integer overflow issues.",
-      "source": "PlexusOne PO-021",
       "examples": {
         "good": [
           "agent_abc123",
@@ -380,7 +417,12 @@
       },
       "enforcement": {
         "type": "none"
-      }
+      },
+      "references": [
+        {
+          "title": "PlexusOne PO-021"
+        }
+      ]
     },
     {
       "id": "OA-011",
@@ -389,7 +431,6 @@
       "severity": "error",
       "description": "APIs MUST support Bearer token authentication for OpenAI client library compatibility.",
       "rationale": "Bearer tokens are the standard for API authentication. OpenAI client libraries expect Authorization: Bearer headers.",
-      "source": "PlexusOne PO-022, OpenAI API",
       "examples": {
         "good": [
           "Authorization: Bearer sk-..."
@@ -413,7 +454,12 @@
             "openIdConnect"
           ]
         }
-      }
+      },
+      "references": [
+        {
+          "title": "PlexusOne PO-022, OpenAI API"
+        }
+      ]
     },
     {
       "id": "OA-012",
@@ -422,7 +468,6 @@
       "severity": "error",
       "description": "Every endpoint MUST have a summary (one line) and description (detailed explanation) in the OpenAPI spec.",
       "rationale": "Good documentation reduces support burden and improves developer experience.",
-      "source": "PlexusOne PO-028",
       "enforcement": {
         "type": "spectral",
         "function": "truthy",
@@ -431,7 +476,12 @@
             "$.paths[*][*].summary"
           ]
         }
-      }
+      },
+      "references": [
+        {
+          "title": "PlexusOne PO-028"
+        }
+      ]
     },
     {
       "id": "OA-013",
@@ -440,7 +490,6 @@
       "severity": "error",
       "description": "The OpenAPI specification MUST define at least one server URL.",
       "rationale": "Server URLs enable API clients and documentation tools to know the base URL for requests.",
-      "source": "OpenAPI best practice",
       "examples": {
         "good": [
           "servers:\\n  - url: https://api.example.com/v1"
@@ -454,7 +503,12 @@
             "$.servers"
           ]
         }
-      }
+      },
+      "references": [
+        {
+          "title": "OpenAPI best practice"
+        }
+      ]
     },
     {
       "id": "OA-014",
@@ -463,7 +517,6 @@
       "severity": "warn",
       "description": "OpenAPI operationId SHOULD follow the pattern: verbResource (e.g., getModel, createChatCompletion, listAgents).",
       "rationale": "Consistent operation IDs enable better SDK generation and documentation.",
-      "source": "PlexusOne PO-040",
       "examples": {
         "good": [
           "getModel",
@@ -487,7 +540,12 @@
         "options": {
           "match": "^[a-z]+[A-Z][a-zA-Z]+$"
         }
-      }
+      },
+      "references": [
+        {
+          "title": "PlexusOne PO-040"
+        }
+      ]
     },
     {
       "id": "OA-015",
@@ -496,7 +554,6 @@
       "severity": "warn",
       "description": "All schemas in components/schemas SHOULD have descriptions explaining their purpose.",
       "rationale": "Schema descriptions improve API documentation and help developers understand data structures.",
-      "source": "OpenAPI best practice",
       "enforcement": {
         "type": "spectral",
         "function": "truthy",
@@ -505,7 +562,12 @@
             "$.components.schemas[*].description"
           ]
         }
-      }
+      },
+      "references": [
+        {
+          "title": "OpenAPI best practice"
+        }
+      ]
     }
   ],
   "conformanceLevels": {
