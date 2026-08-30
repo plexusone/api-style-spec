@@ -13,9 +13,7 @@ import (
 // to generated Spectral YAML. This catches double-escaping bugs where the JSON
 // deserialization + YAML serialization pipeline produces quadruple backslashes.
 //
-// Bug report: BUG-spectral-regex-escaping.md
-//
-// The REDACTED style guide has regex patterns like:
+// A customer style guide reported regex patterns like:
 //
 //	JSON source: "^(\\/[a-z][a-z0-9\\-]*(\\/{[^}]+})?)*$"
 //
@@ -30,7 +28,7 @@ import (
 // Bug produces YAML: "^(\\\\/[a-z][a-z0-9\\\\-]*(\\\\/{[^}]+})?)*$"
 // (quadruple backslashes — Spectral interprets as literal `\\` in the regex)
 func TestSpectral_RegexEscaping_FromJSON(t *testing.T) {
-	// This JSON mimics the exact content of redacted-api-style-guide.json EXT-012
+	// This JSON mimics the reported style guide's kebab-case rule
 	profileJSON := `{
 		"name": "test-escaping",
 		"version": "1.0.0",
