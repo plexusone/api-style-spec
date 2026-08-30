@@ -10,16 +10,16 @@ import (
 	"strings"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
+	apistylespec "github.com/plexusone/api-style-spec"
 	"github.com/plexusone/api-style-spec/pkg/profile"
 	"github.com/plexusone/api-style-spec/skills/apistyle"
 	runtime "github.com/plexusone/omniskill/mcp/server"
 	"github.com/spf13/cobra"
 )
 
-const (
-	serverName    = "mcp-api-style"
-	serverVersion = "v0.1.0"
-)
+const serverName = "mcp-api-style"
+
+var serverVersion = "v" + apistylespec.Version
 
 var (
 	// API key flags
@@ -50,13 +50,7 @@ semantic analysis.
 
 Running without a subcommand starts the MCP server (default behavior).
 
-The server provides tools for:
-  - lint: Deterministic linting using Spectral/vacuum rules
-  - evaluate: LLM-based semantic evaluation (requires ANTHROPIC_API_KEY)
-  - analyze: Combined lint + evaluate with GO/NO-GO decision
-  - list_rules: List all rules from a style profile
-  - list_profiles: List available style profiles
-  - explain_rule: Get detailed explanation of a rule`,
+The server provides the tools listed below.`,
 	Example: `  # Start MCP server (default)
   mcp-api-style
 
@@ -136,6 +130,19 @@ func init() {
 	if anthropicAPIKey == "" {
 		anthropicAPIKey = os.Getenv("ANTHROPIC_API_KEY")
 	}
+
+	// Derive the tool list from the skill so help text never drifts
+	// from the actual MCP surface.
+	var tools strings.Builder
+	tools.WriteString("\n\nTools:\n")
+	for _, tool := range apistyle.New().Tools() {
+		desc := tool.Description()
+		if i := strings.Index(desc, ". "); i > 0 {
+			desc = desc[:i+1]
+		}
+		fmt.Fprintf(&tools, "  - %s: %s\n", tool.Name(), desc)
+	}
+	rootCmd.Long += strings.TrimRight(tools.String(), "\n")
 
 	// Persistent flags
 	rootCmd.PersistentFlags().StringVarP(&outputFormat, "output", "o", "json",

@@ -7,6 +7,12 @@
 //   - list_rules: List all rules from a profile
 //   - list_profiles: List available style profiles
 //   - explain_rule: Get detailed explanation of a rule
+//   - suggest_fixes: Generate fix suggestions for spec violations
+//   - design_check: Get design guidance before generating a spec
+//   - conformance_path: Show the path to reach a conformance level
+//
+// The Tools method is the single source of truth for the tool surface;
+// consumers (MCP server, CLI) should derive tool metadata from it.
 package apistyle
 
 import (
