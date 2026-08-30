@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"strings"
 
+	apistylespec "github.com/plexusone/api-style-spec"
 	"github.com/plexusone/api-style-spec/pkg/analyze"
 	"github.com/plexusone/api-style-spec/pkg/fix"
 	"github.com/plexusone/api-style-spec/pkg/judge"
@@ -57,6 +58,11 @@ func (s *Skill) Name() string {
 // Description returns what this skill does.
 func (s *Skill) Description() string {
 	return "Lint and evaluate OpenAPI specifications against style guidelines using deterministic rules and LLM-based semantic analysis"
+}
+
+// Version returns the skill version.
+func (s *Skill) Version() string {
+	return apistylespec.Version
 }
 
 // Init initializes the skill (no-op for this skill).
