@@ -1,6 +1,10 @@
 package types
 
-import "time"
+import (
+	"regexp"
+	"strings"
+	"time"
+)
 
 // Exception defines an approved waiver for a specific rule violation.
 type Exception struct {
@@ -65,8 +69,7 @@ func (e *Exception) Matches(ruleID, api, path, operation string) bool {
 	if scope.API != "" && scope.API != api {
 		return false
 	}
-	if scope.Path != "" && scope.Path != path {
-		// TODO: Support glob matching
+	if !scope.matchesPath(path) {
 		return false
 	}
 	if scope.Operation != "" && scope.Operation != operation {
@@ -74,4 +77,59 @@ func (e *Exception) Matches(ruleID, api, path, operation string) bool {
 	}
 
 	return true
+}
+
+// matchesPath reports whether the scope's path patterns (if any) match path.
+// Both Path and Paths entries support glob syntax: "*" and "?" match within a
+// single path segment, "**" matches across segments.
+func (s *ExceptionScope) matchesPath(path string) bool {
+	patterns := s.Paths
+	if s.Path != "" {
+		patterns = append([]string{s.Path}, s.Paths...)
+	}
+	if len(patterns) == 0 {
+		return true
+	}
+	for _, pattern := range patterns {
+		if matchPathGlob(pattern, path) {
+			return true
+		}
+	}
+	return false
+}
+
+// matchPathGlob matches path against a glob pattern where "*" and "?" stay
+// within one path segment and "**" spans segments.
+func matchPathGlob(pattern, path string) bool {
+	if pattern == path {
+		return true
+	}
+	if !strings.ContainsAny(pattern, "*?") {
+		return false
+	}
+
+	var re strings.Builder
+	re.WriteString("^")
+	for i := 0; i < len(pattern); i++ {
+		switch {
+		case strings.HasPrefix(pattern[i:], "**"):
+			re.WriteString(".*")
+			i++
+		case pattern[i] == '*':
+			re.WriteString(`[^/]*`)
+		case pattern[i] == '?':
+			re.WriteString(`[^/]`)
+		default:
+			re.WriteString(regexp.QuoteMeta(string(pattern[i])))
+		}
+	}
+	re.WriteString("$")
+
+	matched, err := regexp.MatchString(re.String(), path)
+	if err != nil {
+		// The translated pattern contains only quoted literals and fixed
+		// character classes, so compilation cannot fail.
+		panic(err)
+	}
+	return matched
 }
