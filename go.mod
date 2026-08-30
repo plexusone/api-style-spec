@@ -8,8 +8,8 @@ require (
 	github.com/grokify/mogo v0.74.7
 	github.com/invopop/jsonschema v0.14.0
 	github.com/modelcontextprotocol/go-sdk v1.7.0
-	github.com/plexusone/assistantkit v0.14.0
-	github.com/plexusone/omniskill v0.10.0
+	github.com/plexusone/assistantkit v0.15.0
+	github.com/plexusone/omniskill v0.12.0
 	github.com/plexusone/structured-evaluation v0.13.0
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
