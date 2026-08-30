@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/plexusone/api-style-spec/pkg/judge"
 	"github.com/plexusone/api-style-spec/pkg/types"
 )
 
@@ -86,18 +87,48 @@ func (g *Generator) Generate(_ context.Context, eval *types.EvaluationReport, op
 }
 
 // GenerateFromFile reads an evaluation JSON file and generates an HTML report.
+// It accepts both structured-evaluation EvaluationReport JSON and score-profile
+// StyleGuideReport JSON, converting the latter automatically.
 func (g *Generator) GenerateFromFile(_ context.Context, path string, opts *Options) ([]byte, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("reading file: %w", err)
 	}
 
-	var eval types.EvaluationReport
-	if err := json.Unmarshal(data, &eval); err != nil {
+	eval, err := ParseEvaluationJSON(data)
+	if err != nil {
+		return nil, err
+	}
+
+	return g.Generate(context.Background(), eval, opts)
+}
+
+// ParseEvaluationJSON parses evaluation JSON in either the
+// structured-evaluation EvaluationReport format or the score-profile
+// StyleGuideReport format, distinguished by their discriminator fields
+// (reviewType vs profileName).
+func ParseEvaluationJSON(data []byte) (*types.EvaluationReport, error) {
+	var probe struct {
+		ReviewType  string `json:"reviewType"`
+		ProfileName string `json:"profileName"`
+	}
+	if err := json.Unmarshal(data, &probe); err != nil {
 		return nil, fmt.Errorf("parsing JSON: %w", err)
 	}
 
-	return g.Generate(context.Background(), &eval, opts)
+	if probe.ReviewType == "" && probe.ProfileName != "" {
+		var sg judge.StyleGuideReport
+		if err := json.Unmarshal(data, &sg); err != nil {
+			return nil, fmt.Errorf("parsing style guide report JSON: %w", err)
+		}
+		return sg.ToEvaluationReport(), nil
+	}
+
+	var eval types.EvaluationReport
+	if err := json.Unmarshal(data, &eval); err != nil {
+		return nil, fmt.Errorf("parsing evaluation JSON: %w", err)
+	}
+	return &eval, nil
 }
 
 // reportData is the data passed to the template.

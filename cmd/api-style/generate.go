@@ -158,6 +158,9 @@ var generateReportCmd = &cobra.Command{
 	Short: "Generate HTML evaluation report",
 	Long: `Generate an HTML report from a profile evaluation JSON file.
 
+Accepts both structured-evaluation JSON and the JSON emitted by
+"api-style score-profile --format json".
+
 The report includes:
 - Executive summary with pass/fail decision
 - Category scores with color-coded indicators
@@ -173,7 +176,9 @@ Examples:
   api-style generate report --input evaluation.json
   api-style generate report --input evaluation.json --output report.html
   api-style generate report --input evaluation.json --theme dark
-  api-style generate report --input evaluation.json --include-json`,
+  api-style generate report --input evaluation.json --include-json
+  api-style score-profile default --format json -o scores.json && \
+    api-style generate report --input scores.json -o report.html`,
 	RunE: runGenerateReport,
 }
 

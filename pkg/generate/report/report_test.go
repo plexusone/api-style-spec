@@ -198,3 +198,57 @@ func TestSeverityEmoji(t *testing.T) {
 		}
 	}
 }
+
+func TestParseEvaluationJSON_StyleGuideReport(t *testing.T) {
+	data := []byte(`{
+		"profileName": "test-profile",
+		"status": "pass",
+		"overallScore": 4.5,
+		"categories": [
+			{"category": "content", "name": "Content Coverage", "score": "pass",
+			 "numericScore": 5, "reasoning": "Good.", "weaknesses": ["Minor gap"]}
+		],
+		"summary": {"totalCategories": 1, "passedCategories": 1},
+		"metadata": {"rubricName": "style-guide-quality", "rubricVersion": "1.0.0",
+			"model": "claude-sonnet-5", "timestamp": "2026-08-30T12:00:00Z"}
+	}`)
+
+	eval, err := ParseEvaluationJSON(data)
+	if err != nil {
+		t.Fatalf("ParseEvaluationJSON() error = %v", err)
+	}
+	if eval.ReviewType != "style-guide-quality" {
+		t.Errorf("ReviewType = %q, want style-guide-quality (converted)", eval.ReviewType)
+	}
+	if len(eval.Findings) != 1 {
+		t.Errorf("len(Findings) = %d, want 1", len(eval.Findings))
+	}
+
+	gen, err := New()
+	if err != nil {
+		t.Fatalf("New() error = %v", err)
+	}
+	html, err := gen.Generate(context.Background(), eval, nil)
+	if err != nil {
+		t.Fatalf("Generate() error = %v", err)
+	}
+	for _, want := range []string{"test-profile", "Content Coverage", "Minor gap"} {
+		if !strings.Contains(string(html), want) {
+			t.Errorf("HTML missing %q", want)
+		}
+	}
+}
+
+func TestParseEvaluationJSON_EvaluationReport(t *testing.T) {
+	data := []byte(`{"reviewType": "style-guide-quality", "rubricId": "r1",
+		"categories": [{"category": "C1", "score": "pass", "numericScore": 5, "reasoning": "ok"}],
+		"overallDecision": "pass"}`)
+
+	eval, err := ParseEvaluationJSON(data)
+	if err != nil {
+		t.Fatalf("ParseEvaluationJSON() error = %v", err)
+	}
+	if eval.RubricID != "r1" || len(eval.Categories) != 1 {
+		t.Errorf("native EvaluationReport not parsed: %+v", eval)
+	}
+}
