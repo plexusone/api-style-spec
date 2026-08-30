@@ -427,6 +427,48 @@ func TestClaudeEvaluator_Evaluate(t *testing.T) {
 	}
 }
 
+func TestClaudeEvaluator_Evaluate_SpecTruncated(t *testing.T) {
+	spec := &types.APIStyleSpec{
+		Name: "test-spec",
+		Rules: []types.Rule{
+			{
+				ID:       "TEST-001",
+				Title:    "Test Rule",
+				Category: "test",
+				Severity: types.SeverityWarn,
+				Judge:    &types.JudgeCriteria{Prompt: "Evaluate this."},
+			},
+		},
+	}
+
+	mockResp := &CompletionResponse{
+		Content: `{"score": 0.8, "passed": true, "reasoning": "Looks good"}`,
+		Model:   "mock-model",
+	}
+	evaluator := NewClaudeEvaluator(&MockProvider{Response: mockResp}, spec)
+	ctx := context.Background()
+
+	report, err := evaluator.Evaluate(ctx, []byte(`openapi: "3.0.0"`), nil)
+	if err != nil {
+		t.Fatalf("Evaluate() error = %v", err)
+	}
+	if report.Metadata.SpecTruncated {
+		t.Error("SpecTruncated = true for small spec, want false")
+	}
+
+	huge := make([]byte, maxSpecChars+1)
+	for i := range huge {
+		huge[i] = 'a'
+	}
+	report, err = evaluator.Evaluate(ctx, huge, nil)
+	if err != nil {
+		t.Fatalf("Evaluate() error = %v", err)
+	}
+	if !report.Metadata.SpecTruncated {
+		t.Error("SpecTruncated = false for oversized spec, want true")
+	}
+}
+
 func contains(s, substr string) bool {
 	return len(s) >= len(substr) && (s == substr || len(s) > 0 && containsHelper(s, substr))
 }

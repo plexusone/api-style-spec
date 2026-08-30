@@ -158,6 +158,10 @@ type ReportMetadata struct {
 
 	// Timestamp is when the evaluation was performed.
 	Timestamp string `json:"timestamp,omitempty"`
+
+	// SpecTruncated indicates the spec exceeded the size limit and was
+	// evaluated partially.
+	SpecTruncated bool `json:"specTruncated,omitempty"`
 }
 
 // NewEvaluationReport creates a new empty evaluation report.

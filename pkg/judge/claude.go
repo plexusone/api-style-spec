@@ -3,11 +3,15 @@ package judge
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"sync"
 	"time"
 
 	"github.com/plexusone/api-style-spec/pkg/types"
 )
+
+// maxSpecChars caps the spec content sent to the LLM.
+const maxSpecChars = 100000
 
 // ClaudeEvaluator implements Evaluator using the Anthropic Claude API.
 type ClaudeEvaluator struct {
@@ -57,8 +61,11 @@ func (e *ClaudeEvaluator) Evaluate(ctx context.Context, specBytes []byte, opts *
 	}
 
 	// Prepare spec content
-	specContent := string(specBytes)
-	specContent, _ = TruncateSpec(specContent, 100000) // 100KB limit
+	specContent, truncated := TruncateSpec(string(specBytes), maxSpecChars)
+	if truncated {
+		slog.Warn("spec exceeds size limit; evaluating truncated content",
+			"file", opts.FileName, "limit_chars", maxSpecChars)
+	}
 
 	// Evaluate each criterion
 	var mu sync.Mutex
@@ -101,11 +108,12 @@ func (e *ClaudeEvaluator) Evaluate(ctx context.Context, specBytes []byte, opts *
 
 	// Set metadata
 	report.Metadata = ReportMetadata{
-		FileName:    opts.FileName,
-		ProfileName: e.rubricSet.Name,
-		Model:       e.getModel(opts),
-		Duration:    time.Since(start).String(),
-		Timestamp:   time.Now().UTC().Format(time.RFC3339),
+		FileName:      opts.FileName,
+		ProfileName:   e.rubricSet.Name,
+		Model:         e.getModel(opts),
+		Duration:      time.Since(start).String(),
+		Timestamp:     time.Now().UTC().Format(time.RFC3339),
+		SpecTruncated: truncated,
 	}
 
 	return report, evalErr
@@ -122,8 +130,11 @@ func (e *ClaudeEvaluator) EvaluateCategory(ctx context.Context, specBytes []byte
 		return &CategoryResult{Name: category}, nil
 	}
 
-	specContent := string(specBytes)
-	specContent, _ = TruncateSpec(specContent, 100000)
+	specContent, truncated := TruncateSpec(string(specBytes), maxSpecChars)
+	if truncated {
+		slog.Warn("spec exceeds size limit; evaluating truncated content",
+			"file", opts.FileName, "category", category, "limit_chars", maxSpecChars)
+	}
 
 	// Build category evaluation prompt
 	prompt := e.builder.BuildCategoryEvaluation(category, criteria, specContent)
