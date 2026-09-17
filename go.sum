@@ -85,8 +85,8 @@ github.com/google/pprof v0.0.0-20260906184651-6331bc6350fe h1:QAinXoAFJdGQYztXn3
 github.com/google/pprof v0.0.0-20260906184651-6331bc6350fe/go.mod h1:jl5iWTm0/hd5PjEYEOuwAJ57L/CibdZfrqZ5XA5GrCk=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
-github.com/grokify/mogo v0.74.8 h1:0Qw2PE5ECsVjPimqkvhHTTlwWx+ylztaX1ho47WgCfo=
-github.com/grokify/mogo v0.74.8/go.mod h1:ja5XQFqMYRksrryvkxsMgVptn081BizWOXDA+Y5wlEg=
+github.com/grokify/mogo v0.74.9 h1:kNByiqh2cskqioePUtjnz1pj1t/Z71rgQF0OUEy0/h0=
+github.com/grokify/mogo v0.74.9/go.mod h1:MuKguiqlqmBt83ebEzdc0fRLhC3tz7W3PvTJglVjLaw=
 github.com/hashicorp/golang-lru/v2 v2.0.7 h1:a+bsQ5rvGLjzHuww6tVxozPZFVghXaHOwFs4luLUK2k=
 github.com/hashicorp/golang-lru/v2 v2.0.7/go.mod h1:QeFd9opnmA6QUJc5vARoKUSoFhyfM2/ZepoAG6RGpeM=
 github.com/hashicorp/yamux v0.1.1 h1:yrQxtgseBDrq9Y652vSRDvsKCJKOUD+GzTS4Y0Y8pvE=
