@@ -3,7 +3,7 @@ module github.com/plexusone/systemspec-apistyle
 go 1.26.3
 
 require (
-	github.com/daveshanley/vacuum v0.30.5
+	github.com/daveshanley/vacuum v0.30.6
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/grokify/mogo v0.74.8
 	github.com/invopop/jsonschema v0.14.0
@@ -43,6 +43,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/go-openapi/jsonpointer v1.0.1 // indirect
 	github.com/go-sourcemap/sourcemap v2.1.4+incompatible // indirect
+	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
 	github.com/google/jsonschema-go v0.4.3 // indirect
 	github.com/google/pprof v0.0.0-20260906184651-6331bc6350fe // indirect
 	github.com/google/uuid v1.6.0 // indirect
